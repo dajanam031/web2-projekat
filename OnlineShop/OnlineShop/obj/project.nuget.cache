@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "ytr4VusaiwGSqMlfrS6Dt3bOdl8KWNHUeiHjlmWmwQVE/eZAvrEWt9z53ldOCl+v6IRfK88roV0JeE22pkDTxw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Dajana\\OneDrive\\Desktop\\web 2\\web2-projekat\\OnlineShop\\OnlineShop\\OnlineShop.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.extensions.apidescription.server\\3.0.0\\microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\5.6.3\\swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
