@@ -4,6 +4,7 @@ namespace OnlineShop.Models
 {
     public class User
     {
+        private long id;
         private string username;
         private string password;
         private string email;
@@ -13,7 +14,10 @@ namespace OnlineShop.Models
         private string address;
         private string imageUri;
         private UserType userType;
+        // lista porudzbina
 
+
+        public long Id { get => id; set => id = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
         public string Email { get => email; set => email = value; }

@@ -1,0 +1,66 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('C:\\Users\\Dajana\\OneDrive\\Desktop\\web 2\\web2-projekat\\online-shop-web-app\\public\\background_main.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* Additional background properties as needed */
+  }
+  
+  .login-box {
+    flex-direction: column;
+    border: 2px solid #b0b0b0;
+    border-radius: 5px;
+    padding: 40px;
+    width: 310px;
+    margin: auto;
+    background-color: #f5f5f5;
+  }
+  
+  .input-group {
+    margin-bottom: 15px;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .input-group input[type='text'],
+  .input-group input[type='password'] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .input-group button[type='submit'] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .input-group button[type='submit']:hover {
+    background-color: #45a049;
+  }
+  
+  .link {
+    margin-top: 15px;
+    text-align: center;
+  }
+  
+  .link a {
+    color: #0000ff;
+    text-decoration: none;
+  }
+  
+  .link a:hover {
+    text-decoration: underline;
+  }
+  
