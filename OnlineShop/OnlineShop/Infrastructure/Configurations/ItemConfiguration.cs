@@ -9,6 +9,7 @@ namespace OnlineShop.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Item> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.Property(x => x.Name).IsRequired().HasMaxLength(30);
             builder.Property(x => x.Description).IsRequired().HasMaxLength(100);

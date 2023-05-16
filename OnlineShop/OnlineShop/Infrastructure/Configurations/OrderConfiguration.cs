@@ -9,6 +9,7 @@ namespace OnlineShop.Infrastructure.Configurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.Property(x => x.Quantity).IsRequired();
             builder.Property(x => x.DeliveryAddress).IsRequired().HasMaxLength(30);

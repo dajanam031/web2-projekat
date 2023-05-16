@@ -1,18 +1,18 @@
-import './Login.css';
 
-function Login() {
+function Login(props) {
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <div className="input-group">
+    <div>
+      <h1>Hi {props.name}</h1>
+      <div>
+        <div>
           <label htmlFor="email">Email or username:</label>
           <input type="text" id="text" />
         </div>
-        <div className="input-group">
+        <div>
           <label htmlFor="password">Password:</label>
           <input type="password" id="password" />
         </div>
-        <div className="input-group">
+        <div>
           <button type="submit">Submit</button>
         </div>
         <div className="link">

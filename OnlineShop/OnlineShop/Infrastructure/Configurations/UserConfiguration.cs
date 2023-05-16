@@ -22,6 +22,7 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.BirthDate).IsRequired();
 
             builder.HasIndex(x => x.Username).IsUnique();
+            builder.HasIndex(x => x.Email).IsUnique();
         }
     }
 }
