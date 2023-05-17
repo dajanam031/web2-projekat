@@ -14,6 +14,7 @@ namespace OnlineShop.Models
         private string address;
         private string imageUri;
         private UserType userType;
+        private bool verified;
         // lista porudzbina
 
 
@@ -27,5 +28,6 @@ namespace OnlineShop.Models
         public string Address { get => address; set => address = value; }
         public string ImageUri { get => imageUri; set => imageUri = value; }
         public UserType UserType { get => userType; set => userType = value; }
+        public bool Verified { get => verified; set => verified = value; }
     }
 }

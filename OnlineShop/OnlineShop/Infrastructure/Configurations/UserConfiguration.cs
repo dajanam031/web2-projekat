@@ -20,6 +20,7 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.UserType).IsRequired();
             builder.Property(x => x.ImageUri).IsRequired();
             builder.Property(x => x.BirthDate).IsRequired();
+            builder.Property(x => x.Verified).IsRequired();
 
             builder.HasIndex(x => x.Username).IsUnique();
             builder.HasIndex(x => x.Email).IsUnique();

@@ -1,12 +1,11 @@
 
-function Login(props) {
+function Login() {
   return (
     <div>
-      <h1>Hi {props.name}</h1>
       <div>
         <div>
-          <label htmlFor="email">Email or username:</label>
-          <input type="text" id="text" />
+          <label htmlFor="email">Email:</label>
+          <input type="email" id="text" />
         </div>
         <div>
           <label htmlFor="password">Password:</label>
