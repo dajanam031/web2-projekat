@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using OnlineShop.Dto;
+using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
 using System;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
 {
@@ -57,5 +58,20 @@ namespace OnlineShop.Controllers
             }
         }
 
+        // TO DO: zastititi da samo admin sme
+        [HttpGet("unverified-users")]
+        public IActionResult GetUnverifiedUsers()
+        {
+            try
+            {
+                return Ok(_userService.GetAllUsers());
+            }
+            catch (Exception)
+            {
+                return NotFound("No users.");
+            }
+        }
+
+        // odbijanje i prihvatanje kupca od strane admina
     }
 }

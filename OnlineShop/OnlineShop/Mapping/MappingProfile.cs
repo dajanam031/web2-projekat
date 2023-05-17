@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using OnlineShop.Dto;
+using OnlineShop.Dto.ItemDTOs;
+using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Models;
 
 namespace OnlineShop.Mapping
@@ -9,6 +10,11 @@ namespace OnlineShop.Mapping
         public MappingProfile()
         {
             CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserLoginDto>().ReverseMap();
+            CreateMap<User, UserProfileDto>().ReverseMap();
+            CreateMap<User, UserToVerifyDto>().ReverseMap();
+
+            CreateMap<Item, ItemDto>().ReverseMap();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using OnlineShop.Models;
 using System;
 
-namespace OnlineShop.Dto
+namespace OnlineShop.Dto.UserDTOs
 {
     public class UserProfileDto
     {

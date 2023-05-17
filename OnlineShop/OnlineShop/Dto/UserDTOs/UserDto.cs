@@ -2,7 +2,7 @@
 using System.Net;
 using System;
 
-namespace OnlineShop.Dto
+namespace OnlineShop.Dto.UserDTOs
 {
     public class UserDto
     {

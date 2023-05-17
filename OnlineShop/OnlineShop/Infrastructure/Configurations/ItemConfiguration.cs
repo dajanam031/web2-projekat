@@ -16,8 +16,6 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.Quantity).IsRequired();
             builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.ImageUri).IsRequired();
-
-            builder.HasIndex(x => x.Name).IsUnique();
         }
     }
 }

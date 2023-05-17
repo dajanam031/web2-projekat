@@ -1,4 +1,5 @@
-﻿using OnlineShop.Dto;
+﻿using OnlineShop.Dto.UserDTOs;
+using System.Collections.Generic;
 
 namespace OnlineShop.Interfaces
 {
@@ -7,5 +8,6 @@ namespace OnlineShop.Interfaces
         UserDto RegisterUser(UserDto newUser);
         UserProfileDto UpdateProfile(long id, UserProfileDto newProfile);
         UserLoginDto LoginUser(UserLoginDto loginUser);
+        List<UserToVerifyDto> GetAllUsers();
     }
 }

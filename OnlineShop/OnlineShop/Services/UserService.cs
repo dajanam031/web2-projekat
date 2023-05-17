@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using OnlineShop.Dto;
+using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Infrastructure;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace OnlineShop.Services
@@ -72,6 +73,16 @@ namespace OnlineShop.Services
                 _dbContext.SaveChanges();
                 return _mapper.Map<UserProfileDto>(user);
             }
+        }
+
+        public List<UserToVerifyDto> GetAllUsers()
+        {
+            var users = _dbContext.Users;
+            if (users.Any())
+                return _mapper.Map<List<UserToVerifyDto>>(users);
+            
+            throw new ArgumentNullException();
+            
         }
     }
 }

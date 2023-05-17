@@ -1,4 +1,4 @@
-﻿namespace OnlineShop.Dto
+﻿namespace OnlineShop.Dto.UserDTOs
 {
     public class UserLoginDto
     {
