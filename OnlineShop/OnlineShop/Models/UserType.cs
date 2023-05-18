@@ -4,6 +4,6 @@
     {
         Administrator,
         Seller,
-        Purchaser
+        Customer
     }
 }

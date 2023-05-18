@@ -24,6 +24,10 @@ namespace OnlineShop.Infrastructure.Configurations
 
             builder.HasIndex(x => x.Username).IsUnique();
             builder.HasIndex(x => x.Email).IsUnique();
+
+            //builder.HasMany(u => u.Orders)
+            //.WithOne(o => o.User)
+            //.HasForeignKey(o => o.UserId);
         }
     }
 }

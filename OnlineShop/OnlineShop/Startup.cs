@@ -12,6 +12,8 @@ using Microsoft.OpenApi.Models;
 using OnlineShop.Infrastructure;
 using OnlineShop.Interfaces;
 using OnlineShop.Mapping;
+using OnlineShop.Models;
+using OnlineShop.Repositories;
 using OnlineShop.Services;
 using System;
 using System.Collections.Generic;
@@ -49,6 +51,11 @@ namespace OnlineShop
             {
                 mc.AddProfile(new MappingProfile());
             });
+
+            services.AddScoped<IRepository<User>, UserRepository>();
+            services.AddScoped<IRepository<Item>, ItemRepository>();
+            services.AddScoped<IRepository<Order>, OrderRepository>();
+            services.AddScoped<IRepository<OrderItem>,  OrderItemRepository>();
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);

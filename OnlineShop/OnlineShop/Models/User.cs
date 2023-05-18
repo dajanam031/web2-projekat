@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineShop.Models
 {
@@ -15,7 +16,7 @@ namespace OnlineShop.Models
         private string imageUri;
         private UserType userType;
         private bool verified;
-        // lista porudzbina
+        //private List<Order> orders;
 
 
         public long Id { get => id; set => id = value; }
@@ -29,5 +30,6 @@ namespace OnlineShop.Models
         public string ImageUri { get => imageUri; set => imageUri = value; }
         public UserType UserType { get => userType; set => userType = value; }
         public bool Verified { get => verified; set => verified = value; }
+        //public List<Order> Orders { get => orders; set => orders = value; }
     }
 }

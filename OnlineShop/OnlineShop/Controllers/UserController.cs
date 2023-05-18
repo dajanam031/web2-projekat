@@ -18,7 +18,7 @@ namespace OnlineShop.Controllers
             _userService = userService;
         }
 
-        [HttpPost]
+        [HttpPost("register")]
         public IActionResult CreateUser([FromBody] UserDto user)
         {
             try
@@ -73,5 +73,6 @@ namespace OnlineShop.Controllers
         }
 
         // odbijanje i prihvatanje kupca od strane admina
+        // ovde cu isto ako admin odobri da pozovem email servis i posaljem mejl
     }
 }

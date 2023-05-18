@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using OnlineShop.Dto.UserDTOs;
-using OnlineShop.Infrastructure;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
+using OnlineShop.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,22 +12,22 @@ namespace OnlineShop.Services
     public class UserService : IUserService
     {
         private readonly IMapper _mapper;
-        private readonly ShopDbContext _dbContext;
+        private readonly IRepository<User> _repository;
 
-        public UserService(IMapper mapper, ShopDbContext dbContext)
+        public UserService(IMapper mapper, IRepository<User> repository)
         {
             _mapper = mapper;
-            _dbContext = dbContext;
+            _repository = repository;
         }
         public UserDto RegisterUser(UserDto newUser)
         {
-            User user = _dbContext.Users.Where(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
+            User user = _repository.Find(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
             if(user == null)
             {
                 if (!user.UserType.Equals(UserType.Seller))
                     user.Verified = true; // posto je default false ako je prodavac ostace false
-                _dbContext.Users.Add(user);
-                _dbContext.SaveChanges();
+                _repository.Create(user);
+                _repository.SaveChanges();
 
                 return _mapper.Map<UserDto>(user);
             }
@@ -39,7 +39,7 @@ namespace OnlineShop.Services
 
         public UserLoginDto LoginUser(UserLoginDto loginUser)
         {
-            User existingUser = _dbContext.Users.Where(x => x.Username.Equals(loginUser.Username) 
+            User existingUser = _repository.Find(x => x.Username.Equals(loginUser.Username) 
             && x.Password.Equals(loginUser.Password)).FirstOrDefault();
 
             if (existingUser != null)
@@ -54,7 +54,7 @@ namespace OnlineShop.Services
 
         public UserProfileDto UpdateProfile(long id, UserProfileDto newProfile)
         {
-            User user = _dbContext.Users.Find(id);
+            User user = _repository.GetById(id);
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -70,14 +70,14 @@ namespace OnlineShop.Services
                 user.BirthDate = newProfile.BirthDate;
                 user.ImageUri = newProfile.ImageUri;
 
-                _dbContext.SaveChanges();
+                _repository.SaveChanges();
                 return _mapper.Map<UserProfileDto>(user);
             }
         }
 
         public List<UserToVerifyDto> GetAllUsers()
         {
-            var users = _dbContext.Users;
+            var users = _repository.GetAll();
             if (users.Any())
                 return _mapper.Map<List<UserToVerifyDto>>(users);
             
