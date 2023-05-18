@@ -33,11 +33,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut]
-        public IActionResult UpdateUser([FromBody] long id, UserProfileDto user)
+        public IActionResult UpdateUser([FromBody] UserProfileDto user)
         {
             try
             {
-                return Ok(_userService.UpdateProfile(id, user));
+                return Ok(_userService.UpdateProfile(user));
 
             }catch (Exception)
             {
@@ -60,7 +60,7 @@ namespace OnlineShop.Controllers
 
         // TO DO: zastititi da samo admin sme
         [HttpGet("unverified-users")]
-        public IActionResult GetUnverifiedUsers()
+        public IActionResult GetAllUsers()
         {
             try
             {

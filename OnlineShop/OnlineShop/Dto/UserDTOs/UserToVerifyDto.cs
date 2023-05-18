@@ -9,5 +9,6 @@ namespace OnlineShop.Dto.UserDTOs
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ImageUri { get; set; }
+        public bool Verified { get; set; }
     }
 }

@@ -38,6 +38,7 @@ namespace OnlineShop
             services.AddControllers();
 
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IItemService, ItemService>();
 
             services.AddDbContext<ShopDbContext>(options => 
             options.UseSqlServer(Configuration.GetConnectionString("MyConnectionString")));

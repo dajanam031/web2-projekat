@@ -24,7 +24,8 @@ namespace OnlineShop.Services
             User user = _repository.Find(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
             if(user == null)
             {
-                if (!user.UserType.Equals(UserType.Seller))
+                user = _mapper.Map<User>(newUser);
+                if (!newUser.UserType.Equals(UserType.Seller))
                     user.Verified = true; // posto je default false ako je prodavac ostace false
                 _repository.Create(user);
                 _repository.SaveChanges();
@@ -52,9 +53,9 @@ namespace OnlineShop.Services
             }
         }
 
-        public UserProfileDto UpdateProfile(long id, UserProfileDto newProfile)
+        public UserProfileDto UpdateProfile(UserProfileDto newProfile)
         {
-            User user = _repository.GetById(id);
+            User user = _repository.GetById(newProfile.Id);
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
