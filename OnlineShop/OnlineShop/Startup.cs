@@ -36,6 +36,16 @@ namespace OnlineShop
         {
 
             services.AddControllers();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
 
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IItemService, ItemService>();
@@ -73,7 +83,7 @@ namespace OnlineShop
             }
 
             app.UseHttpsRedirection();
-
+            app.UseCors("AllowReactApp");
             app.UseRouting();
 
             app.UseAuthorization();

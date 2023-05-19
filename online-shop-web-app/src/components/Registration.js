@@ -1,9 +1,27 @@
+import { React } from "react";
+import { RegisterUser } from "../services/UserService";
+
 
 function Registration() {
 
   const handleRegister = (e) => {
     e.preventDefault();
-    console.log("pozdrav.")
+    const register = async() => {
+      
+    const resp = await RegisterUser({
+      "username": "misa00",
+      "password": "123",
+      "email": "misa@email.com",
+      "firstName": "misa",
+      "lastName": "misa",
+      "birthDate": "2023-05-19T16:21:11.234Z",
+      "address": "misa",
+      "imageUri": "misa slika",
+      "userType": 0
+    }) // proveraaaa
+    console.log(resp)
+    }
+    register()
   }
   return (
     <div>
@@ -11,27 +29,27 @@ function Registration() {
         <form onSubmit={handleRegister}>
         <div>
           <label htmlFor="username">Username:</label>
-          <input type="text" id="username" />
+          <input type="text" id="username"/>
         </div>
         <div>
           <label htmlFor="email">Email:</label>
-          <input type="email" id="email" />
+          <input type="email" id="email"/>
         </div>
         <div>
           <label htmlFor="firstname">First name:</label>
-          <input type="text" id="firstname" />
+          <input type="text" id="firstname"/>
         </div>
         <div>
           <label htmlFor="lastname">Last name:</label>
-          <input type="text" id="lastname" />
+          <input type="text" id="lastname"/>
         </div>
         <div>
           <label htmlFor="birthdate">Birth date:</label>
-          <input type="date" id="birthdate" />
+          <input type="date" id="birthdate"/>
         </div>
         <div>
           <label htmlFor="address">Address:</label>
-          <input type="text" id="address" />
+          <input type="text" id="address"/>
         </div>
         <div>
           <label htmlFor="type">Choose a type:</label>
@@ -42,11 +60,7 @@ function Registration() {
         </div>
         <div>
           <label htmlFor="password">Password:</label>
-          <input type="password" id="password" />
-        </div>
-        <div>
-          <label htmlFor="confirm-password">Confirm password:</label>
-          <input type="password" id="confirm-password" />
+          <input type="password" id="password"/>
         </div>
         <div>
           <button type="submit">Submit</button>
