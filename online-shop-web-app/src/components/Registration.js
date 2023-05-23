@@ -66,7 +66,7 @@ function Registration() {
           <button type="submit">Submit</button>
         </div>
         <div className="link">
-          <a href="/microsoft-signup">Or sign up with Facebook account</a>
+          <a href="/facebook-signup">Or sign up with Facebook account</a>
         </div>
         </form>
       </div>

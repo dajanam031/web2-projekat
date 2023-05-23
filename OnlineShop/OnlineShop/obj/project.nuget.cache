@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "g8gAeuUdI99/0RPramvCJ6VErozkQyLIA9XyXeTw49xj+kQLloXiVPaSdTsVOuE1wkLmXo6faWKWg3eJVk4vGA==",
+  "dgSpecHash": "A6+50P0BMna7Rjsq5YFQMKP/kso6HjkAE+YX88Zr7f8GzsTRsvbt7hWovY0CoeMQgaaWiVuj7jiMZwbw7kfORg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Dajana\\OneDrive\\Desktop\\web 2\\web2-projekat\\OnlineShop\\OnlineShop\\OnlineShop.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,7 @@
     "C:\\Users\\Dajana\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.authentication.facebook\\6.0.16\\microsoft.aspnetcore.authentication.facebook.6.0.16.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.6\\microsoft.aspnetcore.authentication.jwtbearer.6.0.6.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.cors\\2.2.0\\microsoft.aspnetcore.cors.2.2.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.http.abstractions\\2.2.0\\microsoft.aspnetcore.http.abstractions.2.2.0.nupkg.sha512",

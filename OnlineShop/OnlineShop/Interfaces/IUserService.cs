@@ -8,6 +8,7 @@ namespace OnlineShop.Interfaces
         UserDto RegisterUser(UserDto newUser);
         UserProfileDto UpdateProfile(UserProfileDto newProfile);
         UserLoginDto LoginUser(UserLoginDto loginUser);
-        List<UserToVerifyDto> GetAllUsers();
+        List<UserInfoDto> GetAllUsers();
+        void VerifyUser(long id);
     }
 }

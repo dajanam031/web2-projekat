@@ -62,7 +62,6 @@ namespace OnlineShop.Services
             }
             else
             {
-                // proveriti da li postoji u bazi isti username
                 user.Username = newProfile.Username;
                 user.Password = newProfile.Password;
                 user.FirstName = newProfile.FirstName;
@@ -76,14 +75,24 @@ namespace OnlineShop.Services
             }
         }
 
-        public List<UserToVerifyDto> GetAllUsers()
+        public List<UserInfoDto> GetAllUsers()
         {
             var users = _repository.GetAll();
             if (users.Any())
-                return _mapper.Map<List<UserToVerifyDto>>(users);
+                return _mapper.Map<List<UserInfoDto>>(users);
             
             throw new ArgumentNullException();
             
+        }
+
+        public void VerifyUser(long id)
+        {
+            var user = _repository.GetById(id);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            user.Verified = true;
+            _repository.SaveChanges();
         }
     }
 }

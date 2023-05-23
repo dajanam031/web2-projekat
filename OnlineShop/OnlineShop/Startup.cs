@@ -70,6 +70,13 @@ namespace OnlineShop
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+
+            services.AddAuthentication()
+               .AddFacebook(options =>
+               {
+                   options.AppId = "242270658399099";
+                   options.AppSecret = "365b556ce34bad90c82883308b9de37c";
+               });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

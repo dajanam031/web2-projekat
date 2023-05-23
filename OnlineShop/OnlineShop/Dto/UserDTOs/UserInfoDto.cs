@@ -2,7 +2,7 @@
 
 namespace OnlineShop.Dto.UserDTOs
 {
-    public class UserToVerifyDto
+    public class UserInfoDto
     {
         public string Email { get; set; }
         public string Username { get; set; }

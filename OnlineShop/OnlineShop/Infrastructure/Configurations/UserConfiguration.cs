@@ -22,12 +22,7 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.BirthDate).IsRequired();
             builder.Property(x => x.Verified).IsRequired();
 
-            builder.HasIndex(x => x.Username).IsUnique();
             builder.HasIndex(x => x.Email).IsUnique();
-
-            //builder.HasMany(u => u.Orders)
-            //.WithOne(o => o.User)
-            //.HasForeignKey(o => o.UserId);
         }
     }
 }
