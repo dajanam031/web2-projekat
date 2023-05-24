@@ -19,9 +19,9 @@ namespace OnlineShop.Infrastructure.Configurations
             .WithOne(oi => oi.Order)
             .HasForeignKey(oi => oi.OrderId);
 
-            builder.HasOne(x => x.User) //Kazemo da porudzbina ima jednog korisnika (promenice se na vise)
-                   .WithMany(x => x.Orders) // A jedan korisnik vise porudzbina
-                   .HasForeignKey(x => x.UserId) // Strani kljuc  je userId
+            builder.HasOne(x => x.Purchaser) // jedna porudzbina ima jednog korisnika (kupca)
+                   .WithMany(x => x.Orders) // A jedan kupac vise porudzbina
+                   .HasForeignKey(x => x.PurchaserId) // Strani kljuc  je userId
                    .OnDelete(DeleteBehavior.Cascade);// Ako se obrise korisnik kaskadno se brisu sve njegove porudzbine (zavisi jel korisnik kupac ili prodavac ???)
         }
     }

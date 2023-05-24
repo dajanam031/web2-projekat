@@ -32,7 +32,7 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("update-profile")]
         public IActionResult UpdateUser([FromBody] UserProfileDto user)
         {
             try
@@ -40,6 +40,19 @@ namespace OnlineShop.Controllers
                 return Ok(_userService.UpdateProfile(user));
 
             }catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("profile/{id}")]
+        public IActionResult MyProfile([FromRoute] long id)
+        {
+            try
+            {
+                return Ok(_userService.MyProfile(id));
+            }
+            catch (Exception)
             {
                 return BadRequest();
             }
@@ -60,11 +73,11 @@ namespace OnlineShop.Controllers
 
         // TO DO: zastititi da samo admin sme
         [HttpGet("unverified-users")]
-        public IActionResult GetAllUsers()
+        public IActionResult GetUnverifiedUsers()
         {
             try
             {
-                return Ok(_userService.GetAllUsers());
+                return Ok(_userService.GetUnverifiedSellers());
             }
             catch (Exception)
             {
@@ -72,7 +85,19 @@ namespace OnlineShop.Controllers
             }
         }
 
-        // odbijanje i prihvatanje kupca od strane admina
-        // ovde cu isto ako admin odobri da pozovem email servis i posaljem mejl
+        // samo admin
+        [HttpPut("verify/{id}")]
+        public IActionResult VerifyUser([FromRoute] long id)
+        {
+            try
+            {
+                _userService.VerifyUser(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }

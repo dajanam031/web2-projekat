@@ -4,6 +4,7 @@ using OnlineShop.Dto.ItemDTOs;
 using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
+using OnlineShop.Services;
 using System;
 
 namespace OnlineShop.Controllers
@@ -20,7 +21,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllIems()
+        public IActionResult GetAllItems()
         {
             try
             {
@@ -32,6 +33,7 @@ namespace OnlineShop.Controllers
             }
         }
 
+        // samo prodavac
         [HttpPost]
         public IActionResult AddItem([FromBody] ItemDto item)
         {
@@ -46,5 +48,45 @@ namespace OnlineShop.Controllers
         }
 
 
+        [HttpDelete("{id}")]
+        public IActionResult DeleteItem([FromRoute] long id)
+        {
+            try
+            {
+                _itemService.DeleteItem(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to delete item.");
+            }
+        }
+
+        [HttpPut("update-item")]
+        public IActionResult UpdateItem([FromBody] UpdateItemDto item)
+        {
+            try
+            {
+                return Ok(_itemService.UpdateItem(item));
+
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetItem([FromRoute] long id)
+        {
+            try
+            {
+                return Ok(_itemService.GetItem(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }

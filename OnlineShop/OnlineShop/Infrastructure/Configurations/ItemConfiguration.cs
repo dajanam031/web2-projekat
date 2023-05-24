@@ -17,10 +17,11 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.ImageUri).IsRequired();
 
-            //builder.HasOne<User>()
-            //.WithMany()
-            //.HasForeignKey(x => x.SellerID)
-            //.IsRequired();
+            builder.HasOne(x => x.Seller)
+            .WithMany()
+            .HasForeignKey(x => x.SellerId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

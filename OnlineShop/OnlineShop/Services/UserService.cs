@@ -75,9 +75,9 @@ namespace OnlineShop.Services
             }
         }
 
-        public List<UserInfoDto> GetAllUsers()
+        public List<UserInfoDto> GetUnverifiedSellers()
         {
-            var users = _repository.GetAll();
+            var users = _repository.Find(x => x.UserType.Equals(UserType.Seller) && !x.Verified);
             if (users.Any())
                 return _mapper.Map<List<UserInfoDto>>(users);
             
@@ -93,6 +93,15 @@ namespace OnlineShop.Services
 
             user.Verified = true;
             _repository.SaveChanges();
+        }
+
+        public UserProfileDto MyProfile(long id)
+        {
+            var user = _repository.GetById(id);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return _mapper.Map<UserProfileDto>(user);
         }
     }
 }

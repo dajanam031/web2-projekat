@@ -7,5 +7,8 @@ namespace OnlineShop.Interfaces
     {
         List<ItemDto> GetItems();
         ItemDto AddItem(ItemDto newItem);
+        void DeleteItem(long id);
+        UpdateItemDto UpdateItem(UpdateItemDto item);
+        ItemDto GetItem(long id);
     }
 }

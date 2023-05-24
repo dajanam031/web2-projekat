@@ -8,5 +8,7 @@
         public int Quantity { get; set; }
         public double Price { get; set; }
         public string ImageUri { get; set; }
+        public User Seller { get; set; }
+        public long SellerId { get; set; }
     }
 }

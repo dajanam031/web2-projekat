@@ -6,9 +6,10 @@ namespace OnlineShop.Interfaces
     public interface IUserService
     {
         UserDto RegisterUser(UserDto newUser);
-        UserProfileDto UpdateProfile(UserProfileDto newProfile);
         UserLoginDto LoginUser(UserLoginDto loginUser);
-        List<UserInfoDto> GetAllUsers();
+        UserProfileDto UpdateProfile(UserProfileDto newProfile);
+        UserProfileDto MyProfile(long id);
+        List<UserInfoDto> GetUnverifiedSellers();
         void VerifyUser(long id);
     }
 }

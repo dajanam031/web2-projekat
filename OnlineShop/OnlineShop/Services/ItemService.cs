@@ -25,14 +25,35 @@ namespace OnlineShop.Services
         public ItemDto AddItem(ItemDto newItem)
         {
             var seller = _usersRepository.GetById(newItem.SellerID);
-            if (seller == null)
-                throw new ArgumentNullException(nameof(seller));
+            if (seller != null && seller.Verified)
+            {
+                Item item = _mapper.Map<Item>(newItem);
+                _itemsRepository.Create(item);
+                _itemsRepository.SaveChanges();
 
-            Item item = _mapper.Map<Item>(newItem);
-            _itemsRepository.Create(item);
+                return newItem;
+            }
+
+            throw new ArgumentNullException(nameof(seller));
+
+        }
+
+        public void DeleteItem(long id)
+        {
+            var item = _itemsRepository.GetById(id);
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            _itemsRepository.Delete(item);
             _itemsRepository.SaveChanges();
+        }
 
-            return newItem;
+        public ItemDto GetItem(long id)
+        {
+            var item = _itemsRepository.GetById(id);
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+
+            return _mapper.Map<ItemDto>(item);
 
         }
 
@@ -42,6 +63,27 @@ namespace OnlineShop.Services
             if(items.Any())
                 return _mapper.Map<List<ItemDto>>(items);
             throw new ArgumentNullException();
+        }
+
+        public UpdateItemDto UpdateItem(UpdateItemDto item)
+        {
+            var itemToUpdate = _itemsRepository.GetById(item.Id);
+            if(itemToUpdate == null)
+            {
+                throw new ArgumentNullException(nameof(itemToUpdate));
+            }
+            else
+            {
+                itemToUpdate.Name = item.Name;
+                itemToUpdate.Description = item.Description;
+                itemToUpdate.Price = item.Price;
+                itemToUpdate.ImageUri = item.ImageUri;
+                itemToUpdate.Quantity = item.Quantity;
+
+                _itemsRepository.SaveChanges();
+
+                return _mapper.Map<UpdateItemDto>(itemToUpdate);
+            }
         }
     }
 }

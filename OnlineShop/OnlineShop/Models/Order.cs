@@ -8,7 +8,7 @@ namespace OnlineShop.Models
         public string Comment { get; set; }
         public string DeliveryAddress { get; set; }
         public List<OrderItem> OrderItems { get; set; }
-        public User User { get; set; }
-        public long UserId { get; set; }
+        public User Purchaser { get; set; }
+        public long PurchaserId { get; set; }
     }
 }
