@@ -1,20 +1,7 @@
 import React from 'react';
-import FacebookLogin from 'react-facebook-login';
 
 const FacebookSignUp = () => {
-    const responseFacebook = (response) => {
-        console.log(response);
-      };
-    
-      return (
-        <div>
-          <FacebookLogin
-            appId="242270658399099"
-            fields="name,email,picture" 
-            callback={responseFacebook} 
-          />
-        </div>
-      );
+    return <h1>Facebook login</h1>
 };
 
 export default FacebookSignUp;
