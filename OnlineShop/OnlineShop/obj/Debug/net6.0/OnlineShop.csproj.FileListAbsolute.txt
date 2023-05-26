@@ -83,4 +83,4 @@ C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\D
 C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\Debug\net6.0\runtimes\browser\lib\net6.0\System.Text.Encodings.Web.dll
 C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
 C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
-C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Facebook.dll
+C:\Users\Dajana\OneDrive\Desktop\web 2\web2-projekat\OnlineShop\OnlineShop\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.Google.dll

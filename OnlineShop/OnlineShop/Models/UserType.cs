@@ -2,8 +2,8 @@
 {
     public enum UserType
     {
-        Administrator,
+        Customer,
         Seller,
-        Customer
+        Administrator,
     }
 }

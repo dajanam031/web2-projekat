@@ -72,11 +72,11 @@ namespace OnlineShop
             services.AddSingleton(mapper);
 
             services.AddAuthentication()
-               .AddFacebook(options =>
-               {
-                   options.AppId = "242270658399099";
-                   options.AppSecret = "365b556ce34bad90c82883308b9de37c";
-               });
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "537961435311-thqj5cefqa83istba2gc2bcv9hl3iah8.apps.googleusercontent.com";
+                    options.ClientSecret = "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";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

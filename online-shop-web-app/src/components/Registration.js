@@ -1,20 +1,26 @@
 import { React, useState } from "react";
 import { RegisterUser } from "../services/UserService";
-import { TextField, Button, Link  } from '@mui/material';
+import { TextField, Button, MenuItem  } from '@mui/material';
 import Box from '@mui/material/Box';
 import { User } from "../models/User";
+import Alert from '@mui/material/Alert';
+import SendIcon from '@mui/icons-material/Send';
 
 function Registration() {
   const [user, setUser] = useState(new User());
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleRegistration = (e) => {
+  const handleRegistration = async (e) => {
     e.preventDefault();
-    const register = async() => {
+    try {
       const resp = await RegisterUser(user);
       console.log(resp);
+    } catch (error) {
+      console.log(error.message);
+      setErrorMessage(error.message);
     }
-    register()
-  }
+  };
+
   return (
     <form onSubmit={handleRegistration}>
     <Box
@@ -25,6 +31,7 @@ function Registration() {
       height: '100vh',
     }}
   >
+    
     <Box
       sx={{
         '& .MuiTextField-root': { m: 1, width: '25ch' },
@@ -32,6 +39,7 @@ function Registration() {
       noValidate
       autoComplete="off"
     >
+      <div>{errorMessage && <Alert variant="outlined" severity="error">{errorMessage}</Alert>}</div>
       <div>
         <TextField
           required
@@ -104,18 +112,10 @@ function Registration() {
           helperText="Please select your type"
           variant="filled"
           size="small"
-          // value={user.userType}
-          // onChange={(e) => setUser((prevUser) => ({ ...prevUser, userType: e.target.value }))}
-          SelectProps={{
-            native: true,
-          }}
-        >
-          <option key="customer" value="customer">
-              Customer
-          </option>
-          <option key="seller" value="seller">
-              Seller
-          </option>
+          value={user.userType}
+          onChange={(e) => setUser((prevUser) => ({ ...prevUser, userType: e.target.value }))}
+        ><MenuItem value="0">Customer</MenuItem>
+        <MenuItem value="1">Seller</MenuItem>
         </TextField>
       </div>
       <div>
@@ -139,13 +139,10 @@ function Registration() {
         />
       </div>
       <div>
-      <Button variant="contained" color="secondary" type="submit">Submit</Button>
-      <Link href="/facebook-signup" underline="none">
-      <Button variant="contained" color="secondary">
-        Or sign up with Facebook
-      </Button>
-    </Link>
-      </div>
+            <Button endIcon={<SendIcon />} variant="outlined" color="secondary" type="submit">
+              Submit
+            </Button>
+          </div>
     </Box>
     </Box>
     </form>

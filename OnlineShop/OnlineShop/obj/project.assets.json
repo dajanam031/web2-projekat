@@ -88,15 +88,15 @@
           }
         }
       },
-      "Microsoft.AspNetCore.Authentication.Facebook/6.0.16": {
+      "Microsoft.AspNetCore.Authentication.Google/6.0.16": {
         "type": "package",
         "compile": {
-          "lib/net6.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+          "lib/net6.0/Microsoft.AspNetCore.Authentication.Google.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net6.0/Microsoft.AspNetCore.Authentication.Facebook.dll": {
+          "lib/net6.0/Microsoft.AspNetCore.Authentication.Google.dll": {
             "related": ".xml"
           }
         },
@@ -1520,19 +1520,19 @@
         "logo.png"
       ]
     },
-    "Microsoft.AspNetCore.Authentication.Facebook/6.0.16": {
-      "sha512": "hNKadnleiCdt8Wv09CjH73hZvKzZ1yjSB72vYrKQ2L/LsJC+SB8Qlx6K3o5cnOqoBTRpIE1Dn4PqbJBY8bxKKQ==",
+    "Microsoft.AspNetCore.Authentication.Google/6.0.16": {
+      "sha512": "MbWGOoW1XGcy6aFEmXaQwztyhR+VjmvhSZW+d8/0xE5PO9S9nWUYGRNEPDqdk95vxxbQQHmBDG+nFYoeh8FmgA==",
       "type": "package",
-      "path": "microsoft.aspnetcore.authentication.facebook/6.0.16",
+      "path": "microsoft.aspnetcore.authentication.google/6.0.16",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "THIRD-PARTY-NOTICES.TXT",
-        "lib/net6.0/Microsoft.AspNetCore.Authentication.Facebook.dll",
-        "lib/net6.0/Microsoft.AspNetCore.Authentication.Facebook.xml",
-        "microsoft.aspnetcore.authentication.facebook.6.0.16.nupkg.sha512",
-        "microsoft.aspnetcore.authentication.facebook.nuspec"
+        "lib/net6.0/Microsoft.AspNetCore.Authentication.Google.dll",
+        "lib/net6.0/Microsoft.AspNetCore.Authentication.Google.xml",
+        "microsoft.aspnetcore.authentication.google.6.0.16.nupkg.sha512",
+        "microsoft.aspnetcore.authentication.google.nuspec"
       ]
     },
     "Microsoft.AspNetCore.Authentication.JwtBearer/6.0.6": {
@@ -4027,7 +4027,7 @@
     "net6.0": [
       "AutoMapper >= 12.0.1",
       "BCrypt.Net-Next >= 4.0.3",
-      "Microsoft.AspNetCore.Authentication.Facebook >= 6.0.16",
+      "Microsoft.AspNetCore.Authentication.Google >= 6.0.16",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.6",
       "Microsoft.AspNetCore.Cors >= 2.2.0",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.5",
@@ -4083,7 +4083,7 @@
             "target": "Package",
             "version": "[4.0.3, )"
           },
-          "Microsoft.AspNetCore.Authentication.Facebook": {
+          "Microsoft.AspNetCore.Authentication.Google": {
             "target": "Package",
             "version": "[6.0.16, )"
           },
