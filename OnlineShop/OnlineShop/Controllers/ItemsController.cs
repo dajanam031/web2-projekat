@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Dto.ItemDTOs;
 using OnlineShop.Dto.UserDTOs;
@@ -6,6 +7,7 @@ using OnlineShop.Interfaces;
 using OnlineShop.Models;
 using OnlineShop.Services;
 using System;
+using System.Data;
 
 namespace OnlineShop.Controllers
 {
@@ -33,8 +35,8 @@ namespace OnlineShop.Controllers
             }
         }
 
-        // samo prodavac
         [HttpPost]
+        [Authorize(Roles = "seller")]
         public IActionResult AddItem([FromBody] ItemDto item)
         {
             try
@@ -49,6 +51,7 @@ namespace OnlineShop.Controllers
 
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "seller")]
         public IActionResult DeleteItem([FromRoute] long id)
         {
             try
@@ -63,6 +66,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-item")]
+        [Authorize(Roles = "seller")]
         public IActionResult UpdateItem([FromBody] UpdateItemDto item)
         {
             try

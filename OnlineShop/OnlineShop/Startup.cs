@@ -41,9 +41,10 @@ namespace OnlineShop
                 options.AddPolicy("AllowReactApp",
                     builder =>
                     {
-                        builder.AllowAnyOrigin()
+                        builder.WithOrigins("http://localhost:3000")
                                .AllowAnyMethod()
-                               .AllowAnyHeader();
+                               .AllowAnyHeader()
+                               .AllowCredentials();
                     });
             });
 
@@ -93,6 +94,7 @@ namespace OnlineShop
             app.UseCors("AllowReactApp");
             app.UseRouting();
 
+            app.UseAuthorization();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

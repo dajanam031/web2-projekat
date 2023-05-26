@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
 using System;
+using System.Data;
 using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
@@ -71,8 +73,8 @@ namespace OnlineShop.Controllers
             }
         }
 
-        // TO DO: zastititi da samo admin sme
         [HttpGet("unverified-users")]
+        [Authorize(Roles = "administrator")]
         public IActionResult GetUnverifiedUsers()
         {
             try
@@ -85,8 +87,8 @@ namespace OnlineShop.Controllers
             }
         }
 
-        // samo admin
         [HttpPut("verify/{id}")]
+        [Authorize(Roles = "administrator")]
         public IActionResult VerifyUser([FromRoute] long id)
         {
             try

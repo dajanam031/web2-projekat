@@ -15,16 +15,29 @@ function App() {
   }
 
   useEffect(() => {
-    /* global google */
-    google.accounts.id.initialize({
-      client_id: '537961435311-thqj5cefqa83istba2gc2bcv9hl3iah8.apps.googleusercontent.com',
-      callback: handleCallbackResponse,
-    });
+    /*global google*/
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
 
-    google.accounts.id.renderButton(document.getElementById('signInDiv'), {
-      theme: 'outline',
-      size: 'large',
-    });
+    script.onload = () => {
+      google.accounts.id.initialize({
+        client_id: '537961435311-thqj5cefqa83istba2gc2bcv9hl3iah8.apps.googleusercontent.com',
+        callback: handleCallbackResponse,
+      });
+
+      google.accounts.id.renderButton(document.getElementById('signInDiv'), {
+        theme: 'outline',
+        size: 'large',
+      });
+    };
+
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
   }, []);
 
   return (
