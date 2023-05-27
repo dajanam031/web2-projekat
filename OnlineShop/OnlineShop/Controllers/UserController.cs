@@ -47,12 +47,12 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpGet("profile/{id}")]
-        public IActionResult MyProfile([FromRoute] long id)
+        [HttpGet("profile/{email}")]
+        public IActionResult MyProfile([FromRoute] string email)
         {
             try
             {
-                return Ok(_userService.MyProfile(id));
+                return Ok(_userService.MyProfile(email));
             }
             catch (Exception)
             {

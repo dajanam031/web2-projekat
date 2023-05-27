@@ -5,17 +5,23 @@ import Box from '@mui/material/Box';
 import { User } from "../models/User";
 import Alert from '@mui/material/Alert';
 import LoginIcon from '@mui/icons-material/Login';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUser } from "../redux/userSlice";
 
 function Registration() {
-  const [user, setUser] = useState(new User());
+
+  const [user, setRegisterUser] = useState(new User());
   const [confirmPass, setConfirmPass] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function validateForm(user, confirmPass) {
     if (user.password !== confirmPass) {
       setErrorMessage('Passwords does not match. Try again!');
-      setUser((prevUser) => ({ ...prevUser, password: '' }));
+      setRegisterUser((prevUser) => ({ ...prevUser, password: '' }));
       setConfirmPass('');
       return false; 
     }
@@ -37,7 +43,10 @@ function Registration() {
     }
     try {
       const resp = await RegisterUser(user);
-      console.log(resp);
+      localStorage.setItem('token', resp);
+      dispatch(setUser(user));
+      navigate('/');
+      
     } catch (error) {
       console.log(error.message);
       setErrorMessage(error.message);
@@ -49,7 +58,7 @@ function Registration() {
     setSelectedFile(file);
 
     const imageUri = URL.createObjectURL(file);
-    setUser((prevUser) => ({ ...prevUser, imageUri }));
+    setRegisterUser((prevUser) => ({ ...prevUser, imageUri }));
   };
 
 
@@ -80,7 +89,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.email}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
         />
         <TextField
           id="username"
@@ -89,7 +98,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.username}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, username: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, username: e.target.value }))}
         />
         </div>
         <div>
@@ -100,7 +109,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.firstName}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, firstName: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, firstName: e.target.value }))}
         />
         <TextField
           id="lastName"
@@ -109,7 +118,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.lastName}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, lastName: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, lastName: e.target.value }))}
         />
         </div>
         <div>
@@ -120,7 +129,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.address}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, address: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, address: e.target.value }))}
         />
         <TextField
           id="birthDate"
@@ -131,7 +140,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.birthDate}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, birthDate: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, birthDate: e.target.value }))}
         />
         </div>
         <div>
@@ -160,7 +169,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.userType}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, userType: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, userType: e.target.value }))}
         ><MenuItem value={0}>Customer</MenuItem>
         <MenuItem value={1}>Seller</MenuItem>
         </TextField>
@@ -174,7 +183,7 @@ function Registration() {
           type="password"
           size="small"
           value={user.password}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
+          onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
         />
         <TextField
           id="confirmPass"

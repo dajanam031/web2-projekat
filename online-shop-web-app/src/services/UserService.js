@@ -17,3 +17,24 @@ export const LoginUser = async (userData) => {
       throw new Error(error.response.data);
     }
   };
+
+  export const UserProfile = async (email) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/profile/${email}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const ChangeUserProfile = async (userData) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/update-profile/`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+
+

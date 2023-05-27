@@ -6,9 +6,10 @@ namespace OnlineShop.Interfaces
     public interface IUserService
     {
         string RegisterUser(UserDto newUser);
+        string RegisterWithGoogle(string token);
         string LoginUser(UserLoginDto loginUser);
         UserProfileDto UpdateProfile(UserProfileDto newProfile);
-        UserProfileDto MyProfile(long id);
+        UserProfileDto MyProfile(string email);
         List<UserInfoDto> GetUnverifiedSellers();
         void VerifyUser(long id);
     }

@@ -11,6 +11,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Google.Apis.Auth;
 
 namespace OnlineShop.Services
 {
@@ -47,6 +48,19 @@ namespace OnlineShop.Services
             }
         }
 
+        public string RegisterWithGoogle(string token)
+        {
+            //var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+            //{
+            //    Audience = new[] { "Your_Client_Id" }
+            //};
+
+            //var payload = GoogleJsonWebSignature.ValidateAsync(token, validationSettings); // await
+            //var userEmail = payload.FindFirst("email")?.Value;
+            //var userName = payload.FindFirst("name")?.Value;
+            return "";
+        }
+
         public string LoginUser(UserLoginDto loginUser)
         {
             User existingUser = _repository.Find(x => x.Email.Equals(loginUser.Email)).FirstOrDefault();
@@ -65,7 +79,7 @@ namespace OnlineShop.Services
 
         public UserProfileDto UpdateProfile(UserProfileDto newProfile)
         {
-            User user = _repository.GetById(newProfile.Id);
+            User user = _repository.Find(x => x.Email.Equals(newProfile.Email)).FirstOrDefault();
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -105,9 +119,9 @@ namespace OnlineShop.Services
             _repository.SaveChanges();
         }
 
-        public UserProfileDto MyProfile(long id)
+        public UserProfileDto MyProfile(string email)
         {
-            var user = _repository.GetById(id);
+            var user = _repository.Find(x => x.Email.Equals(email)).FirstOrDefault();
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
@@ -137,5 +151,6 @@ namespace OnlineShop.Services
             string tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return tokenString;
         }
+
     }
 }

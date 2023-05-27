@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Cv/daq+RM/f5SwRQ9idnCOIhb1MVckx1b3AladyvmljU/Q9702zvCcqnX74bT3dpujl49WJIPijbZZei5Cxz4Q==",
+  "dgSpecHash": "oqvky9ALvDkqcZzoMQB2KjKQVOkGyvVEOPpZd2nbmPo0Dx+xYQd+tPlwez3jHCd0h7omPgp+OlkrcUYDwP4mow==",
   "success": true,
   "projectFilePath": "C:\\Users\\Dajana\\OneDrive\\Desktop\\web 2\\web2-projekat\\OnlineShop\\OnlineShop\\OnlineShop.csproj",
   "expectedPackageFiles": [
@@ -8,6 +8,9 @@
     "C:\\Users\\Dajana\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\google.apis\\1.60.0\\google.apis.1.60.0.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\google.apis.auth\\1.60.0\\google.apis.auth.1.60.0.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\google.apis.core\\1.60.0\\google.apis.core.1.60.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.authentication.google\\6.0.16\\microsoft.aspnetcore.authentication.google.6.0.16.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.6\\microsoft.aspnetcore.authentication.jwtbearer.6.0.6.nupkg.sha512",
@@ -54,6 +57,7 @@
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\Dajana\\.nuget\\packages\\newtonsoft.json\\13.0.2\\newtonsoft.json.13.0.2.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore\\5.6.3\\swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\5.6.3\\swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
     "C:\\Users\\Dajana\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\5.6.3\\swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",

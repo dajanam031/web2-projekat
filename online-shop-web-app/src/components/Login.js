@@ -5,24 +5,32 @@ import { TextField, Button} from '@mui/material';
 import Box from '@mui/material/Box';
 import { UserLogin } from "../models/UserLogin";
 import { LoginUser } from "../services/UserService";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from 'react-redux';
+import { setUser } from "../redux/userSlice";
+
 
 function Login() {
-  const [user, setUser] = useState(new UserLogin());
+  const [user, setLoginUser] = useState(new UserLogin());
   const[errorMessage, setErrorMessage] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log(user);
     if (!validateForm(user)) {
       return;
     }
     try {
       const resp = await LoginUser(user);
-      console.log(resp);
+      localStorage.setItem('token', resp);
+      dispatch(setUser(user));
+      navigate('/');
+
     } catch (error) {
       console.log(error.message);
       setErrorMessage(error.message);
-      setUser((prevUser) => ({ ...prevUser, email: '', password: ''}))
+      setLoginUser((prevUser) => ({ ...prevUser, email: '', password: ''}))
     }
   };
 
@@ -62,7 +70,7 @@ function Login() {
           variant="filled"
           size="small"
           value={user.email}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
+          onChange={(e) => setLoginUser((prevUser) => ({ ...prevUser, email: e.target.value }))}
         />
         </div>
         <div>
@@ -74,7 +82,7 @@ function Login() {
           variant="filled"
           size="small"
           value={user.password}
-          onChange={(e) => setUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
+          onChange={(e) => setLoginUser((prevUser) => ({ ...prevUser, password: e.target.value }))}
         />
         </div>
         <div>
