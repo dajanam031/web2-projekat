@@ -1,5 +1,6 @@
 ﻿using OnlineShop.Dto.UserDTOs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Interfaces
 {

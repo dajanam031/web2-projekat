@@ -12,6 +12,13 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using Google.Apis.Auth;
+using System.IO;
+using System.Net;
+using MailKit.Security;
+using MimeKit;
+using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit.Text;
 
 namespace OnlineShop.Services
 {
@@ -20,12 +27,14 @@ namespace OnlineShop.Services
         private readonly IMapper _mapper;
         private readonly IRepository<User> _repository;
         private readonly IConfigurationSection _secretKey;
+        private readonly IEmailService _emailService;
 
-        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config)
+        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config, IEmailService emailService)
         {
             _mapper = mapper;
             _repository = repository;
             _secretKey = config.GetSection("SecretKey");
+            _emailService = emailService;
         }
         public string RegisterUser(UserDto newUser)
         {
@@ -39,6 +48,10 @@ namespace OnlineShop.Services
                 user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
                 _repository.Create(user);
                 _repository.SaveChanges();
+
+                _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
+                    $" Your registration request is being processed," +
+                    $" and we will notify you when the administrator approves/rejects your request!");
 
                 return GenerateToken(user.UserType);
             }
