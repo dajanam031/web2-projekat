@@ -11,17 +11,16 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.Description).IsRequired().HasMaxLength(100);
+            builder.Property(x => x.Name).IsRequired();
+            builder.Property(x => x.Description).IsRequired();
             builder.Property(x => x.Quantity).IsRequired();
             builder.Property(x => x.Price).IsRequired();
             builder.Property(x => x.ImageUri).IsRequired();
 
             builder.HasOne(x => x.Seller)
-            .WithMany()
+            .WithMany(x => x.Items)
             .HasForeignKey(x => x.SellerId)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

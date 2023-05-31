@@ -8,13 +8,19 @@ namespace OnlineShop.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.HasKey(x => x.Id);
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
+            builder.HasKey(x => new { x.OrderId, x.ItemId }); // formiran kljuc na osnovu porudzbine i artikla
 
             builder.Property(x => x.ItemQuantity).IsRequired();
-            builder.HasOne(oi => oi.Item)
-            .WithMany()
-            .HasForeignKey(oi => oi.ItemId);
+
+            builder.HasOne(x => x.Order)
+               .WithMany(x => x.OrderItems)
+               .HasForeignKey(x => x.OrderId)
+               .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(x => x.Item)
+               .WithMany(x => x.OrderItems)
+               .HasForeignKey(x => x.ItemId)
+               .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Models;
+using System;
 
 namespace OnlineShop.Infrastructure.Configurations
 {
@@ -11,18 +12,25 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.HasKey(x => x.Id); // primarni kljuc
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.FirstName).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.LastName).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.Username).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.Address).IsRequired().HasMaxLength(40);
+            builder.Property(x => x.FirstName).IsRequired();
+            builder.Property(x => x.LastName).IsRequired();
+            builder.Property(x => x.Username).IsRequired();
+            builder.Property(x => x.Address).IsRequired();
 
             builder.Property(x => x.Email).IsRequired();
-            builder.Property(x => x.UserType).IsRequired();
+
+            builder.Property(x => x.UserType)
+                   .HasConversion(
+                       x => x.ToString(),
+                       x => Enum.Parse<UserType>(x)
+                   );
+
             builder.Property(x => x.ImageUri).IsRequired();
             builder.Property(x => x.BirthDate).IsRequired();
             builder.Property(x => x.Verified).IsRequired();
 
             builder.HasIndex(x => x.Email).IsUnique();
+            // username da bude unique isto?
         }
     }
 }

@@ -3,7 +3,6 @@ namespace OnlineShop.Models
 {
     public class OrderItem
     {
-        public long Id { get; set; }
         public Item Item { get; set; }
         public long ItemId { get; set; }
         public int ItemQuantity { get; set; }

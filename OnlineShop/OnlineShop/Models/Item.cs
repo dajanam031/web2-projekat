@@ -1,4 +1,6 @@
-﻿namespace OnlineShop.Models
+﻿using System.Collections.Generic;
+
+namespace OnlineShop.Models
 {
     public class Item
     {
@@ -10,5 +12,6 @@
         public string ImageUri { get; set; }
         public User Seller { get; set; }
         public long SellerId { get; set; }
+        public List<OrderItem> OrderItems { get; set; } 
     }
 }

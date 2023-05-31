@@ -12,8 +12,8 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.DeliveryAddress).IsRequired().HasMaxLength(30);
-            builder.Property(x => x.Comment).IsRequired().HasMaxLength(40);
+            builder.Property(x => x.DeliveryAddress).IsRequired();
+            builder.Property(x => x.Comment).IsRequired();
 
             builder.HasMany(o => o.OrderItems)
             .WithOne(oi => oi.Order)
