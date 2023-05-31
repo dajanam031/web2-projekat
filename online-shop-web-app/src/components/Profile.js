@@ -7,6 +7,7 @@ import { ChangeUserProfile } from '../services/UserService';
 
 const Profile = () => {
   const user = useSelector((state) => state.user.user);
+  
   const [profileData, setProfileData] = useState(null);
   const [confirmPass, setConfirmPass] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

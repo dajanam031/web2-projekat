@@ -12,7 +12,7 @@ import { setUser } from "../redux/userSlice";
 
 function Login() {
   const [user, setLoginUser] = useState(new UserLogin());
-  const[errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

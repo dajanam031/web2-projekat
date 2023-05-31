@@ -57,15 +57,15 @@ function Home() {
       >
         {!user && (
           <>
-            <Button variant="outlined" component={Link} to="/registration" color="primary" size="large">
-              Sign Up
+            <Button variant="outlined" component={Link} to="/login" color="primary" size="large">
+              Log In
             </Button>
             <div id="signInDiv"></div>
             <Typography variant="h6" component="h6">
-              Already have an account? Log in
+              Don't have an account? Sign up!
             </Typography>
-            <Button variant="outlined" component={Link} to="/login" color="primary" size="large">
-              Log In
+            <Button variant="outlined" component={Link} to="/registration" color="primary" size="large">
+              Sign Up
             </Button>
           </>
         )}
