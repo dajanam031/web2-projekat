@@ -8,6 +8,7 @@ using OnlineShop.Models;
 using OnlineShop.Services;
 using System;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
 {
@@ -23,11 +24,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllItems()
+        public async Task<IActionResult> GetAllItems()
         {
             try
             {
-                return Ok(_itemService.GetItems());
+                return Ok(await _itemService.GetItems());
             }
             catch (Exception)
             {
@@ -36,12 +37,12 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "seller")]
-        public IActionResult AddItem([FromBody] ItemDto item)
+        //[Authorize(Roles = "seller")]
+        public async Task<IActionResult> AddItem([FromBody] ItemDto item)
         {
             try
             {
-                return Ok(_itemService.AddItem(item));
+                return Ok(await _itemService.AddItem(item));
             }
             catch (Exception)
             {
@@ -51,12 +52,12 @@ namespace OnlineShop.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "seller")]
-        public IActionResult DeleteItem([FromRoute] long id)
+        //[Authorize(Roles = "seller")]
+        public async Task<IActionResult> DeleteItem([FromRoute] long id)
         {
             try
             {
-                _itemService.DeleteItem(id);
+                await _itemService.DeleteItem(id);
                 return Ok();
             }
             catch (Exception)
@@ -66,12 +67,12 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-item")]
-        [Authorize(Roles = "seller")]
-        public IActionResult UpdateItem([FromBody] UpdateItemDto item)
+        //[Authorize(Roles = "seller")]
+        public async Task<IActionResult> UpdateItem([FromBody] UpdateItemDto item)
         {
             try
             {
-                return Ok(_itemService.UpdateItem(item));
+                return Ok(await _itemService.UpdateItem(item));
 
             }
             catch (Exception)
@@ -81,11 +82,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetItem([FromRoute] long id)
+        public async Task<IActionResult> GetItem([FromRoute] long id)
         {
             try
             {
-                return Ok(_itemService.GetItem(id));
+                return Ok(await _itemService.GetItem(id));
             }
             catch (Exception)
             {

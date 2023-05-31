@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Infrastructure;
+using OnlineShop.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Repositories
 {
@@ -17,17 +19,36 @@ namespace OnlineShop.Repositories
             _dbContext = dbContext;
             _dbSet = dbContext.Set<TEntity>();
         }
-        public virtual IEnumerable<TEntity> GetAll() => _dbSet.AsEnumerable();
+        public async Task<IEnumerable<TEntity>> GetAll() {
+            IEnumerable<TEntity> entities = await _dbSet.ToListAsync();
+            return entities;
+        }
 
-        public virtual TEntity GetById(long id) => _dbSet.Find(id);
+        public async Task<TEntity> GetById(long id) {
+            TEntity entity = await _dbSet.FindAsync(id);
+            return entity;
+        }
 
-        public void Create(TEntity entity) => _dbSet.Add(entity);
+        public async Task Create(TEntity entity) {
+            await _dbSet.AddAsync(entity);
+        } 
 
         public void Delete(TEntity entity) => _dbSet.Remove(entity);
 
-        public void SaveChanges() => _dbContext.SaveChanges();
+        public async Task SaveChanges() {
+            await _dbContext.SaveChangesAsync();
+        }
 
-        public virtual IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate) => _dbSet.Where(predicate).AsEnumerable();
+        public async Task<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate) {
+            TEntity entity = await _dbSet.Where(predicate).FirstOrDefaultAsync();
+            return entity;
+        }
+
+        public async Task<IEnumerable<TEntity>> FindAllBy(Expression<Func<TEntity, bool>> predicate)
+        {
+            IEnumerable<TEntity> entities = await _dbSet.Where(predicate).ToListAsync();
+            return entities;
+        }
     }
 }
 

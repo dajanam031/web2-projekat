@@ -1,17 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq.Expressions;
 using System;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace OnlineShop.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        IEnumerable<TEntity> GetAll();
-        TEntity GetById(long id);
-        void Create(TEntity entity);
+        Task<IEnumerable<TEntity>> GetAll();
+        Task<TEntity> GetById(long id);
+        Task Create(TEntity entity);
         void Delete(TEntity entity);
-        void SaveChanges();
+        Task SaveChanges();
 
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
+        Task<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate);
+        Task<IEnumerable<TEntity>> FindAllBy(Expression<Func<TEntity, bool>> predicate);
     }
 }

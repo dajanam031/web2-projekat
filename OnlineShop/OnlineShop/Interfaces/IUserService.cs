@@ -6,12 +6,12 @@ namespace OnlineShop.Interfaces
 {
     public interface IUserService
     {
-        string RegisterUser(UserDto newUser);
-        string RegisterWithGoogle(string token);
-        string LoginUser(UserLoginDto loginUser);
-        UserProfileDto UpdateProfile(UserProfileDto newProfile);
-        UserProfileDto MyProfile(string email);
-        List<UserInfoDto> GetUnverifiedSellers();
-        void VerifyUser(long id);
+        Task<TokenDto> RegisterUser(UserDto newUser);
+        //string RegisterWithGoogle(string token);
+        Task<TokenDto> LoginUser(UserLoginDto loginUser);
+        Task<UserProfileDto> UpdateProfile(UserProfileDto newProfile);
+        Task<UserProfileDto> UsersProfile(string email);
+        Task<List<UserInfoDto>> GetUnverifiedSellers();
+        Task VerifyUser(long id);
     }
 }

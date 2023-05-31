@@ -36,9 +36,9 @@ namespace OnlineShop.Services
             _secretKey = config.GetSection("SecretKey");
             _emailService = emailService;
         }
-        public string RegisterUser(UserDto newUser)
+        public async Task<TokenDto> RegisterUser(UserDto newUser)
         {
-            User user = _repository.Find(x => x.Email.Equals(newUser.Email)).FirstOrDefault();
+            User user = await _repository.FindBy(x => x.Email.Equals(newUser.Email));
             if(user == null)
             {
                 user = _mapper.Map<User>(newUser);
@@ -46,14 +46,14 @@ namespace OnlineShop.Services
                     user.Verified = true; // posto je default false ako je prodavac ostace false
 
                 user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
-                _repository.Create(user);
-                _repository.SaveChanges();
+                await _repository.Create(user);
+                await _repository.SaveChanges();
 
-                _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
+                await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
                     $" Your registration request is being processed," +
                     $" and we will notify you when the administrator approves/rejects your request!");
 
-                return GenerateToken(user.UserType);
+                return new TokenDto { Token = GenerateToken(user.UserType) };
             }
             else
             {
@@ -61,22 +61,9 @@ namespace OnlineShop.Services
             }
         }
 
-        public string RegisterWithGoogle(string token)
+        public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
         {
-            //var validationSettings = new GoogleJsonWebSignature.ValidationSettings
-            //{
-            //    Audience = new[] { "Your_Client_Id" }
-            //};
-
-            //var payload = GoogleJsonWebSignature.ValidateAsync(token, validationSettings); // await
-            //var userEmail = payload.FindFirst("email")?.Value;
-            //var userName = payload.FindFirst("name")?.Value;
-            return "";
-        }
-
-        public string LoginUser(UserLoginDto loginUser)
-        {
-            User existingUser = _repository.Find(x => x.Email.Equals(loginUser.Email)).FirstOrDefault();
+            User existingUser = await _repository.FindBy(x => x.Email.Equals(loginUser.Email));
 
             if (existingUser == null)
             {
@@ -87,12 +74,12 @@ namespace OnlineShop.Services
                 throw new ArgumentNullException(nameof(existingUser));
             }
 
-            return GenerateToken(existingUser.UserType);
+            return new TokenDto { Token = GenerateToken(existingUser.UserType) };
         }
 
-        public UserProfileDto UpdateProfile(UserProfileDto newProfile)
+        public async Task<UserProfileDto> UpdateProfile(UserProfileDto newProfile)
         {
-            User user = _repository.Find(x => x.Email.Equals(newProfile.Email)).FirstOrDefault();
+            User user = await _repository.FindBy(x => x.Email.Equals(newProfile.Email));
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -107,14 +94,14 @@ namespace OnlineShop.Services
                 user.BirthDate = newProfile.BirthDate;
                 user.ImageUri = newProfile.ImageUri;
 
-                _repository.SaveChanges();
+                await _repository.SaveChanges();
                 return _mapper.Map<UserProfileDto>(user);
             }
         }
 
-        public List<UserInfoDto> GetUnverifiedSellers()
+        public async Task<List<UserInfoDto>> GetUnverifiedSellers()
         {
-            var users = _repository.Find(x => x.UserType.Equals(UserType.Seller) && !x.Verified);
+            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller) && !x.Verified);
             if (users.Any())
                 return _mapper.Map<List<UserInfoDto>>(users);
             
@@ -122,19 +109,19 @@ namespace OnlineShop.Services
             
         }
 
-        public void VerifyUser(long id)
+        public async Task VerifyUser(long id)
         {
-            var user = _repository.GetById(id);
+            var user = await _repository.GetById(id);
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             user.Verified = true;
-            _repository.SaveChanges();
+            await _repository.SaveChanges();
         }
 
-        public UserProfileDto MyProfile(string email)
+        public async Task<UserProfileDto> UsersProfile(string email)
         {
-            var user = _repository.Find(x => x.Email.Equals(email)).FirstOrDefault();
+            var user = await _repository.FindBy(x => x.Email.Equals(email));
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
@@ -164,6 +151,21 @@ namespace OnlineShop.Services
             string tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
             return tokenString;
         }
+
+
+
+        //public string RegisterWithGoogle(string token)
+        //{
+        //    //var validationSettings = new GoogleJsonWebSignature.ValidationSettings
+        //    //{
+        //    //    Audience = new[] { "Your_Client_Id" }
+        //    //};
+
+        //    //var payload = GoogleJsonWebSignature.ValidateAsync(token, validationSettings); // await
+        //    //var userEmail = payload.FindFirst("email")?.Value;
+        //    //var userName = payload.FindFirst("name")?.Value;
+        //    return "";
+        //}
 
     }
 }

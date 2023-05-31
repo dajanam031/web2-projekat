@@ -6,6 +6,7 @@ using OnlineShop.Interfaces;
 using System;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Services
 {
@@ -16,7 +17,7 @@ namespace OnlineShop.Services
 
             _config = config;
         }
-        public void SendEmail(string to, string subject, string body)
+        public async Task SendEmail(string to, string subject, string body)
         {
              var message = new MimeMessage();
              message.From.Add(MailboxAddress.Parse(_config.GetSection("EmailUsername").Value));
@@ -29,10 +30,10 @@ namespace OnlineShop.Services
              };
 
              using var smtp = new SmtpClient();
-             smtp.Connect(_config.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);
-             smtp.Authenticate(_config.GetSection("EmailUsername").Value, _config.GetSection("EmailPassword").Value);
-             smtp.Send(message);
-             smtp.Disconnect(true);
+             await smtp.ConnectAsync(_config.GetSection("EmailHost").Value, 587, SecureSocketOptions.StartTls);
+             await smtp.AuthenticateAsync(_config.GetSection("EmailUsername").Value, _config.GetSection("EmailPassword").Value);
+             await smtp.SendAsync(message);
+             await smtp.DisconnectAsync(true);
         }
 
     }

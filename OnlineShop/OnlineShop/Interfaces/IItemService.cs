@@ -1,14 +1,15 @@
 ﻿using OnlineShop.Dto.ItemDTOs;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Interfaces
 {
     public interface IItemService
     {
-        List<ItemDto> GetItems();
-        ItemDto AddItem(ItemDto newItem);
-        void DeleteItem(long id);
-        UpdateItemDto UpdateItem(UpdateItemDto item);
-        ItemDto GetItem(long id);
+        Task<List<ItemDto>> GetItems();
+        Task<ItemDto> AddItem(ItemDto newItem);
+        Task DeleteItem(long id);
+        Task<UpdateItemDto> UpdateItem(UpdateItemDto item);
+        Task<ItemDto> GetItem(long id);
     }
 }

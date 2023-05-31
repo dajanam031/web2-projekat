@@ -1,9 +1,10 @@
 ﻿using OnlineShop.Dto;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Interfaces
 {
     public interface IEmailService
     {
-        void SendEmail(string to, string subject, string body);
+        Task SendEmail(string to, string subject, string body);
     }
 }

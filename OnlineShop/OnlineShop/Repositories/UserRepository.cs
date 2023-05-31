@@ -9,6 +9,6 @@ namespace OnlineShop.Repositories
         {
         }
 
-        // override metoda ako treba
+        // dodatne
     }
 }

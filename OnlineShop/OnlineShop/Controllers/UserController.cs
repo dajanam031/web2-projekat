@@ -21,11 +21,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult CreateUser([FromBody] UserDto user)
+        public async Task<IActionResult> CreateUser([FromBody] UserDto user)
         {
             try
             {
-                return Ok(_userService.RegisterUser(user));
+                return Ok(await _userService.RegisterUser(user));
 
             }
             catch (Exception)
@@ -35,11 +35,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-profile")]
-        public IActionResult UpdateUser([FromBody] UserProfileDto user)
+        public async Task<IActionResult> UpdateUser([FromBody] UserProfileDto user)
         {
             try
             {
-                return Ok(_userService.UpdateProfile(user));
+                return Ok(await _userService.UpdateProfile(user));
 
             }catch (Exception)
             {
@@ -48,11 +48,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("profile/{email}")]
-        public IActionResult MyProfile([FromRoute] string email)
+        public async Task<IActionResult> MyProfile([FromRoute] string email)
         {
             try
             {
-                return Ok(_userService.MyProfile(email));
+                return Ok(await _userService.UsersProfile(email));
             }
             catch (Exception)
             {
@@ -61,11 +61,11 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("login")]
-        public IActionResult LoginUser([FromBody] UserLoginDto user)
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto user)
         {
             try
             {
-                return Ok(_userService.LoginUser(user));
+                return Ok(await _userService.LoginUser(user));
             }
             catch (Exception)
             {
@@ -74,12 +74,12 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("unverified-users")]
-        [Authorize(Roles = "administrator")]
-        public IActionResult GetUnverifiedUsers()
+        //[Authorize(Roles = "administrator")]
+        public async Task<IActionResult> GetUnverifiedUsers()
         {
             try
             {
-                return Ok(_userService.GetUnverifiedSellers());
+                return Ok(await _userService.GetUnverifiedSellers());
             }
             catch (Exception)
             {
@@ -88,12 +88,12 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("verify/{id}")]
-        [Authorize(Roles = "administrator")]
-        public IActionResult VerifyUser([FromRoute] long id)
+        //[Authorize(Roles = "administrator")]
+        public async Task<IActionResult> VerifyUser([FromRoute] long id)
         {
             try
             {
-                _userService.VerifyUser(id);
+                await _userService.VerifyUser(id);
                 return Ok();
             }
             catch (Exception)

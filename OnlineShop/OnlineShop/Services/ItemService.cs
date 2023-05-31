@@ -6,6 +6,7 @@ using System.Linq;
 using System;
 using OnlineShop.Models;
 using OnlineShop.Repositories;
+using System.Threading.Tasks;
 
 namespace OnlineShop.Services
 {
@@ -22,14 +23,14 @@ namespace OnlineShop.Services
             _usersRepository = usersRepository;
         }
 
-        public ItemDto AddItem(ItemDto newItem)
+        public async Task<ItemDto> AddItem(ItemDto newItem)
         {
-            var seller = _usersRepository.GetById(newItem.SellerID);
+            var seller = await _usersRepository.GetById(newItem.SellerID);
             if (seller != null && seller.Verified)
             {
                 Item item = _mapper.Map<Item>(newItem);
-                _itemsRepository.Create(item);
-                _itemsRepository.SaveChanges();
+                await _itemsRepository.Create(item);
+                await _itemsRepository.SaveChanges();
 
                 return newItem;
             }
@@ -38,18 +39,18 @@ namespace OnlineShop.Services
 
         }
 
-        public void DeleteItem(long id)
+        public async Task DeleteItem(long id)
         {
-            var item = _itemsRepository.GetById(id);
+            var item = await _itemsRepository.GetById(id);
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
-            _itemsRepository.Delete(item);
-            _itemsRepository.SaveChanges();
+             _itemsRepository.Delete(item);
+            await _itemsRepository.SaveChanges();
         }
 
-        public ItemDto GetItem(long id)
+        public async Task<ItemDto> GetItem(long id)
         {
-            var item = _itemsRepository.GetById(id);
+            var item = await _itemsRepository.GetById(id);
             if (item == null)
                 throw new ArgumentNullException(nameof(item));
 
@@ -57,17 +58,17 @@ namespace OnlineShop.Services
 
         }
 
-        public List<ItemDto> GetItems()
+        public async Task<List<ItemDto>> GetItems()
         {
-            var items = _itemsRepository.GetAll();
+            var items = await _itemsRepository.GetAll();
             if(items.Any())
                 return _mapper.Map<List<ItemDto>>(items);
             throw new ArgumentNullException();
         }
 
-        public UpdateItemDto UpdateItem(UpdateItemDto item)
+        public async Task<UpdateItemDto> UpdateItem(UpdateItemDto item)
         {
-            var itemToUpdate = _itemsRepository.GetById(item.Id);
+            var itemToUpdate = await _itemsRepository.GetById(item.Id);
             if(itemToUpdate == null)
             {
                 throw new ArgumentNullException(nameof(itemToUpdate));
@@ -80,7 +81,7 @@ namespace OnlineShop.Services
                 itemToUpdate.ImageUri = item.ImageUri;
                 itemToUpdate.Quantity = item.Quantity;
 
-                _itemsRepository.SaveChanges();
+                await _itemsRepository.SaveChanges();
 
                 return _mapper.Map<UpdateItemDto>(itemToUpdate);
             }
