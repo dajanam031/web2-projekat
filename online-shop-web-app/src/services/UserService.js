@@ -20,7 +20,16 @@ export const LoginUser = async (userData) => {
 
   export const UserProfile = async (email) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/profile/${email}`);
+      const token = localStorage.getItem('token');
+      console.log(token);
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/users/profile/${email}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

@@ -1,6 +1,6 @@
 import { React, useState } from "react";
 import { RegisterUser } from "../services/UserService";
-import { TextField, Button, MenuItem} from '@mui/material';
+import { TextField, Button, MenuItem, Typography} from '@mui/material';
 import Box from '@mui/material/Box';
 import { User } from "../models/User";
 import Alert from '@mui/material/Alert';
@@ -74,12 +74,19 @@ function Registration() {
   >
     
     <Box
-      sx={{
-        '& .MuiTextField-root': { m: 1, width: '25ch' },
+       sx={{
+        '& .MuiTextField-root': { m: 1, width: '40ch' },
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '10px',
       }}
       noValidate
       autoComplete="off"
     >
+      <Typography variant="h5" gutterBottom>
+    Registration
+  </Typography>
       <div>{errorMessage && <Alert variant="outlined" severity="error">{errorMessage}</Alert>}</div>
       <div>
         <TextField

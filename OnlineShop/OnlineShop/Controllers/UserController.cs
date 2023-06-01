@@ -35,6 +35,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-profile")]
+        [Authorize]
         public async Task<IActionResult> UpdateUser([FromBody] UserProfileDto user)
         {
             try
@@ -48,6 +49,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("profile/{email}")]
+        [Authorize]
         public async Task<IActionResult> MyProfile([FromRoute] string email)
         {
             try
@@ -74,7 +76,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("unverified-users")]
-        //[Authorize(Roles = "administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> GetUnverifiedUsers()
         {
             try
@@ -88,7 +90,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("verify/{id}")]
-        //[Authorize(Roles = "administrator")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> VerifyUser([FromRoute] long id)
         {
             try

@@ -24,6 +24,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllItems()
         {
             try
@@ -37,7 +38,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> AddItem([FromBody] ItemDto item)
         {
             try
@@ -52,7 +53,7 @@ namespace OnlineShop.Controllers
 
 
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> DeleteItem([FromRoute] long id)
         {
             try
@@ -67,7 +68,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-item")]
-        //[Authorize(Roles = "seller")]
+        [Authorize(Roles = "seller")]
         public async Task<IActionResult> UpdateItem([FromBody] UpdateItemDto item)
         {
             try
@@ -82,6 +83,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetItem([FromRoute] long id)
         {
             try
