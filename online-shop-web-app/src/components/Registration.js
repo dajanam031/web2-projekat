@@ -37,13 +37,12 @@ function Registration() {
 
   const handleRegistration = async (e) => {
     e.preventDefault();
-    console.log(user);
     if (!validateForm(user, confirmPass)) {
       return;
     }
     try {
       const resp = await RegisterUser(user);
-      localStorage.setItem('token', resp);
+      localStorage.setItem('token', resp.token);
       dispatch(setUser(user));
       navigate('/');
       

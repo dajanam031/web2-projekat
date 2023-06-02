@@ -30,7 +30,6 @@ export const LoginUser = async (userData) => {
   export const UserProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log(token);
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/users/profile`,
         {
@@ -47,7 +46,26 @@ export const LoginUser = async (userData) => {
 
   export const ChangeUserProfile = async (userData) => {
     try {
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/update-profile/`);
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/update-profile`, userData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const ChangeUserPassword = async (newPass) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/change-password`, newPass, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

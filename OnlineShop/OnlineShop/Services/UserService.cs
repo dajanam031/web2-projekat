@@ -108,9 +108,9 @@ namespace OnlineShop.Services
             return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType)};
         }
 
-        public async Task<UserProfileDto> UpdateProfile(UserProfileDto newProfile)
+        public async Task<UserProfileDto> UpdateProfile(long id, UserProfileDto newProfile)
         {
-            User user = await _repository.FindBy(x => x.Email.Equals(newProfile.Email));
+            User user = await _repository.GetById(id);
             if(user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -118,7 +118,6 @@ namespace OnlineShop.Services
             else
             {
                 user.Username = newProfile.Username;
-                user.Password = newProfile.Password;
                 user.FirstName = newProfile.FirstName;
                 user.LastName = newProfile.LastName;
                 user.Address = newProfile.Address;
@@ -128,6 +127,14 @@ namespace OnlineShop.Services
                 await _repository.SaveChanges();
                 return _mapper.Map<UserProfileDto>(user);
             }
+        }
+        public async Task<UserProfileDto> UsersProfile(long id)
+        {
+            var user = await _repository.GetById(id);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return _mapper.Map<UserProfileDto>(user);
         }
 
         public async Task<List<UserInfoDto>> GetUnverifiedSellers()
@@ -153,13 +160,14 @@ namespace OnlineShop.Services
                 $" Administrator has approved your registration request. You can start adding items!");
         }
 
-        public async Task<UserProfileDto> UsersProfile(long id)
+        public async Task ChangePassword(long id, ChangePasswordDto newPassword)
         {
             var user = await _repository.GetById(id);
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return _mapper.Map<UserProfileDto>(user);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword.NewPassword);
+            await _repository.SaveChanges();
         }
     }
 }

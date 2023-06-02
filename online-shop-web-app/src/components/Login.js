@@ -69,6 +69,7 @@ function Login() {
     try {
       const resp = await LoginUser(user);
       localStorage.setItem('token', resp.token);
+      localStorage.setItem('user', user);
       dispatch(setUser(user));
       navigate('/');
 

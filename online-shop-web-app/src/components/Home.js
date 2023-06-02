@@ -1,5 +1,9 @@
-import Button from '@mui/material/Button';
-import { Box, Typography } from '@mui/material';
+import {AppBar, Toolbar, Box } from '@mui/material';
+import {Button} from '@mui/material';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
+import DensitySmallRoundedIcon from '@mui/icons-material/DensitySmallRounded';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearUser } from '../redux/userSlice';
@@ -15,33 +19,38 @@ function Home() {
     };
 
     return (
-      
-      <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        height="100vh"
-      >
+      <>
         {!user && (
           <>
           <Login/>
           </>
         )}
         {user && (
-          <>
-          <Typography variant="h6" component="h6">
-            Welcome {user.email} !
-          </Typography>
-            <Button variant="outlined" component={Link} to="/profile" color="primary" size="large">
-              Profile
-            </Button>
-            <Button variant="outlined" onClick={handleLogout} color="primary" size="large">
-              Log Out
-            </Button>
-          </>
+            <Box sx={{ flexGrow: 1 }}>
+            <AppBar position="static" sx={{ backgroundColor: 'grey' }}>
+              <Toolbar>
+                <Button color="inherit" component={Link} to="/profile">
+                  <PersonRoundedIcon/>
+                  Profile
+                </Button>
+                <Button color="inherit" component={Link} to="/products">
+                  <CheckBoxRoundedIcon/>
+                Verification
+                </Button>
+                <Button color="inherit" component={Link} to="/orders">
+                  <DensitySmallRoundedIcon/>
+                  All Orders
+                </Button>
+                <Box sx={{ flexGrow: 1 }} />
+                <Button color="inherit" onClick={handleLogout}>
+                  Logout
+                  <ExitToAppIcon />
+                </Button>
+              </Toolbar>
+            </AppBar>
+          </Box>
         )}
-      </Box>
+        </>
     );
   }
 

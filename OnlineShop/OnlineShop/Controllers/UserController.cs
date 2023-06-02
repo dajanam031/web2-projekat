@@ -76,9 +76,10 @@ namespace OnlineShop.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser([FromBody] UserProfileDto user)
         {
+            long id = long.Parse(User.GetId());
             try
             {
-                return Ok(await _userService.UpdateProfile(user));
+                return Ok(await _userService.UpdateProfile(id, user));
 
             }catch (Exception)
             {
@@ -94,6 +95,22 @@ namespace OnlineShop.Controllers
             try
             {
                 return Ok(await _userService.UsersProfile(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto changePasswordDto)
+        {
+            long id = long.Parse(User.GetId());
+            try
+            {
+                await _userService.ChangePassword(id, changePasswordDto);
+                return Ok("Successfully changed password");
             }
             catch (Exception)
             {
