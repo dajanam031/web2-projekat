@@ -139,7 +139,7 @@ namespace OnlineShop.Services
 
         public async Task<List<UserInfoDto>> GetUnverifiedSellers()
         {
-            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller) && !x.Verified);
+            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller));
             if (users.Any())
                 return _mapper.Map<List<UserInfoDto>>(users);
             

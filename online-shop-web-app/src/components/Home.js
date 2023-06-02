@@ -33,7 +33,7 @@ function Home() {
                   <PersonRoundedIcon/>
                   Profile
                 </Button>
-                <Button color="inherit" component={Link} to="/products">
+                <Button color="inherit" component={Link} to="/verification">
                   <CheckBoxRoundedIcon/>
                 Verification
                 </Button>

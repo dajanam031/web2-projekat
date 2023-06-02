@@ -9,6 +9,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { UpdateUser } from '../models/UpdateUser';
 import { ChangeUserPassword } from '../services/UserService';
+import Home from './Home';
 
 const Profile = () => {
  // const user = useSelector((state) => state.user.user);
@@ -122,13 +123,16 @@ const Profile = () => {
   };
 
 return (
+  <>
+  <Home/>
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="center"
           alignItems="center"
-          height="100vh"
-        >{profileData && (
+          height="85vh"
+        >
+        {profileData && (
           <>
     <Typography variant="h6" component="h6" gutterBottom>
       Profile Information
@@ -287,6 +291,7 @@ return (
                 </>
             )}
               </Box>
+              </>
       );
 }
 

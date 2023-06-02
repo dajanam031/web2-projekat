@@ -4,6 +4,7 @@ namespace OnlineShop.Dto.UserDTOs
 {
     public class UserInfoDto
     {
+        public long Id { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }

@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
 import Registration from './components/Registration';
+import Verification from './components/Verification';
 import Home from './components/Home';
 import Profile from './components/Profile';
 import { Provider,} from 'react-redux';
@@ -16,6 +17,7 @@ function App() {
         {/* rute koje zelim da zastitim */}
         <Route element={<PrivateRoutes/>}> 
            <Route path="/profile" element={<Profile />}/>
+           <Route path="/verification" element={<Verification />}/>
         </Route>
         <Route path="/" element={<Home/>} />
         <Route path="/registration" element={<Registration />}/>

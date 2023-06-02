@@ -119,7 +119,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("unverified-users")]
-        [Authorize(Roles = "administrator")]
+        [Authorize(/*Roles = "administrator"*/)]
         public async Task<IActionResult> GetUnverifiedUsers()
         {
             try
@@ -132,12 +132,13 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("verify/{id}")]
-        [Authorize(Roles = "administrator")]
-        public async Task<IActionResult> VerifyUser([FromRoute] long id)
+        [HttpPut("verify/{userId}")]
+        //[Authorize(/*Roles = "administrator"*/)]
+        public async Task<IActionResult> VerifyUser([FromRoute] string userId)
         {
             try
             {
+                long id = long.Parse(userId);
                 await _userService.VerifyUser(id);
                 return Ok();
             }
