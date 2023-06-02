@@ -7,10 +7,10 @@ namespace OnlineShop.Interfaces
     public interface IUserService
     {
         Task<TokenDto> RegisterUser(UserDto newUser);
-        //string RegisterWithGoogle(string token);
+        Task<TokenDto> RegisterWithGoogle(GoogleSignInDto googleSignInDto);
         Task<TokenDto> LoginUser(UserLoginDto loginUser);
         Task<UserProfileDto> UpdateProfile(UserProfileDto newProfile);
-        Task<UserProfileDto> UsersProfile(string email);
+        Task<UserProfileDto> UsersProfile(long id);
         Task<List<UserInfoDto>> GetUnverifiedSellers();
         Task VerifyUser(long id);
     }

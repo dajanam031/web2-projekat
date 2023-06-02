@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from "../redux/userSlice";
 import { useEffect } from 'react';
 import jwt_decode from 'jwt-decode';
+import { RegisterUserWithGoogle } from "../services/UserService";
 
 
 function Login() {
@@ -26,11 +27,20 @@ function Login() {
     script.async = true;
     script.defer = true;
 
-    const handleCallbackResponse = (response) => {
+    const handleCallbackResponse = async (response) => {
       var token = response.credential;
-      var userObject = jwt_decode(response.credential);
-      localStorage.setItem('token', token);
-      dispatch(setUser(userObject));
+      var userObject = jwt_decode(token);
+      try {
+        const resp = await RegisterUserWithGoogle({'googleToken': token});
+        localStorage.setItem('token', resp.token);
+        console.log(userObject);
+        dispatch(setUser(userObject));
+        navigate('/');
+  
+      } catch (error) {
+        console.log(error.message);
+        setErrorMessage(error.message);
+      }
     };
 
     script.onload = () => {
@@ -49,7 +59,7 @@ function Login() {
     return () => {
       document.body.removeChild(script);
     };
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

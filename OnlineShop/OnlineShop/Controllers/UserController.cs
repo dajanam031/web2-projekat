@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Dto.UserDTOs;
+using OnlineShop.Helpers;
 using OnlineShop.Interfaces;
 using System;
 using System.Data;
@@ -34,6 +36,42 @@ namespace OnlineShop.Controllers
             }
         }
 
+
+        [HttpPost("login")]
+        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto user)
+        {
+            try
+            {
+                return Ok(await _userService.LoginUser(user));
+            }
+            catch(InvalidOperationException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost("google-signin")]
+        public async Task<IActionResult> GoogleSignIn([FromBody] GoogleSignInDto googleSignInDto)
+        {
+            try
+            {
+                return Ok(await _userService.RegisterWithGoogle(googleSignInDto));
+            }
+            catch (InvalidJwtException jwtEx)
+            {
+                return Unauthorized(jwtEx.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
         [HttpPut("update-profile")]
         [Authorize]
         public async Task<IActionResult> UpdateUser([FromBody] UserProfileDto user)
@@ -48,30 +86,18 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpGet("profile/{email}")]
+        [HttpGet("profile")]
         [Authorize]
-        public async Task<IActionResult> MyProfile([FromRoute] string email)
+        public async Task<IActionResult> MyProfile()
         {
+            long id = long.Parse(User.GetId());
             try
             {
-                return Ok(await _userService.UsersProfile(email));
+                return Ok(await _userService.UsersProfile(id));
             }
             catch (Exception)
             {
                 return BadRequest();
-            }
-        }
-
-        [HttpPost("login")]
-        public async Task<IActionResult> LoginUser([FromBody] UserLoginDto user)
-        {
-            try
-            {
-                return Ok(await _userService.LoginUser(user));
-            }
-            catch (Exception)
-            {
-                return NotFound("Username or password are incorrect. Try again.");
             }
         }
 

@@ -54,6 +54,7 @@ namespace OnlineShop
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<ITokenService, TokenService>();
 
             services.AddDbContext<ShopDbContext>(options => 
             options.UseSqlServer(Configuration.GetConnectionString("MyConnectionString")));

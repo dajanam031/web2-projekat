@@ -9,6 +9,15 @@ export const RegisterUser = async (userData) => {
     }
   };
 
+  export const RegisterUserWithGoogle = async (googleToken) => {
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/google-signin`, googleToken);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
 export const LoginUser = async (userData) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/login`, userData);
@@ -18,12 +27,12 @@ export const LoginUser = async (userData) => {
     }
   };
 
-  export const UserProfile = async (email) => {
+  export const UserProfile = async () => {
     try {
       const token = localStorage.getItem('token');
       console.log(token);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/profile/${email}`,
+        `${process.env.REACT_APP_API_URL}/users/profile`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

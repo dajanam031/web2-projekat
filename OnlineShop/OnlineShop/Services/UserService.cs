@@ -14,11 +14,7 @@ using System.Text;
 using Google.Apis.Auth;
 using System.IO;
 using System.Net;
-using MailKit.Security;
-using MimeKit;
 using System.Threading.Tasks;
-using MailKit.Net.Smtp;
-using MimeKit.Text;
 
 namespace OnlineShop.Services
 {
@@ -26,15 +22,17 @@ namespace OnlineShop.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<User> _repository;
-        private readonly IConfigurationSection _secretKey;
         private readonly IEmailService _emailService;
+        private readonly IConfigurationSection _googleCredentials;
+        private readonly ITokenService _tokenService;
 
-        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config, IEmailService emailService)
+        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config, IEmailService emailService, ITokenService tokenService)
         {
             _mapper = mapper;
             _repository = repository;
-            _secretKey = config.GetSection("SecretKey");
             _emailService = emailService;
+            _googleCredentials = config.GetSection("GoogleClientId");
+            _tokenService = tokenService;
         }
         public async Task<TokenDto> RegisterUser(UserDto newUser)
         {
@@ -43,22 +41,55 @@ namespace OnlineShop.Services
             {
                 user = _mapper.Map<User>(newUser);
                 if (!newUser.UserType.Equals(UserType.Seller))
-                    user.Verified = true; // posto je default false ako je prodavac ostace false
+                    user.Verified = true; 
 
                 user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
                 await _repository.Create(user);
                 await _repository.SaveChanges();
 
-                await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
-                    $" Your registration request is being processed," +
-                    $" and we will notify you when the administrator approves/rejects your request!");
-
-                return new TokenDto { Token = GenerateToken(user.UserType) };
+                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
             }
             else
             {
                 throw new Exception();
             }
+        }
+
+        public async Task<TokenDto> RegisterWithGoogle(GoogleSignInDto googleSignInDto)
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(googleSignInDto.GoogleToken);
+            if (payload.Audience.ToString() != _googleCredentials.Value)
+            {
+                throw new InvalidJwtException("Invalid google token.");
+            }
+
+            User user = await _repository.FindBy(x => x.Email.Equals(payload.Email));
+
+            if (user == null)
+            {
+                // napravi novog 
+                user = new User
+                {
+                    Email = payload.Email,
+                    Username = payload.GivenName + "_" + payload.FamilyName,
+                    FirstName = payload.GivenName,
+                    LastName = payload.FamilyName,
+                    Password = "google pass",
+                    Address = "Google address",
+                    ImageUri = payload.Picture,
+                    UserType = UserType.Customer,
+                    BirthDate = new DateTime(2000, 10, 10),
+                    Verified = true
+                };
+
+                await _repository.Create(user);
+                await _repository.SaveChanges();
+
+                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+            }
+
+            // samo token
+            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
         }
 
         public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
@@ -67,14 +98,14 @@ namespace OnlineShop.Services
 
             if (existingUser == null)
             {
-                throw new ArgumentNullException(nameof(existingUser));
+                throw new InvalidOperationException("User with that email doesn't exist. Try again.");
             }
             else if(!BCrypt.Net.BCrypt.Verify(loginUser.Password, existingUser.Password))
             {
-                throw new ArgumentNullException(nameof(existingUser));
+                throw new InvalidOperationException("Incorrect password. Try again.");
             }
 
-            return new TokenDto { Token = GenerateToken(existingUser.UserType) };
+            return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType)};
         }
 
         public async Task<UserProfileDto> UpdateProfile(UserProfileDto newProfile)
@@ -117,55 +148,18 @@ namespace OnlineShop.Services
 
             user.Verified = true;
             await _repository.SaveChanges();
+
+            await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
+                $" Administrator has approved your registration request. You can start adding items!");
         }
 
-        public async Task<UserProfileDto> UsersProfile(string email)
+        public async Task<UserProfileDto> UsersProfile(long id)
         {
-            var user = await _repository.FindBy(x => x.Email.Equals(email));
+            var user = await _repository.GetById(id);
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             return _mapper.Map<UserProfileDto>(user);
         }
-
-        private string GenerateToken(UserType type)
-        {
-            List<Claim> claims = new();
-
-            if (type.Equals(UserType.Administrator))
-                claims.Add(new Claim(ClaimTypes.Role, "administrator"));
-            if (type.Equals(UserType.Seller))
-                claims.Add(new Claim(ClaimTypes.Role, "seller"));
-            if (type.Equals(UserType.Customer))
-                claims.Add(new Claim(ClaimTypes.Role, "customer"));
-
-            SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));
-            var signinCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var tokenOptions = new JwtSecurityToken(
-                issuer: "https://localhost:5001",
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(20),
-                signingCredentials: signinCredentials
-            );
-
-            string tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-            return tokenString;
-        }
-
-
-
-        //public string RegisterWithGoogle(string token)
-        //{
-        //    //var validationSettings = new GoogleJsonWebSignature.ValidationSettings
-        //    //{
-        //    //    Audience = new[] { "Your_Client_Id" }
-        //    //};
-
-        //    //var payload = GoogleJsonWebSignature.ValidateAsync(token, validationSettings); // await
-        //    //var userEmail = payload.FindFirst("email")?.Value;
-        //    //var userName = payload.FindFirst("name")?.Value;
-        //    return "";
-        //}
-
     }
 }
