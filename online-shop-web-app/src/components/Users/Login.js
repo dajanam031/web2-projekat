@@ -4,14 +4,14 @@ import LoginIcon from '@mui/icons-material/Login';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import { TextField, Button, Link, Typography} from '@mui/material';
 import Box from '@mui/material/Box';
-import { UserLogin } from "../models/UserLogin";
-import { LoginUser } from "../services/UserService";
+import { UserLogin } from "../../models/UserLogin";
+import { LoginUser } from "../../services/UserService";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setUser } from "../redux/userSlice";
+import { setUser } from "../../redux/userSlice";
 import { useEffect } from 'react';
-import { RegisterUserWithGoogle } from "../services/UserService";
-import { GetUserRole } from "../utils/CurrentUser";
+import { RegisterUserWithGoogle } from "../../services/UserService";
+import { GetUserRole } from "../../utils/CurrentUser";
 
 
 function Login() {

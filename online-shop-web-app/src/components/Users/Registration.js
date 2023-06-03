@@ -1,14 +1,14 @@
 import { React, useState } from "react";
-import { RegisterUser } from "../services/UserService";
+import { RegisterUser } from "../../services/UserService";
 import { TextField, Button, MenuItem, Typography} from '@mui/material';
 import Box from '@mui/material/Box';
-import { User } from "../models/User";
+import { User } from "../../models/User";
 import Alert from '@mui/material/Alert';
 import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
-import { setUser } from "../redux/userSlice";
-import { GetUserRole } from "../utils/CurrentUser";
+import { setUser } from "../../redux/userSlice";
+import { GetUserRole } from "../../utils/CurrentUser";
 
 function Registration() {
 

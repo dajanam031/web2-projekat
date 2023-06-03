@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OnlineShop.Dto.ItemDTOs;
 using OnlineShop.Dto.UserDTOs;
+using OnlineShop.Helpers;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
 using OnlineShop.Services;
@@ -37,13 +38,30 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPost]
-        [Authorize(Roles = "seller")]
-        public async Task<IActionResult> AddItem([FromBody] ItemDto item)
+        [HttpGet("seller-items")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetSellerItems()
         {
+            long id = long.Parse(User.GetId());
             try
             {
-                return Ok(await _itemService.AddItem(item));
+                return Ok(await _itemService.GetSellerItems(id));
+            }
+            catch (Exception)
+            {
+                return NotFound("You don't have any articles yet.");
+            }
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> AddItem([FromBody] AddItemDto item)
+        {
+            long id = long.Parse(User.GetId());
+            try
+            {
+                await _itemService.AddItem(id, item);
+                return Ok();
             }
             catch (Exception)
             {
@@ -53,12 +71,13 @@ namespace OnlineShop.Controllers
 
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "seller")]
-        public async Task<IActionResult> DeleteItem([FromRoute] long id)
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> DeleteItem([FromRoute] string id)
         {
+            long itemId = long.Parse(id);
             try
             {
-                await _itemService.DeleteItem(id);
+                await _itemService.DeleteItem(itemId);
                 return Ok();
             }
             catch (Exception)
@@ -68,8 +87,8 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("update-item")]
-        [Authorize(Roles = "seller")]
-        public async Task<IActionResult> UpdateItem([FromBody] UpdateItemDto item)
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> UpdateItem([FromBody] ItemDto item)
         {
             try
             {

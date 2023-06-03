@@ -15,7 +15,7 @@ namespace OnlineShop.Mapping
             CreateMap<User, UserInfoDto>().ReverseMap();
 
             CreateMap<Item, ItemDto>().ReverseMap();
-            CreateMap<Item, UpdateItemDto>().ReverseMap();
+            CreateMap<Item, AddItemDto>().ReverseMap();
         }
     }
 }

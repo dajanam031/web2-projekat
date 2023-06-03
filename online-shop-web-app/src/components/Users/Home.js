@@ -6,9 +6,8 @@ import CheckBoxRoundedIcon from '@mui/icons-material/CheckBoxRounded';
 import DensitySmallRoundedIcon from '@mui/icons-material/DensitySmallRounded';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearUser } from '../redux/userSlice';
+import { clearUser } from '../../redux/userSlice';
 import Login from './Login';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import FiberNewIcon from '@mui/icons-material/FiberNew';
 import BallotIcon from '@mui/icons-material/Ballot';
 import HistoryIcon from '@mui/icons-material/History';
@@ -51,11 +50,11 @@ function Home() {
                 )}
                 {user.role === 'Customer' && (
                     <div>
-                  <Button color="inherit" component={Link} to="/verification">
+                  <Button color="inherit" component={Link} to="/article-list">
                     <ListAltIcon/>
                   Articles 
                   </Button>
-                  <Button color="inherit" component={Link} to="/orders">
+                  <Button color="inherit" component={Link} to="/customer-orders">
                     <HistoryIcon/>
                     Previous orders
                   </Button>
@@ -63,9 +62,9 @@ function Home() {
                 )}
                 {user.role === 'Seller' && (
                     <div>
-                  <Button color="inherit" component={Link} to="/add-article">
-                    <AddRoundedIcon/>
-                  Add article
+                  <Button color="inherit" component={Link} to="/seller-articles">
+                    <ListAltIcon/>
+                  My articles
                   </Button>
                   <Button color="inherit" component={Link} to="/seller-orders">
                     <BallotIcon/>

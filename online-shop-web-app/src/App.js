@@ -1,14 +1,15 @@
 import './App.css';
 import { Routes, Route } from 'react-router-dom';
-import Registration from './components/Registration';
-import Verification from './components/Verification';
-import Home from './components/Home';
-import Profile from './components/Profile';
+import Registration from './components/Users/Registration';
+import Verification from './components/Users/Verification';
+import Home from './components/Users/Home';
+import Profile from './components/Users/Profile';
 import { useDispatch} from 'react-redux';
 import PrivateRoutes from './utils/PrivateRoutes';
 import { setUser } from './redux/userSlice';
 import { useEffect } from 'react';
 import { GetUserRole } from './utils/CurrentUser';
+import SellerArticles from './components/Item/SellerArticles';
 
 function App() {
   const dispatch = useDispatch();
@@ -31,6 +32,7 @@ function App() {
         <Route element={<PrivateRoutes/>}> 
            <Route path="/profile" element={<Profile />}/>
            <Route path="/verification" element={<Verification />}/>
+           <Route path="/seller-articles" element={<SellerArticles />}/>
         </Route>
         <Route path="/" element={<Home/>} />
         <Route path="/registration" element={<Registration />}/>

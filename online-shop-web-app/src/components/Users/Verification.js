@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { GetSellers } from "../services/UserService";
+import { GetSellers } from "../../services/UserService";
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -13,7 +13,7 @@ import { Button } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import Home from "./Home";
-import { VerifySeller, DeclineSeller } from "../services/UserService";
+import { VerifySeller, DeclineSeller } from "../../services/UserService";
 
 function Verification() {
   const [sellers, setSellers] = useState(null);

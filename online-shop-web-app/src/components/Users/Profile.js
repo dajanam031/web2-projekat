@@ -1,14 +1,14 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { UserProfile } from '../services/UserService';
+import { UserProfile } from '../../services/UserService';
 import { Box, Typography, TextField, Button, Alert, IconButton, 
   Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
-import { ChangeUserProfile } from '../services/UserService';
+import { ChangeUserProfile } from '../../services/UserService';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import { UpdateUser } from '../models/UpdateUser';
-import { ChangeUserPassword } from '../services/UserService';
+import { UpdateUser } from '../../models/UpdateUser';
+import { ChangeUserPassword } from '../../services/UserService';
 import Home from './Home';
 
 const Profile = () => {
