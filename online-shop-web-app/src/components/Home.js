@@ -8,6 +8,11 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearUser } from '../redux/userSlice';
 import Login from './Login';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import FiberNewIcon from '@mui/icons-material/FiberNew';
+import BallotIcon from '@mui/icons-material/Ballot';
+import HistoryIcon from '@mui/icons-material/History';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 
 function Home() {
     const user = useSelector((state) => state.user.user);
@@ -15,17 +20,16 @@ function Home() {
 
     const handleLogout = () => {
         dispatch(clearUser());
-        localStorage.removeItem('token');
     };
 
     return (
       <>
-        {!user && (
+        {user.token === null && (
           <>
           <Login/>
           </>
         )}
-        {user && (
+        {user.token !== null && (
             <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static" sx={{ backgroundColor: 'grey' }}>
               <Toolbar>
@@ -33,14 +37,47 @@ function Home() {
                   <PersonRoundedIcon/>
                   Profile
                 </Button>
-                <Button color="inherit" component={Link} to="/verification">
-                  <CheckBoxRoundedIcon/>
-                Verification
-                </Button>
-                <Button color="inherit" component={Link} to="/orders">
-                  <DensitySmallRoundedIcon/>
-                  All Orders
-                </Button>
+                {user.role === 'Administrator' && (
+                    <div>
+                  <Button color="inherit" component={Link} to="/verification">
+                    <CheckBoxRoundedIcon/>
+                  Verification
+                  </Button>
+                  <Button color="inherit" component={Link} to="/orders">
+                    <DensitySmallRoundedIcon/>
+                    All Orders
+                  </Button>
+                    </div>
+                )}
+                {user.role === 'Customer' && (
+                    <div>
+                  <Button color="inherit" component={Link} to="/verification">
+                    <ListAltIcon/>
+                  Articles 
+                  </Button>
+                  <Button color="inherit" component={Link} to="/orders">
+                    <HistoryIcon/>
+                    Previous orders
+                  </Button>
+                    </div>
+                )}
+                {user.role === 'Seller' && (
+                    <div>
+                  <Button color="inherit" component={Link} to="/add-article">
+                    <AddRoundedIcon/>
+                  Add article
+                  </Button>
+                  <Button color="inherit" component={Link} to="/seller-orders">
+                    <BallotIcon/>
+                    My orders
+                  </Button>
+                  <Button color="inherit" component={Link} to="/new-orders">
+                    <FiberNewIcon/>
+                    New orders
+                  </Button>
+                    </div>
+                )}
+                
                 <Box sx={{ flexGrow: 1 }} />
                 <Button color="inherit" onClick={handleLogout}>
                   Logout

@@ -8,6 +8,7 @@ import LoginIcon from '@mui/icons-material/Login';
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setUser } from "../redux/userSlice";
+import { GetUserRole } from "../utils/CurrentUser";
 
 function Registration() {
 
@@ -42,8 +43,7 @@ function Registration() {
     }
     try {
       const resp = await RegisterUser(user);
-      localStorage.setItem('token', resp.token);
-      dispatch(setUser(user));
+      dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token) }));
       navigate('/');
       
     } catch (error) {

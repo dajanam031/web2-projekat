@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux';
 import { setUser } from "../redux/userSlice";
 import { useEffect } from 'react';
-import jwt_decode from 'jwt-decode';
 import { RegisterUserWithGoogle } from "../services/UserService";
+import { GetUserRole } from "../utils/CurrentUser";
 
 
 function Login() {
@@ -28,17 +28,12 @@ function Login() {
     script.defer = true;
 
     const handleCallbackResponse = async (response) => {
-      var token = response.credential;
-      var userObject = jwt_decode(token);
       try {
-        const resp = await RegisterUserWithGoogle({'googleToken': token});
-        localStorage.setItem('token', resp.token);
-        console.log(userObject);
-        dispatch(setUser(userObject));
+        const resp = await RegisterUserWithGoogle({'googleToken': response.credential});
+        dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token) }));
         navigate('/');
   
       } catch (error) {
-        console.log(error.message);
         setErrorMessage(error.message);
       }
     };
@@ -68,9 +63,7 @@ function Login() {
     }
     try {
       const resp = await LoginUser(user);
-      localStorage.setItem('token', resp.token);
-      localStorage.setItem('user', user);
-      dispatch(setUser(user));
+      dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token) }));
       navigate('/');
 
     } catch (error) {
