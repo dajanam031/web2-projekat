@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 export const RegisterUser = async (userData) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_API_URL}/users/register`, userData);
@@ -30,8 +31,9 @@ export const LoginUser = async (userData) => {
   export const UserProfile = async () => {
     try {
       const token = localStorage.getItem('token');
+      console.log(token);
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/profile`,
+        `${process.env.REACT_APP_API_URL}/users/profile`, 
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -47,6 +49,7 @@ export const LoginUser = async (userData) => {
   export const ChangeUserProfile = async (userData) => {
     try {
       const token = localStorage.getItem('token');
+      console.log(token);
       const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/update-profile`, userData, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -75,7 +78,7 @@ export const LoginUser = async (userData) => {
   export const GetSellers = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/unverified-users`, {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/sellers`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,9 +92,27 @@ export const LoginUser = async (userData) => {
   export const VerifySeller = async (id) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/verify/${id}`, {
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/verify`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
+          userId: id
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+
+  export const DeclineSeller = async (id) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/decline`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          userId: id
         },
       });
       return response.data;

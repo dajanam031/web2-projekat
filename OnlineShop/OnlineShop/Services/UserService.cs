@@ -41,7 +41,10 @@ namespace OnlineShop.Services
             {
                 user = _mapper.Map<User>(newUser);
                 if (!newUser.UserType.Equals(UserType.Seller))
-                    user.Verified = true; 
+                {
+                    user.Verified = true;
+                    user.VerificationStatus = true;
+                } 
 
                 user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
                 await _repository.Create(user);
@@ -79,7 +82,8 @@ namespace OnlineShop.Services
                     ImageUri = payload.Picture,
                     UserType = UserType.Customer,
                     BirthDate = new DateTime(2000, 10, 10),
-                    Verified = true
+                    Verified = true,
+                    VerificationStatus = true
                 };
 
                 await _repository.Create(user);
@@ -154,10 +158,11 @@ namespace OnlineShop.Services
                 throw new ArgumentNullException(nameof(user));
 
             user.Verified = true;
+            user.VerificationStatus = true;
             await _repository.SaveChanges();
 
-            await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
-                $" Administrator has approved your registration request. You can start adding items!");
+            //await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
+            //    $" Administrator has approved your registration request. You can start adding items!");
         }
 
         public async Task ChangePassword(long id, ChangePasswordDto newPassword)
@@ -168,6 +173,19 @@ namespace OnlineShop.Services
 
             user.Password = BCrypt.Net.BCrypt.HashPassword(newPassword.NewPassword);
             await _repository.SaveChanges();
+        }
+
+        public async Task DeclineUser(long id)
+        {
+            var user = await _repository.GetById(id);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            user.VerificationStatus = true;
+            await _repository.SaveChanges();
+
+            //await _emailService.SendEmail(user.Email, "Registration", $"Hello {user.FirstName}." +
+            //    $" Administrator has rejected your registration request.");
         }
     }
 }

@@ -47,8 +47,8 @@ function Registration() {
       navigate('/');
       
     } catch (error) {
-      console.log(error.message);
       setErrorMessage(error.message);
+      setRegisterUser((prevUser) => ({ ...prevUser, email: '' }))
     }
   };
 

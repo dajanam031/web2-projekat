@@ -13,6 +13,7 @@ namespace OnlineShop.Interfaces
         Task<UserProfileDto> UsersProfile(long id);
         Task<List<UserInfoDto>> GetUnverifiedSellers();
         Task VerifyUser(long id);
+        Task DeclineUser(long id);
         Task ChangePassword(long id, ChangePasswordDto newPassword);
     }
 }

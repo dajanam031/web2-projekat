@@ -28,9 +28,9 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.Property(x => x.ImageUri).IsRequired();
             builder.Property(x => x.BirthDate).IsRequired();
             builder.Property(x => x.Verified).IsRequired();
+            builder.Property(x => x.VerificationStatus).IsRequired();
 
             builder.HasIndex(x => x.Email).IsUnique();
-            // username da bude unique isto?
         }
     }
 }

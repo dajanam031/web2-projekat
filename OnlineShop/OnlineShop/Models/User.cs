@@ -16,6 +16,7 @@ namespace OnlineShop.Models
         public string ImageUri { get; set; }
         public UserType UserType { get; set; }
         public bool Verified { get; set; }
+        public bool VerificationStatus { get; set; }
         public List<Order> Orders { get; set; }
         public List<Item> Items { get; set; }
     }

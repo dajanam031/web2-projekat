@@ -13,11 +13,10 @@ import { Button } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import Home from "./Home";
-import { VerifySeller } from "../services/UserService";
+import { VerifySeller, DeclineSeller } from "../services/UserService";
 
 function Verification() {
-    const [sellers, setSellers] = useState(null);
-    const [selectedSellerId, setSelectedSellerId] = useState(null);
+  const [sellers, setSellers] = useState(null);
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -38,35 +37,41 @@ function Verification() {
           border: 0,
         },
       }));
-    const verification = async () => {
-        try {
-          const resp = await GetSellers();
-          setSellers(resp);
-        } catch (error) {
-          console.log(error.message);
-        }
-      
-    };
-useEffect(() => {
-        verification();
+
+  const verification = async () => {
+      try {
+        const resp = await GetSellers();
+        setSellers(resp);
+      } catch (error) {
+        console.log(error.message);
+      }
+ };
+  useEffect(() => {
+      verification();
       }, []);
 
-const handleAccept = async (id) => {
-        try{
+  const handleAccept = async (id) => {
+    try{
+        await VerifySeller(id);
+        // nije bilo errora pa cu samo izmeniti prikaz podataka, necu fecovati listu svih opet
+        const updatedSellers = sellers.map((seller) =>
+        seller.id === id ? { ...seller, verified: true, verificationStatus: true } : seller);
+        setSellers(updatedSellers);
+    }catch (error) {
+        console.log(error.message);
+    } 
+ }
 
-            const resp = await VerifySeller(id);
-            console.log(resp);
-            verification(); // Fetch the updated list of sellers
-        }catch (error) {
-            console.log(error.message);
-          }
-      
-    
-}
-
-const handleDecline = () => {
-    
-}
+  const handleDecline = async (id) => {
+    try{
+      await DeclineSeller(id);
+      const updatedSellers = sellers.map((seller) =>
+        seller.id === id ? { ...seller, verificationStatus: true } : seller);
+        setSellers(updatedSellers);
+    }catch (error) {
+      console.log(error.message);
+    } 
+ }
     return (
         <>
         <Home/>
@@ -81,6 +86,7 @@ const handleDecline = () => {
                   <StyledTableCell align="right">Lastname&nbsp;</StyledTableCell>
                   <StyledTableCell align="right">Username&nbsp;</StyledTableCell>
                   <StyledTableCell align="right">Verified&nbsp;</StyledTableCell>
+                  <StyledTableCell align="right">Status&nbsp;</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -93,7 +99,10 @@ const handleDecline = () => {
                     <StyledTableCell align="right">{seller.lastName}</StyledTableCell>
                     <StyledTableCell align="right">{seller.username}</StyledTableCell>
                     <StyledTableCell align="right">{seller.verified ? "verified" : "unverified"}</StyledTableCell>
-                    <Button
+                    <StyledTableCell align="right">{seller.verificationStatus ? "finished" : "pending"}</StyledTableCell>
+                    {!seller.verified && !seller.verificationStatus && (
+                      <div>
+                      <Button
                          endIcon={<CheckRoundedIcon />}
                          onClick={() => handleAccept(seller.id)}
                         variant="outlined"
@@ -103,17 +112,22 @@ const handleDecline = () => {
                     </Button>
                    <Button
                         endIcon={<CloseRoundedIcon />}
-                        onClick={handleDecline}
+                        onClick={() => handleDecline(seller.id)}
                         variant="outlined"
                         color="error"
                         >
                         Decline
                     </Button>
+                      </div>
+                      
+                    )}
+                    
                   </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
+          
         )}
         </>
     );

@@ -118,8 +118,8 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpGet("unverified-users")]
-        [Authorize(/*Roles = "administrator"*/)]
+        [HttpGet("sellers")]
+        [Authorize]
         public async Task<IActionResult> GetUnverifiedUsers()
         {
             try
@@ -132,9 +132,9 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("verify/{userId}")]
-        //[Authorize(/*Roles = "administrator"*/)]
-        public async Task<IActionResult> VerifyUser([FromRoute] string userId)
+        [HttpPut("verify")]
+        [Authorize]
+        public async Task<IActionResult> VerifyUser([FromHeader] string userId)
         {
             try
             {
@@ -144,7 +144,23 @@ namespace OnlineShop.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return BadRequest("Something went wrong :/");
+            }
+        }
+
+        [HttpPut("decline")]
+        [Authorize]
+        public async Task<IActionResult> DeclineUser([FromHeader] string userId)
+        {
+            try
+            {
+                long id = long.Parse(userId);
+                await _userService.DeclineUser(id);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong :/");
             }
         }
     }
