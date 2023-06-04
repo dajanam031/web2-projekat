@@ -49,7 +49,7 @@ namespace OnlineShop.Controllers
             {
                 return Ok(await _userService.LoginUser(user));
             }
-            catch(InvalidOperationException ex)
+            catch(InvalidDataException ex)
             {
                 return NotFound(ex.Message);
             }

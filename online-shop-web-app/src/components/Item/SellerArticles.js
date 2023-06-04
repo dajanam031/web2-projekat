@@ -18,6 +18,11 @@ function SellerArticles() {
     const [errorMessage, setErrorMessage] = useState(false);
     const [updatedItem, setUpdatedItem] = useState(new Item());
     const [isAddOpen, setIsAddOpen] = useState(false);
+    const [isEmpty, setIsEmpty] = useState(false);
+
+    useEffect(() => {
+      setIsEmpty(items && items.length === 0);
+    }, [items]);
 
     const getItems = async () => {
         try {
@@ -79,8 +84,10 @@ function SellerArticles() {
     const handleAddItem = (newItem) => {
       setItems((prevItems) => {
         if (!prevItems || !Array.isArray(prevItems)) {
+          setErrorMessage('');
           return [newItem]; // ako nije bilo artikala u listi
         }
+        setErrorMessage('');
         return [...prevItems, newItem]; 
       });
       };
@@ -179,6 +186,9 @@ function SellerArticles() {
         )}
     {!items && (
         <><h1>{errorMessage}</h1></>
+    )}
+    {isEmpty && (
+      <h1>You don't have any articles yet.</h1>
     )}
     </>
     );

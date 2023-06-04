@@ -25,7 +25,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles ="Customer")]
         public async Task<IActionResult> GetAllItems()
         {
             try

@@ -8,7 +8,7 @@ import { useDispatch, useSelector} from 'react-redux';
 import PrivateRoutes from './utils/PrivateRoutes';
 import { setUser } from './redux/userSlice';
 import { useEffect } from 'react';
-import { GetUserRole } from './utils/CurrentUser';
+import { GetUserRole, GetUserVerification } from './utils/CurrentUser';
 import SellerArticles from './components/Item/SellerArticles';
 
 function App() {
@@ -20,8 +20,10 @@ function App() {
     if (token) {
       const user = {
         token,
-        role: GetUserRole(token), 
+        role: GetUserRole(token),
+        isVerified: GetUserVerification(token) 
       };
+      console.log(user);
       dispatch(setUser(user));
     }
   }, [dispatch]);
@@ -31,11 +33,17 @@ function App() {
       <Routes>
         {/* rute koje zelim da zastitim */}
         <Route element={<PrivateRoutes/>}> 
-           <Route path="/profile" element={<Profile />}/>
-           {user.role === "Administrator" && <Route path="/verification" element={<Verification />} />}
-           {user.role !== "Administrator" && <Route path="/verification" element={<Navigate to="/" />}/>}
-           {user.role === "Seller" && <Route path="/seller-articles" element={<SellerArticles />}/>}
-           {user.role !== "Seller" && <Route path="/seller-articles" element={<Navigate to="/" />}/>}
+            <Route path="/profile" element={<Profile />} />
+            {user.role === "Administrator" ? (
+              <Route path="/verification" element={<Verification />} />
+            ) : (
+              <Route path="/verification" element={<Navigate to="/" />} />
+            )}
+            {user.role === "Seller" ? (
+              <Route path="/seller-articles" element={<SellerArticles />} />
+            ) : (
+              <Route path="/seller-articles" element={<Navigate to="/" />} />
+            )}
         </Route>
         <Route path="/" element={<Home/>} />
         <Route path="/registration" element={<Registration />}/>

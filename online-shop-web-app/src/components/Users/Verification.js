@@ -65,9 +65,8 @@ function Verification() {
   const handleDecline = async (id) => {
     try{
       await DeclineSeller(id);
-      const updatedSellers = sellers.map((seller) =>
-        seller.id === id ? { ...seller, verificationStatus: true } : seller);
-        setSellers(updatedSellers);
+      const updatedSellers = sellers.filter((seller) => seller.id !== id);
+      setSellers(updatedSellers);
     }catch (error) {
       console.log(error.message);
     } 
@@ -75,7 +74,7 @@ function Verification() {
     return (
         <>
         <Home/>
-        {!sellers && (<h1>Loading...</h1>)}
+        {!sellers && (<h1>No sellers yet.</h1>)}
         {sellers && (
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">

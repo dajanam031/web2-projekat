@@ -53,7 +53,7 @@ namespace OnlineShop.Services
                     await _repository.Create(user);
                     await _repository.SaveChanges();
 
-                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
                 }
                 else
                 {
@@ -97,11 +97,11 @@ namespace OnlineShop.Services
                 await _repository.Create(user);
                 await _repository.SaveChanges();
 
-                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
             }
 
             // samo token
-            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
         }
 
         public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
@@ -118,7 +118,7 @@ namespace OnlineShop.Services
                     throw new InvalidOperationException("Incorrect password. Try again.");
                 }
 
-                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType) };
+                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified) };
             }
             else
             {
@@ -158,7 +158,8 @@ namespace OnlineShop.Services
 
         public async Task<List<UserInfoDto>> GetUnverifiedSellers()
         {
-            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller));
+            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller) &&
+            (x.Verified || (!x.Verified && !x.VerificationStatus)));
             if (users.Any())
                 return _mapper.Map<List<UserInfoDto>>(users);
             
