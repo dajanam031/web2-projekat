@@ -212,5 +212,14 @@ namespace OnlineShop.Services
 
             return regex.IsMatch(email);
         }
+
+        public async Task<VerificationDto> GetVerificationStatus(long id)
+        {
+            var user = await _repository.GetById(id);
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            return _mapper.Map<VerificationDto>(user);
+        }
     }
 }

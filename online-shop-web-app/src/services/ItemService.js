@@ -1,5 +1,19 @@
 import axios from "axios";
 
+export const GetAllItems = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(`${process.env.REACT_APP_API_URL}/items`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data);
+  }
+};
+
 export const GetSellerItems = async () => {
     try {
       const token = localStorage.getItem('token');

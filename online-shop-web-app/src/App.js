@@ -7,12 +7,15 @@ import Profile from './components/Users/Profile';
 import { useDispatch, useSelector} from 'react-redux';
 import PrivateRoutes from './utils/PrivateRoutes';
 import { setUser } from './redux/userSlice';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GetUserRole, GetUserVerification } from './utils/CurrentUser';
 import SellerArticles from './components/Item/SellerArticles';
+import AllArticles from './components/Item/AllArticles';
+import Cart from './components/Orders/Cart';
 
 function App() {
   const user = useSelector((state) => state.user.user);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -26,7 +29,12 @@ function App() {
       console.log(user);
       dispatch(setUser(user));
     }
+    setLoading(false);
   }, [dispatch]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
       <>
@@ -44,6 +52,12 @@ function App() {
             ) : (
               <Route path="/seller-articles" element={<Navigate to="/" />} />
             )}
+             {user.role === "Customer" ? (
+                <>
+                  <Route path="/all-articles" element={<AllArticles />} />
+                  <Route path="/cart" element={<Cart />} />
+                </>) : (<Route path="/all-articles" element={<Navigate to="/" />} />
+              )}
         </Route>
         <Route path="/" element={<Home/>} />
         <Route path="/registration" element={<Registration />}/>

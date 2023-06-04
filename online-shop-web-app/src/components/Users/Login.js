@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { setUser } from "../../redux/userSlice";
 import { useEffect } from 'react';
 import { RegisterUserWithGoogle } from "../../services/UserService";
-import { GetUserRole } from "../../utils/CurrentUser";
+import { GetUserRole, GetUserVerification } from "../../utils/CurrentUser";
 
 
 function Login() {
@@ -63,7 +63,7 @@ function Login() {
     }
     try {
       const resp = await LoginUser(user);
-      dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token) }));
+      dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token), isVerified: GetUserVerification(resp.token) }));
       navigate('/');
 
     } catch (error) {

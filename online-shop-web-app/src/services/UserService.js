@@ -1,5 +1,21 @@
 import axios from "axios";
 
+export const GetStatus = async () => {
+  try {
+    const token = localStorage.getItem('token');
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_URL}/users/verification-status`, 
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response.data);
+  }
+};
 
 export const RegisterUser = async (userData) => {
     try {
@@ -31,7 +47,6 @@ export const LoginUser = async (userData) => {
   export const UserProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log(token);
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/users/profile`, 
         {

@@ -15,5 +15,6 @@ namespace OnlineShop.Interfaces
         Task VerifyUser(long id);
         Task DeclineUser(long id);
         Task ChangePassword(long id, ChangePasswordDto newPassword);
+        Task<VerificationDto> GetVerificationStatus(long id);
     }
 }

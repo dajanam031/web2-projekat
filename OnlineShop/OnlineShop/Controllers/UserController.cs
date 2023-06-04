@@ -168,5 +168,20 @@ namespace OnlineShop.Controllers
                 return BadRequest("Something went wrong :/");
             }
         }
+
+        [HttpGet("verification-status")]
+        [Authorize]
+        public async Task<IActionResult> SellerVerificationStatus()
+        {
+            try
+            {
+                long id = long.Parse(User.GetId());
+                return Ok(await _userService.GetVerificationStatus(id));
+            }
+            catch (Exception)
+            {
+                return BadRequest("Something went wrong :/");
+            }
+        }
     }
 }
