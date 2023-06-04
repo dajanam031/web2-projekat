@@ -1,10 +1,10 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Registration from './components/Users/Registration';
 import Verification from './components/Users/Verification';
 import Home from './components/Users/Home';
 import Profile from './components/Users/Profile';
-import { useDispatch} from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import PrivateRoutes from './utils/PrivateRoutes';
 import { setUser } from './redux/userSlice';
 import { useEffect } from 'react';
@@ -12,6 +12,7 @@ import { GetUserRole } from './utils/CurrentUser';
 import SellerArticles from './components/Item/SellerArticles';
 
 function App() {
+  const user = useSelector((state) => state.user.user);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,8 +32,10 @@ function App() {
         {/* rute koje zelim da zastitim */}
         <Route element={<PrivateRoutes/>}> 
            <Route path="/profile" element={<Profile />}/>
-           <Route path="/verification" element={<Verification />}/>
-           <Route path="/seller-articles" element={<SellerArticles />}/>
+           {user.role === "Administrator" && <Route path="/verification" element={<Verification />} />}
+           {user.role !== "Administrator" && <Route path="/verification" element={<Navigate to="/" />}/>}
+           {user.role === "Seller" && <Route path="/seller-articles" element={<SellerArticles />}/>}
+           {user.role !== "Seller" && <Route path="/seller-articles" element={<Navigate to="/" />}/>}
         </Route>
         <Route path="/" element={<Home/>} />
         <Route path="/registration" element={<Registration />}/>

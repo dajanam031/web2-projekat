@@ -1,4 +1,4 @@
-export class UpdateItem {
+export class Item {
     constructor() {
       this.id = 0;
       this.name = '';

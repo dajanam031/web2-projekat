@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { GetSellerItems, DeleteItem, ModifyItem } from "../../services/ItemService";
-import { UpdateItem} from "../../models/UpdateItem";
+import { Item } from "../../models/Item";
 import AddArticle from "./AddArticle";
 
 
@@ -16,7 +16,7 @@ function SellerArticles() {
     const [items, setItems] = useState(null);
     const [open, setOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
-    const [updatedItem, setUpdatedItem] = useState(new UpdateItem());
+    const [updatedItem, setUpdatedItem] = useState(new Item());
     const [isAddOpen, setIsAddOpen] = useState(false);
 
     const getItems = async () => {
@@ -24,7 +24,7 @@ function SellerArticles() {
           const resp = await GetSellerItems();
           setItems(resp);
         } catch (error) {
-          console.log(error.message);
+          setErrorMessage(error.message);
         }
       
     };
@@ -39,22 +39,24 @@ function SellerArticles() {
             const updatedItems = items.filter((item) => item.id !== id);
             setItems(updatedItems);
           } catch (error) {
-            console.log(error.message);
+            setErrorMessage(error.message);
           }
       }
 
       const handleOpen = (item) => {
         setUpdatedItem(item);
-        console.log(updatedItem);
         setOpen(true);
       };
     
       const handleClose = () => {
         setOpen(false);
+        setErrorMessage('');
       };
 
       const handleEdit = async () => {
-        handleClose();
+        if (!validateForm(updatedItem)) {
+          return;
+        }
         try {
             await ModifyItem(updatedItem);
             const itemIndex = items.findIndex((item) => item.id === updatedItem.id);
@@ -63,8 +65,9 @@ function SellerArticles() {
                 modified[itemIndex] = updatedItem; 
                 setItems(modified); 
               }
+              handleClose();
           } catch (error) {
-            console.log(error.message);
+            setErrorMessage(error.message);
           }
       };
 
@@ -74,19 +77,36 @@ function SellerArticles() {
     };
 
     const handleAddItem = (newItem) => {
-        setItems((prevItems) => [...prevItems, newItem]);
+      setItems((prevItems) => {
+        if (!prevItems || !Array.isArray(prevItems)) {
+          return [newItem]; // ako nije bilo artikala u listi
+        }
+        return [...prevItems, newItem]; 
+      });
       };
+
+      function validateForm(updatedItem){
+
+        const trimmedFields = ['name', 'description'];
+        const hasEmptyRequiredFields = trimmedFields.some((field) => updatedItem[field].trim() === '');
+    
+        if (hasEmptyRequiredFields) {
+          setErrorMessage("Please fill in all required fields.");
+          return false;
+        }
+        return true;
+      }
 
     return(
         <>
-        {items && (
-            <>
-            <Home/>
+        <Home/>
           <IconButton onClick={handleAddClick} style={{ color: 'black', fontSize: '20px' }}>
             <AddCircleOutlineRoundedIcon />
             Add new article
           </IconButton>
           {isAddOpen && <AddArticle onClose={() => setIsAddOpen(false)} onAddItem={handleAddItem} />}
+        {items && (
+            <>
             <div className="item-list">
           {items.map((item) => (
             <Card key={item.id} className="item-card">
@@ -118,20 +138,28 @@ function SellerArticles() {
                 </Typography>
               )}
               <form onSubmit={handleEdit}>
-                <TextField label="Name"
+                <TextField label="Name" required
                 variant='filled' value={updatedItem.name} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, name: e.target.value }))}
                 />
                 <br/>
-                <TextField label="Description"
+                <TextField label="Description" required
                 variant='filled' value={updatedItem.description} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, description: e.target.value }))}
                 /><br/>
                 <TextField label="Quantity"
-                variant='filled' value={updatedItem.quantity} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, quantity: e.target.value }))}
+                variant='filled' type="number" required value={updatedItem.quantity}
+                onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, quantity: e.target.value }))}
+                inputProps={{
+                  min: 0,
+                }}
                 /><br/>
-                <TextField label="Price" sx={{ width: "300px" }}
-                variant='filled' value={updatedItem.price} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, price: e.target.value }))}
+                <TextField label="Price" required  type="number" sx={{ width: "300px" }}
+                variant='filled' value={updatedItem.price}
+                onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, price: e.target.value }))}
+                inputProps={{
+                  min: 0,
+                }}
                 /><br/>
-                 <TextField label="Image"
+                 <TextField label="Image" required
                 variant='filled' value={updatedItem.imageUri} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, imageUri: e.target.value }))}
                 />
               </form>
@@ -150,7 +178,7 @@ function SellerArticles() {
             </>
         )}
     {!items && (
-        <><h1>Loading...</h1></>
+        <><h1>{errorMessage}</h1></>
     )}
     </>
     );

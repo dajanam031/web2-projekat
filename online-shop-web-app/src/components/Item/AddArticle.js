@@ -15,16 +15,30 @@ function AddArticle({ onClose, onAddItem }){
 
      
       const handleAdd = async () => {
-        // validate
+        if(!validateForm(newItem)){
+          return;
+        }
         try {
-            await AddItem(newItem);
-            onAddItem(newItem);
+            const resp = await AddItem(newItem);
+            onAddItem(resp);
+            setNewItem(new ItemToAdd());
+            handleClose();
           } catch (error) {
-            console.log(error.message);
+            setErrorMessage(error.message);
           }
-        setNewItem(new ItemToAdd());
-        handleClose();
       };
+
+      function validateForm(newItem){
+
+        const trimmedFields = ['name', 'description'];
+        const hasEmptyRequiredFields = trimmedFields.some((field) => newItem[field].trim() === '');
+    
+        if (hasEmptyRequiredFields) {
+          setErrorMessage("Please fill in all required fields.");
+          return false;
+        }
+        return true;
+      }
 
     return (
         <Dialog open={open} onClose={handleClose}>

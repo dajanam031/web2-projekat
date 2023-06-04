@@ -7,7 +7,7 @@ namespace OnlineShop.Interfaces
     public interface IItemService
     {
         Task<List<ItemDto>> GetItems();
-        Task AddItem(long id, AddItemDto newItem);
+        Task<ItemDto> AddItem(long id, AddItemDto newItem);
         Task DeleteItem(long id);
         Task<ItemDto> UpdateItem(ItemDto item);
         Task<ItemDto> GetItem(long id);

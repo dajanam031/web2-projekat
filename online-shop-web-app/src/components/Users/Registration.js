@@ -31,7 +31,7 @@ function Registration() {
 
     if (hasEmptyRequiredFields) {
       setErrorMessage("Please fill in all required fields.");
-      return;
+      return false;
   }
     return true;
   }

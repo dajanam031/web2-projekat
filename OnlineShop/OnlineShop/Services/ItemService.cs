@@ -7,6 +7,7 @@ using System;
 using OnlineShop.Models;
 using OnlineShop.Repositories;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace OnlineShop.Services
 {
@@ -23,19 +24,35 @@ namespace OnlineShop.Services
             _usersRepository = usersRepository;
         }
 
-        public async Task AddItem(long id, AddItemDto newItem)
+        public async Task<ItemDto> AddItem(long id, AddItemDto newItem)
         {
             var seller = await _usersRepository.GetById(id);
             if (seller != null && seller.Verified)
             {
-                Item item = _mapper.Map<Item>(newItem);
-                item.SellerId = id;
-                await _itemsRepository.Create(item);
-                await _itemsRepository.SaveChanges();
+                if (int.TryParse(newItem.Quantity.ToString(), out int quantity) && double.TryParse(newItem.Price.ToString(), out double price))
+                {
+                    newItem.Quantity = quantity;
+                    newItem.Price = price;
+                    if(newItem.Quantity > 0 && newItem.Price > 0)
+                    {
+                        Item item = _mapper.Map<Item>(newItem);
+                        item.SellerId = id;
+                        await _itemsRepository.Create(item);
+                        await _itemsRepository.SaveChanges();
+                        return _mapper.Map<ItemDto>(item);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Number fields must be greater than 0.");
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Please enter valid numbers for requested number fields.");
+                }
             }
             else
             {
-
                 throw new ArgumentNullException(nameof(seller));
             }
 
@@ -86,11 +103,25 @@ namespace OnlineShop.Services
             }
             else
             {
-                itemToUpdate.Name = item.Name;
-                itemToUpdate.Description = item.Description;
-                itemToUpdate.Price = item.Price;
-                itemToUpdate.ImageUri = item.ImageUri;
-                itemToUpdate.Quantity = item.Quantity;
+                if (int.TryParse(item.Quantity.ToString(), out int quantity) && double.TryParse(item.Price.ToString(), out double price))
+                {
+                    if (quantity > 0 && price > 0)
+                    {
+                        itemToUpdate.Name = item.Name;
+                        itemToUpdate.Description = item.Description;
+                        itemToUpdate.Price = price;
+                        itemToUpdate.ImageUri = item.ImageUri;
+                        itemToUpdate.Quantity = quantity;
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Number fields must be greater than 0.");
+                    }
+                }
+                else
+                {
+                    throw new InvalidOperationException("Please enter valid numbers for requested number fields.");
+                }
 
                 await _itemsRepository.SaveChanges();
 

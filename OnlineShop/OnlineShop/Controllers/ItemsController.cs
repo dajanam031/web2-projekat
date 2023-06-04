@@ -60,8 +60,11 @@ namespace OnlineShop.Controllers
             long id = long.Parse(User.GetId());
             try
             {
-                await _itemService.AddItem(id, item);
-                return Ok();
+                return Ok(await _itemService.AddItem(id, item));
+            }
+            catch(InvalidOperationException opEx)
+            {
+                return BadRequest(opEx.Message);
             }
             catch (Exception)
             {
@@ -95,9 +98,13 @@ namespace OnlineShop.Controllers
                 return Ok(await _itemService.UpdateItem(item));
 
             }
+            catch (InvalidOperationException opEx)
+            {
+                return BadRequest(opEx.Message);
+            }
             catch (Exception)
             {
-                return BadRequest();
+                return BadRequest("Failed to update item.");
             }
         }
 
