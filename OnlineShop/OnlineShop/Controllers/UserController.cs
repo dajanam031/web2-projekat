@@ -7,6 +7,7 @@ using OnlineShop.Helpers;
 using OnlineShop.Interfaces;
 using System;
 using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace OnlineShop.Controllers
@@ -30,9 +31,13 @@ namespace OnlineShop.Controllers
                 return Ok(await _userService.RegisterUser(user));
 
             }
-            catch (Exception)
+            catch (InvalidDataException ex)
             {
-                return BadRequest("User with that email already exists.");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
 

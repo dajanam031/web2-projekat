@@ -15,6 +15,7 @@ using Google.Apis.Auth;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace OnlineShop.Services
 {
@@ -36,25 +37,32 @@ namespace OnlineShop.Services
         }
         public async Task<TokenDto> RegisterUser(UserDto newUser)
         {
-            User user = await _repository.FindBy(x => x.Email.Equals(newUser.Email));
-            if(user == null)
+            if (IsValidEmail(newUser.Email))
             {
-                user = _mapper.Map<User>(newUser);
-                if (!newUser.UserType.Equals(UserType.Seller))
+                User user = await _repository.FindBy(x => x.Email.Equals(newUser.Email));
+                if (user == null)
                 {
-                    user.Verified = true;
-                    user.VerificationStatus = true;
-                } 
+                    user = _mapper.Map<User>(newUser);
+                    if (!newUser.UserType.Equals(UserType.Seller))
+                    {
+                        user.Verified = true;
+                        user.VerificationStatus = true;
+                    }
 
-                user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
-                await _repository.Create(user);
-                await _repository.SaveChanges();
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
+                    await _repository.Create(user);
+                    await _repository.SaveChanges();
 
-                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType) };
+                }
+                else
+                {
+                    throw new Exception("User with that email already exists. Try another one.");
+                }
             }
             else
             {
-                throw new Exception();
+                throw new InvalidDataException("Email is not in correct format. Valid format is: example@gmail.com");
             }
         }
 
@@ -99,17 +107,24 @@ namespace OnlineShop.Services
         public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
         {
             User existingUser = await _repository.FindBy(x => x.Email.Equals(loginUser.Email));
-
-            if (existingUser == null)
+            if (IsValidEmail(loginUser.Email))
             {
-                throw new InvalidOperationException("User with that email doesn't exist. Try again.");
-            }
-            else if(!BCrypt.Net.BCrypt.Verify(loginUser.Password, existingUser.Password))
-            {
-                throw new InvalidOperationException("Incorrect password. Try again.");
-            }
+                if (existingUser == null)
+                {
+                    throw new InvalidOperationException("User with that email doesn't exist. Try again.");
+                }
+                else if (!BCrypt.Net.BCrypt.Verify(loginUser.Password, existingUser.Password))
+                {
+                    throw new InvalidOperationException("Incorrect password. Try again.");
+                }
 
-            return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType)};
+                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType) };
+            }
+            else
+            {
+                throw new InvalidDataException("Email is not in correct format. Valid format is: example@gmail.com");
+            }
+            
         }
 
         public async Task<UserProfileDto> UpdateProfile(long id, UserProfileDto newProfile)
@@ -186,6 +201,15 @@ namespace OnlineShop.Services
 
             //await _emailService.SendEmail(user.Email, "Registration", $"Hello {user.FirstName}." +
             //    $" Administrator has rejected your registration request.");
+        }
+
+        public static bool IsValidEmail(string email)
+        {
+            string pattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+
+            Regex regex = new(pattern);
+
+            return regex.IsMatch(email);
         }
     }
 }
