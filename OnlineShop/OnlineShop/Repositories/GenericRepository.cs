@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Infrastructure;
 using OnlineShop.Models;
+using OnlineShop.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -10,5 +10,6 @@ namespace OnlineShop.Models
         public List<OrderItem> OrderItems { get; set; }
         public User Purchaser { get; set; }
         public long PurchaserId { get; set; }
+        public OrderStatus Status { get; set; }
     }
 }

@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
-using OnlineShop.Repositories;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,6 +15,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using OnlineShop.Repositories.Interfaces;
 
 namespace OnlineShop.Services
 {
@@ -111,11 +111,11 @@ namespace OnlineShop.Services
             {
                 if (existingUser == null)
                 {
-                    throw new InvalidOperationException("User with that email doesn't exist. Try again.");
+                    throw new InvalidDataException("User with that email doesn't exist. Try again.");
                 }
                 else if (!BCrypt.Net.BCrypt.Verify(loginUser.Password, existingUser.Password))
                 {
-                    throw new InvalidOperationException("Incorrect password. Try again.");
+                    throw new InvalidDataException("Incorrect password. Try again.");
                 }
 
                 return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified) };
@@ -158,10 +158,12 @@ namespace OnlineShop.Services
 
         public async Task<List<UserInfoDto>> GetUnverifiedSellers()
         {
-            var users = await _repository.FindAllBy(x => x.UserType.Equals(UserType.Seller) &&
-            (x.Verified || (!x.Verified && !x.VerificationStatus)));
+            var users = await _repository.FindAllBy(x => !x.UserType.Equals(UserType.Administrator));
             if (users.Any())
-                return _mapper.Map<List<UserInfoDto>>(users);
+            {
+                var sortedUsers = users.OrderBy(x => x.VerificationStatus ? 1 : 0);
+                return _mapper.Map<List<UserInfoDto>>(sortedUsers);
+            }
             
             throw new ArgumentNullException();
             

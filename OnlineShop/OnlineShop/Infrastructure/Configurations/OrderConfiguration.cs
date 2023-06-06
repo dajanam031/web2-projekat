@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using OnlineShop.Models;
+using System;
 using System.Reflection.Emit;
 
 namespace OnlineShop.Infrastructure.Configurations
@@ -12,8 +13,14 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.HasKey(x => x.Id);
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
-            builder.Property(x => x.DeliveryAddress).IsRequired();
-            builder.Property(x => x.Comment).IsRequired();
+            builder.Property(x => x.DeliveryAddress).HasMaxLength(50);
+            builder.Property(x => x.Comment).HasMaxLength(100);
+
+            builder.Property(x => x.Status)
+                  .HasConversion(
+                      x => x.ToString(),
+                      x => Enum.Parse<OrderStatus>(x)
+                  );
 
             builder.HasMany(o => o.OrderItems)
             .WithOne(oi => oi.Order)

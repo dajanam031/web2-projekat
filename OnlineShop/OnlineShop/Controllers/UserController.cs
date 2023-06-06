@@ -55,7 +55,7 @@ namespace OnlineShop.Controllers
             }
             catch (Exception)
             {
-                return BadRequest();
+                return BadRequest("Something went wrong.");
             }
         }
 

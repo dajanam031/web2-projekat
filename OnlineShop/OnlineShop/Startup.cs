@@ -16,6 +16,7 @@ using OnlineShop.Interfaces;
 using OnlineShop.Mapping;
 using OnlineShop.Models;
 using OnlineShop.Repositories;
+using OnlineShop.Repositories.Interfaces;
 using OnlineShop.Services;
 using System;
 using System.Collections.Generic;
@@ -55,37 +56,38 @@ namespace OnlineShop
             services.AddScoped<IItemService, ItemService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             services.AddDbContext<ShopDbContext>(options => 
             options.UseSqlServer(Configuration.GetConnectionString("MyConnectionString")));
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "projekat", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "online shop", Version = "v1" });
                 c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Please enter token",
+                    Description = "Token:",
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
                     Scheme = "bearer"
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-      {
-        new OpenApiSecurityScheme
-        {
-          Reference = new OpenApiReference
-          {
-            Type=ReferenceType.SecurityScheme,
-            Id="Bearer"
-          }
-        },
-        new string[]{}
-      }
-    });
+                        {
+                          {
+                            new OpenApiSecurityScheme
+                            {
+                              Reference = new OpenApiReference
+                              {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                              }
+                            },
+                            new string[]{}
+                          }
+                        });
             });
 
             var mapperConfig = new MapperConfiguration(mc =>
@@ -95,7 +97,7 @@ namespace OnlineShop
 
             services.AddScoped<IRepository<User>, UserRepository>();
             services.AddScoped<IRepository<Item>, ItemRepository>();
-            services.AddScoped<IRepository<Order>, OrderRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IRepository<OrderItem>,  OrderItemRepository>();
 
             IMapper mapper = mapperConfig.CreateMapper();

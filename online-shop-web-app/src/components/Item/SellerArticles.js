@@ -127,7 +127,7 @@ function SellerArticles() {
                   {item.description}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Price: {item.price} $
+                  Price: {item.price} rsd
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Quantity: {item.quantity}

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { GetAllItems } from "../../services/ItemService";
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 import appleImage from '../../images/download.jpeg';
+import { AddItemToCart } from "../../services/OrderService";
 
 function AllArticles(){
     const [items, setItems] = useState(null);
@@ -16,7 +17,6 @@ function AllArticles(){
         } catch (error) {
           setErrorMessage(error.message);
         }
-      
     };
     
       useEffect(() => {
@@ -38,9 +38,16 @@ function AllArticles(){
     }));
   };
 
-  const handleAddToCart = (itemId) => {
+  const handleAddToCart = async (itemId) => {
     const quantity = itemQuantities[itemId] || 0;
     console.log(`Item ${itemId} added to cart with quantity: ${quantity}`);
+    
+    try {
+      const resp = await AddItemToCart(itemId, quantity);
+      console.log(resp);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   };
 
 
@@ -62,7 +69,7 @@ function AllArticles(){
                   {item.description}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Price: {item.price} $
+                  Price: {item.price} rsd
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Available quantity: {item.quantity}

@@ -47,7 +47,7 @@ function App() {
             ) : (
               <Route path="/verification" element={<Navigate to="/" />} />
             )}
-            {user.role === "Seller" ? (
+            {user.role === "Seller" && user.isVerified === 'True' ? (
               <Route path="/seller-articles" element={<SellerArticles />} />
             ) : (
               <Route path="/seller-articles" element={<Navigate to="/" />} />
@@ -56,7 +56,10 @@ function App() {
                 <>
                   <Route path="/all-articles" element={<AllArticles />} />
                   <Route path="/cart" element={<Cart />} />
-                </>) : (<Route path="/all-articles" element={<Navigate to="/" />} />
+                </>) : (<>
+                <Route path="/all-articles" element={<Navigate to="/" />} />
+                <Route path="/cart" element={<Navigate to="/" />} />
+                </>
               )}
         </Route>
         <Route path="/" element={<Home/>} />

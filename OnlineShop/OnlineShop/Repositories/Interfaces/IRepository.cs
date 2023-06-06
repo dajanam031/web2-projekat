@@ -4,7 +4,7 @@ using System;
 using System.Threading.Tasks;
 using System.Linq;
 
-namespace OnlineShop.Repositories
+namespace OnlineShop.Repositories.Interfaces
 {
     public interface IRepository<TEntity> where TEntity : class
     {

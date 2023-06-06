@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using OnlineShop.Models;
-using OnlineShop.Repositories;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using OnlineShop.Repositories.Interfaces;
 
 namespace OnlineShop.Services
 {
@@ -58,6 +58,7 @@ namespace OnlineShop.Services
 
 
         }
+
 
         public async Task DeleteItem(long id)
         {
@@ -128,5 +129,6 @@ namespace OnlineShop.Services
                 return _mapper.Map<ItemDto>(itemToUpdate);
             }
         }
+
     }
 }
