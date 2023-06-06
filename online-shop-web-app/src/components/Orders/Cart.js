@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
-import { GetCurrentOrder } from "../../services/OrderService";
+import { GetCurrentOrder, DeleteOrderItem, DeclineOrder } from "../../services/OrderService";
 import {
   Table,
   TableHead,
@@ -12,7 +12,8 @@ import {
   Paper,
   IconButton,
   Box,
-  TextField
+  TextField,
+  Alert
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Home from "../Users/Home";
@@ -44,6 +45,35 @@ function Cart() {
     setDeliveryAddress(event.target.value);
   };
 
+  const handleDelete = async (rowKey) => {
+    try {
+      const [orderId, itemId] = rowKey.split('-');
+      await DeleteOrderItem(itemId, orderId);
+      getOrder();
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
+  };
+
+  const handleDecline = async (orderId) => {
+    try {
+        await DeclineOrder(orderId);
+        setOrder(null);
+        getOrder();
+      } catch (error) {
+        setErrorMessage(error.message);
+      }
+  };
+
+  const handleSubmit = () => {
+    if(comment.trim() === '' || deliveryAddress.trim() === ''){
+        setErrorMessage("Please fill out both fields before confirming order.");
+        return;
+    }
+    setErrorMessage("ok");
+
+  }
+
   return (
     <>
       <Home />
@@ -54,7 +84,7 @@ function Cart() {
             sx={{ backgroundColor: "#a6ad93" }}
             marginTop={2}
             padding={2}
-          >
+          ><div>{errorMessage && <Alert variant="outlined" severity="error">{errorMessage}</Alert>}</div>
             <TableContainer>
               <Table size="small" aria-label="a dense table">
                 <TableHead>
@@ -85,6 +115,7 @@ function Cart() {
                           <IconButton
                             color="#a6ad93"
                             size="small"
+                            onClick={() => handleDelete(rowKey)}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -109,6 +140,7 @@ function Cart() {
                   
                 </TableBody>
               </Table>
+              <form onSubmit={handleSubmit}>
               <Box
                 display="flex"
                 flexDirection="column"
@@ -134,7 +166,7 @@ function Cart() {
                   margin="dense"
                 />
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                  <Button variant="contained" color="error">
+                  <Button onClick={() => handleDecline(order[0].orderId)} variant="contained" color="error">
                     Decline Order
                   </Button>
                   <Button variant="contained" color="primary">
@@ -142,6 +174,7 @@ function Cart() {
                   </Button>
                 </Box>
               </Box>
+              </form>
             </TableContainer>
           </Box>
         </Box>

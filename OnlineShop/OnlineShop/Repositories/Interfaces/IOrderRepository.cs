@@ -6,5 +6,6 @@ namespace OnlineShop.Repositories.Interfaces
     public interface IOrderRepository : IRepository<Order>
     {
         Task<Order> GetOrderView(long customerId);
+        Task<Order> GetOrderById(long id);
     }
 }

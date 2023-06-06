@@ -29,6 +29,17 @@ function AllArticles(){
       ...prevQuantities,
       [itemId]: (prevQuantities[itemId] || 0) + 1,
     }));
+    setItems((prevItems) => {
+      return prevItems.map((item) => {
+        if (item.id === itemId) {
+          return {
+            ...item,
+            quantity: item.quantity - 1,
+          };
+        }
+        return item;
+      });
+    });
   };
 
   const handleDecreaseQuantity = (itemId) => {
@@ -36,6 +47,17 @@ function AllArticles(){
       ...prevQuantities,
       [itemId]: Math.max((prevQuantities[itemId] || 0) - 1, 0),
     }));
+    setItems((prevItems) => {
+      return prevItems.map((item) => {
+        if (item.id === itemId) {
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        }
+        return item;
+      });
+    });
   };
 
   const handleAddToCart = async (itemId) => {
@@ -82,7 +104,7 @@ function AllArticles(){
                     <Typography variant="body2" color="text.secondary">
                         {itemQuantities[item.id] || 0}
                     </Typography>
-                    <Button disabled={itemQuantities[item.id] >= item.quantity} 
+                    <Button disabled={item.quantity === 0} 
                     variant="outlined" size="small" onClick={() => handleIncreaseQuantity(item.id)}>
                         +
                     </Button>

@@ -12,6 +12,16 @@ namespace OnlineShop.Repositories
         {
         }
 
+        public async Task<Order> GetOrderById(long id)
+        {
+            var order = await _dbContext.Orders
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Item)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+            return order;
+        }
+
         public async Task<Order> GetOrderView(long customerId)
         {
             var order = await _dbContext.Orders

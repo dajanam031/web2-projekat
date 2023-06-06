@@ -22,10 +22,6 @@ namespace OnlineShop.Infrastructure.Configurations
                       x => Enum.Parse<OrderStatus>(x)
                   );
 
-            builder.HasMany(o => o.OrderItems)
-            .WithOne(oi => oi.Order)
-            .HasForeignKey(oi => oi.OrderId);
-
             builder.HasOne(x => x.Purchaser) // jedna porudzbina ima jednog korisnika (kupca)
                    .WithMany(x => x.Orders) // A jedan kupac vise porudzbina
                    .HasForeignKey(x => x.PurchaserId) // Strani kljuc  je userId

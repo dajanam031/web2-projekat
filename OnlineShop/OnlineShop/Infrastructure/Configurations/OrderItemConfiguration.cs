@@ -15,7 +15,7 @@ namespace OnlineShop.Infrastructure.Configurations
             builder.HasOne(x => x.Order)
                .WithMany(x => x.OrderItems)
                .HasForeignKey(x => x.OrderId)
-               .OnDelete(DeleteBehavior.NoAction);
+               .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(x => x.Item)
                .WithMany(x => x.OrderItems)

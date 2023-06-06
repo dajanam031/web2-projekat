@@ -9,7 +9,7 @@ namespace OnlineShop.Repositories.Interfaces
     public interface IRepository<TEntity> where TEntity : class
     {
         Task<IEnumerable<TEntity>> GetAll();
-        Task<TEntity> GetById(long id);
+        Task<TEntity> GetById(params object[] keys);
         Task Create(TEntity entity);
         void Delete(TEntity entity);
         Task SaveChanges();

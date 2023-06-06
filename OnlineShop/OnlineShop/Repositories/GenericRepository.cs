@@ -25,8 +25,8 @@ namespace OnlineShop.Repositories
             return entities;
         }
 
-        public async Task<TEntity> GetById(long id) {
-            TEntity entity = await _dbSet.FindAsync(id);
+        public async Task<TEntity> GetById(params object[] keys) {
+            TEntity entity = await _dbSet.FindAsync(keys);
             return entity;
         }
 

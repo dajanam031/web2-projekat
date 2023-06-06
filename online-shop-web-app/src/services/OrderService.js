@@ -33,3 +33,31 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const DeleteOrderItem = async (itemId, orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/orders/${itemId}/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const DeclineOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/orders/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

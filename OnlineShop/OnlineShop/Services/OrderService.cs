@@ -12,11 +12,13 @@ namespace OnlineShop.Services
     {
         private readonly IRepository<OrderItem> _orderItemsRepository;
         private readonly IOrderRepository _ordersRepository;
+        private readonly IRepository<Item> _itemsRepository;
 
-        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository)
+        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository, IRepository<Item> itemsRepository)
         {
             _orderItemsRepository = orderItemsRepository;
             _ordersRepository = ordersRepository;
+            _itemsRepository = itemsRepository;
         }
 
         public async Task AddItemToCart(long customerId, long itemId, int itemQuantity)
@@ -44,7 +46,10 @@ namespace OnlineShop.Services
                 existingOrderItem.ItemQuantity += itemQuantity;
             }
 
-            // naci item u bazi i smanjiti mu kolicinu za prosledjenu i vratiti ga ?
+            // naci item u bazi i smanjiti mu kolicinu za prosledjenu 
+            var item = await _itemsRepository.GetById(itemId);
+            item.Quantity -= itemQuantity;
+            await _itemsRepository.SaveChanges();
             await _orderItemsRepository.SaveChanges();
         }
 
@@ -55,16 +60,56 @@ namespace OnlineShop.Services
             {
                 List<OrderViewDto> orderViewDtos = new List<OrderViewDto>();
                 foreach (var orderItem in currentOrder.OrderItems)
-                { 
-                    orderViewDtos.Add(new OrderViewDto { ItemName = orderItem.Item.Name, ItemPrice = orderItem.Item.Price,
+                {
+                    var totalPrice = orderItem.Item.Price * orderItem.ItemQuantity;
+                    orderViewDtos.Add(new OrderViewDto { ItemName = orderItem.Item.Name, ItemPrice = totalPrice,
                         ItemQuantity = orderItem.ItemQuantity, OrderId = orderItem.OrderId, ItemId = orderItem.ItemId });
                 }
 
                 return orderViewDtos;
             }
 
-            throw new ArgumentNullException("You don't have any active orders yet. Go to shop and add something to cart!");
+            throw new InvalidOperationException("You don't have any active orders yet. Go to shop and add something to cart!");
 
+        }
+
+        public async Task DeclineOrder(long orderId)
+        {
+            var order = await _ordersRepository.GetOrderById(orderId);
+            if(order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            foreach(var orderItem in order.OrderItems)
+            {
+                var item = await _itemsRepository.GetById(orderItem.ItemId);
+                if(item  == null)
+                {
+                    throw new ArgumentNullException(nameof(item));
+                }
+
+                item.Quantity += orderItem.ItemQuantity; // vracam kolicinu
+                await _itemsRepository.SaveChanges();
+            }
+
+            _ordersRepository.Delete(order);
+            await _ordersRepository.SaveChanges();
+        }
+
+        public async Task DeleteOrderItem(long itemId, long orderId)
+        {
+            var orderItem = await _orderItemsRepository.GetById(orderId, itemId);
+            if(orderItem == null)
+            {
+                throw new ArgumentNullException(nameof(orderItem));
+            }
+            var item = await _itemsRepository.GetById(itemId);
+            item.Quantity += orderItem.ItemQuantity; // vracam kolicinu
+            await _itemsRepository.SaveChanges();
+
+            _orderItemsRepository.Delete(orderItem);
+            await _orderItemsRepository.SaveChanges();
         }
     }
 }

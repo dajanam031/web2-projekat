@@ -8,5 +8,7 @@ namespace OnlineShop.Interfaces
     {
         Task AddItemToCart(long customerId, long itemId, int itemQuantity);
         Task<List<OrderViewDto>> CurrentOrderView(long customerId);
+        Task DeleteOrderItem(long itemId, long orderId);
+        Task DeclineOrder(long orderId);
     }
 }

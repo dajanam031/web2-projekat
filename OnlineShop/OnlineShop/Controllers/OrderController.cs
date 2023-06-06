@@ -8,6 +8,7 @@ using OnlineShop.Interfaces;
 using OnlineShop.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using OnlineShop.Models;
+using OnlineShop.Services;
 
 namespace OnlineShop.Controllers
 {
@@ -23,7 +24,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("add-to-cart/{itemId}/{quantity}")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CreateUser([FromRoute] long itemId, [FromRoute] int quantity)
         {
             long userId = long.Parse(User.GetId());
@@ -40,7 +41,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("order-view")]
-        [Authorize]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetOrderView()
         {
             long userId = long.Parse(User.GetId());
@@ -49,9 +50,39 @@ namespace OnlineShop.Controllers
                 return Ok(await _orderService.CurrentOrderView(userId));
 
             }
-            catch (ArgumentNullException ex)
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{itemId}/{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> DeleteOrderItem([FromRoute] long itemId, [FromRoute] long orderId)
+        {
+            try
+            {
+                await _orderService.DeleteOrderItem(itemId, orderId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to delete order item.");
+            }
+        }
+
+        [HttpDelete("{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> DeclineOrder([FromRoute] long orderId)
+        {
+            try
+            {
+                await _orderService.DeclineOrder(orderId);
+                return Ok();
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to delete order.");
             }
         }
     }
