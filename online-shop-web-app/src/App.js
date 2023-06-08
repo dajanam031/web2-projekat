@@ -12,6 +12,7 @@ import { GetUserRole, GetUserVerification } from './utils/CurrentUser';
 import SellerArticles from './components/Item/SellerArticles';
 import AllArticles from './components/Item/AllArticles';
 import Cart from './components/Orders/Cart';
+import CustomerOrders from './components/Orders/CustomerOrders';
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -56,9 +57,11 @@ function App() {
                 <>
                   <Route path="/all-articles" element={<AllArticles />} />
                   <Route path="/cart" element={<Cart />} />
+                  <Route path="customer-orders" element={<CustomerOrders/>}/>
                 </>) : (<>
                 <Route path="/all-articles" element={<Navigate to="/" />} />
                 <Route path="/cart" element={<Navigate to="/" />} />
+                <Route path="customer-orders" element={<Navigate to="/" />}/>
                 </>
               )}
         </Route>

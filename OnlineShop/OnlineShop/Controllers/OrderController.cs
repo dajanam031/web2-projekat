@@ -93,11 +93,26 @@ namespace OnlineShop.Controllers
         {
             try
             {
-                await _orderService.ConfirmOrder(orderId, confirmOrderDto);
-                return Ok("Order is successfully purchased.");
+                return Ok(await _orderService.ConfirmOrder(orderId, confirmOrderDto));
 
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("previous-orders")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> PreviousOrders()
+        {
+            long userId = long.Parse(User.GetId());
+            try
+            {
+                return Ok(await _orderService.CustomersOrders(userId));
+
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }

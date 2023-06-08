@@ -1,9 +1,12 @@
-﻿using OnlineShop.Dto.OrderDTOs;
+﻿using AutoMapper;
+using OnlineShop.Dto.OrderDTOs;
+using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
 using OnlineShop.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnlineShop.Services
@@ -13,12 +16,14 @@ namespace OnlineShop.Services
         private readonly IRepository<OrderItem> _orderItemsRepository;
         private readonly IOrderRepository _ordersRepository;
         private readonly IRepository<Item> _itemsRepository;
+        private readonly IMapper _mapper;
 
-        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository, IRepository<Item> itemsRepository)
+        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository, IRepository<Item> itemsRepository, IMapper mapper)
         {
             _orderItemsRepository = orderItemsRepository;
             _ordersRepository = ordersRepository;
             _itemsRepository = itemsRepository;
+            _mapper = mapper;
         }
 
         public async Task AddItemToCart(long customerId, long itemId, int itemQuantity)
@@ -51,7 +56,7 @@ namespace OnlineShop.Services
             await _ordersRepository.SaveChanges();
         }
 
-        public async Task ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto)
+        public async Task<DeliveryTimeDto> ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto)
         {
             var order = await _ordersRepository.GetById(orderId);
             if(order == null)
@@ -66,6 +71,8 @@ namespace OnlineShop.Services
             order.Status = OrderStatus.Finished;
 
             await _ordersRepository.SaveChanges();
+
+            return new DeliveryTimeDto { DeliveryTime = order.DeliveryTime };
         }
 
         public async Task<List<OrderViewDto>> CurrentOrderView(long customerId)
@@ -135,6 +142,26 @@ namespace OnlineShop.Services
 
             _orderItemsRepository.Delete(orderItem);
             await _orderItemsRepository.SaveChanges();
+        }
+
+        public async Task<List<OrderListDto>> CustomersOrders(long customerId)
+        {
+            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == customerId && x.Status.Equals(OrderStatus.Finished));
+            if (orders.Any())
+            {
+                foreach (var order in orders)
+                {
+                    if (order.DeliveryTime < DateTime.UtcNow)
+                    {
+                        order.IsDelivered = true;
+                    }
+                }
+
+                await _ordersRepository.SaveChanges();
+                return _mapper.Map<List<OrderListDto>>(orders);
+            }
+
+            throw new InvalidOperationException("No orders yet.");
         }
 
         public static DateTime GenerateTime()

@@ -81,7 +81,9 @@ function Cart() {
     try {
       const resp = await ConfirmOrder(orderId, orderToConfirm);
       setOrder(null);
-      setErrorMessage(resp);
+      const dateTime = new Date(resp.deliveryTime);
+      const formattedDateTime = dateTime.toLocaleString();
+      setErrorMessage('Order is successfully confirmed. Estimated delivery time: ' + formattedDateTime);
     } catch (error) {
       setErrorMessage(error.message);
     }

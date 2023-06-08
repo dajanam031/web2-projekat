@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using OnlineShop.Dto.ItemDTOs;
+using OnlineShop.Dto.OrderDTOs;
 using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Models;
 
@@ -17,6 +18,8 @@ namespace OnlineShop.Mapping
 
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Item, AddItemDto>().ReverseMap();
+
+            CreateMap<Order, OrderListDto>().ReverseMap();
         }
     }
 }

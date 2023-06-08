@@ -3,6 +3,7 @@
     public enum OrderStatus
     {
         InProgress,
-        Finished
+        Finished,
+        Canceled
     }
 }
