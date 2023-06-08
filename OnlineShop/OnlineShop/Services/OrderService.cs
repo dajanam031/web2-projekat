@@ -23,19 +23,15 @@ namespace OnlineShop.Services
 
         public async Task AddItemToCart(long customerId, long itemId, int itemQuantity)
         {
-            // proveri jel neka poruzbina od tog kupca u toku
             Order orderInProgress = await _ordersRepository.FindBy(x => x.Status.Equals(OrderStatus.InProgress) && x.PurchaserId == customerId);
             if (orderInProgress == null)
             {
-                // kreiram novu 
-                orderInProgress = new Order { PurchaserId = customerId, Status = OrderStatus.InProgress };
+                orderInProgress = new Order { PurchaserId = customerId, Status = OrderStatus.InProgress};
                 await _ordersRepository.Create(orderInProgress);
                 await _ordersRepository.SaveChanges();
                 orderInProgress = await _ordersRepository.FindBy(x => x.Status.Equals(OrderStatus.InProgress) && x.PurchaserId == customerId);
             }
 
-            // napravi order item od prosledjenih podataka, ako dodajem isti artikal onda cu samo promeniti kolicinu
-            // tj dodati da ne bih pravila razlicite order iteme za isti artikal 
             OrderItem existingOrderItem = await _orderItemsRepository.FindBy(x => x.ItemId == itemId && x.OrderId == orderInProgress.Id);
             if(existingOrderItem == null)
             {
@@ -46,11 +42,30 @@ namespace OnlineShop.Services
                 existingOrderItem.ItemQuantity += itemQuantity;
             }
 
-            // naci item u bazi i smanjiti mu kolicinu za prosledjenu 
             var item = await _itemsRepository.GetById(itemId);
             item.Quantity -= itemQuantity;
+            orderInProgress.TotalPrice += (item.Price * itemQuantity);
+
             await _itemsRepository.SaveChanges();
             await _orderItemsRepository.SaveChanges();
+            await _ordersRepository.SaveChanges();
+        }
+
+        public async Task ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto)
+        {
+            var order = await _ordersRepository.GetById(orderId);
+            if(order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            order.DeliveryAddress = confirmOrderDto.DeliveryAddress;
+            order.Comment = confirmOrderDto.Comment;
+            order.DeliveryTime = GenerateTime();
+            order.OrderingTime = DateTime.Now;
+            order.Status = OrderStatus.Finished;
+
+            await _ordersRepository.SaveChanges();
         }
 
         public async Task<List<OrderViewDto>> CurrentOrderView(long customerId)
@@ -58,12 +73,12 @@ namespace OnlineShop.Services
             var currentOrder = await _ordersRepository.GetOrderView(customerId);
             if (currentOrder != null)
             {
-                List<OrderViewDto> orderViewDtos = new List<OrderViewDto>();
+                List<OrderViewDto> orderViewDtos = new();
                 foreach (var orderItem in currentOrder.OrderItems)
                 {
-                    var totalPrice = orderItem.Item.Price * orderItem.ItemQuantity;
-                    orderViewDtos.Add(new OrderViewDto { ItemName = orderItem.Item.Name, ItemPrice = totalPrice,
-                        ItemQuantity = orderItem.ItemQuantity, OrderId = orderItem.OrderId, ItemId = orderItem.ItemId });
+                    var totalOrderItemPrice = orderItem.Item.Price * orderItem.ItemQuantity;
+                    orderViewDtos.Add(new OrderViewDto { ItemName = orderItem.Item.Name, ItemPrice = totalOrderItemPrice,
+                    ItemQuantity = orderItem.ItemQuantity, OrderId = orderItem.OrderId, ItemId = orderItem.ItemId, TotalPrice = currentOrder.TotalPrice });
                 }
 
                 return orderViewDtos;
@@ -89,7 +104,7 @@ namespace OnlineShop.Services
                     throw new ArgumentNullException(nameof(item));
                 }
 
-                item.Quantity += orderItem.ItemQuantity; // vracam kolicinu
+                item.Quantity += orderItem.ItemQuantity;
                 await _itemsRepository.SaveChanges();
             }
 
@@ -100,16 +115,41 @@ namespace OnlineShop.Services
         public async Task DeleteOrderItem(long itemId, long orderId)
         {
             var orderItem = await _orderItemsRepository.GetById(orderId, itemId);
+            var order = await _ordersRepository.GetById(orderId);
             if(orderItem == null)
             {
                 throw new ArgumentNullException(nameof(orderItem));
             }
+
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
             var item = await _itemsRepository.GetById(itemId);
-            item.Quantity += orderItem.ItemQuantity; // vracam kolicinu
+            item.Quantity += orderItem.ItemQuantity;
+            order.TotalPrice -= (item.Price * orderItem.ItemQuantity);
+
+            await _ordersRepository.SaveChanges();
             await _itemsRepository.SaveChanges();
 
             _orderItemsRepository.Delete(orderItem);
             await _orderItemsRepository.SaveChanges();
         }
+
+        public static DateTime GenerateTime()
+        {
+            Random random = new();
+
+            int additionalRandomDays = random.Next(1, 7); 
+            int additionalRandomHours = random.Next(24); 
+
+            TimeSpan totalOffset = new(additionalRandomDays, additionalRandomHours, 0, 0);
+
+            DateTime randomTime = DateTime.Now.AddHours(1).Add(totalOffset);
+
+            return randomTime;
+        }
+
     }
 }

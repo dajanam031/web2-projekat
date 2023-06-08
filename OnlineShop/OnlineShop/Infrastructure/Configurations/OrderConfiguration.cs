@@ -15,6 +15,9 @@ namespace OnlineShop.Infrastructure.Configurations
 
             builder.Property(x => x.DeliveryAddress).HasMaxLength(50);
             builder.Property(x => x.Comment).HasMaxLength(100);
+            builder.Property(x => x.DeliveryTime).HasDefaultValue(new DateTime(2011, 1, 1));
+            builder.Property(x => x.OrderingTime).HasDefaultValue(new DateTime(2011, 1, 1));
+            builder.Property(x => x.TotalPrice).HasDefaultValue(0);
 
             builder.Property(x => x.Status)
                   .HasConversion(

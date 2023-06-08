@@ -61,3 +61,17 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const ConfirmOrder = async (id, data) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/orders/confirm-order/${id}`, data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

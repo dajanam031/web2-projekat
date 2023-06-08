@@ -10,5 +10,6 @@ namespace OnlineShop.Interfaces
         Task<List<OrderViewDto>> CurrentOrderView(long customerId);
         Task DeleteOrderItem(long itemId, long orderId);
         Task DeclineOrder(long orderId);
+        Task ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto);
     }
 }

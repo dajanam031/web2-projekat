@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OnlineShop.Models
 {
@@ -11,5 +12,8 @@ namespace OnlineShop.Models
         public User Purchaser { get; set; }
         public long PurchaserId { get; set; }
         public OrderStatus Status { get; set; }
+        public DateTime DeliveryTime { get; set; }
+        public DateTime OrderingTime { get; set; }
+        public double TotalPrice { get; set; }
     }
 }

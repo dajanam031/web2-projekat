@@ -9,6 +9,7 @@ using OnlineShop.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using OnlineShop.Models;
 using OnlineShop.Services;
+using OnlineShop.Dto.OrderDTOs;
 
 namespace OnlineShop.Controllers
 {
@@ -25,7 +26,7 @@ namespace OnlineShop.Controllers
 
         [HttpPost("add-to-cart/{itemId}/{quantity}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> CreateUser([FromRoute] long itemId, [FromRoute] int quantity)
+        public async Task<IActionResult> AddToCart([FromRoute] long itemId, [FromRoute] int quantity)
         {
             long userId = long.Parse(User.GetId());
             try
@@ -83,6 +84,22 @@ namespace OnlineShop.Controllers
             catch (Exception)
             {
                 return BadRequest("Failed to delete order.");
+            }
+        }
+
+        [HttpPut("confirm-order/{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> ConfirmOrder([FromRoute] long orderId, [FromBody] ConfirmOrderDto confirmOrderDto)
+        {
+            try
+            {
+                await _orderService.ConfirmOrder(orderId, confirmOrderDto);
+                return Ok("Order is successfully purchased.");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

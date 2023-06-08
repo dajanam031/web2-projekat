@@ -1,6 +1,6 @@
 import React from "react";
-import { useEffect, useState } from "react";
-import { GetCurrentOrder, DeleteOrderItem, DeclineOrder } from "../../services/OrderService";
+import { useEffect, useState, useRef } from "react";
+import { GetCurrentOrder, DeleteOrderItem, DeclineOrder, ConfirmOrder } from "../../services/OrderService";
 import {
   Table,
   TableHead,
@@ -17,12 +17,15 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Home from "../Users/Home";
+import { OrderToConfirm } from "../../models/OrderToConfirm";
 
 function Cart() {
   const [order, setOrder] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-  const [comment, setComment] = useState("");
-  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [orderToConfirm, setOrderToConfirm] = useState(new OrderToConfirm());
+  const [emptyFieldsMess, setEmptyFieldsMess] = useState("");
+  const commentRef = useRef(null);
+  const deliveryAddressRef = useRef(null);
 
   const getOrder = async () => {
     try {
@@ -36,14 +39,6 @@ function Cart() {
   useEffect(() => {
     getOrder();
   }, []);
-
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
-  };
-
-  const handleDeliveryAddressChange = (event) => {
-    setDeliveryAddress(event.target.value);
-  };
 
   const handleDelete = async (rowKey) => {
     try {
@@ -65,13 +60,31 @@ function Cart() {
       }
   };
 
-  const handleSubmit = () => {
-    if(comment.trim() === '' || deliveryAddress.trim() === ''){
-        setErrorMessage("Please fill out both fields before confirming order.");
+  const handleSubmit = async (orderId) => {
+    if(orderToConfirm.comment.trim() === '' && orderToConfirm.deliveryAddress.trim() === ''){
+        setEmptyFieldsMess("Please fill out comment and delivery address before confirming order.");
+        commentRef.current.focus();
         return;
     }
-    setErrorMessage("ok");
+    if(orderToConfirm.comment.trim() === ''){
+      setEmptyFieldsMess("Please fill out comment before confirming order.");
+      commentRef.current.focus();
+      return;
+    }
+    if(orderToConfirm.deliveryAddress.trim() === ''){
+      setEmptyFieldsMess("Please fill out delivery address before confirming order.");
+      deliveryAddressRef.current.focus();
+      return;
+    }
+    setEmptyFieldsMess('');
 
+    try {
+      const resp = await ConfirmOrder(orderId, orderToConfirm);
+      setOrder(null);
+      setErrorMessage(resp);
+    } catch (error) {
+      setErrorMessage(error.message);
+    }
   }
 
   return (
@@ -84,7 +97,7 @@ function Cart() {
             sx={{ backgroundColor: "#a6ad93" }}
             marginTop={2}
             padding={2}
-          ><div>{errorMessage && <Alert variant="outlined" severity="error">{errorMessage}</Alert>}</div>
+          ><div>{emptyFieldsMess && <Alert variant="outlined" severity="error">{emptyFieldsMess}</Alert>}</div>
             <TableContainer>
               <Table size="small" aria-label="a dense table">
                 <TableHead>
@@ -98,7 +111,6 @@ function Cart() {
                 <TableBody>
                   {order.map((orderItem) => {
                     const rowKey = `${orderItem.orderId}-${orderItem.itemId}`;
-                    console.log(rowKey);
                     return (
                       <TableRow key={rowKey}>
                         <TableCell>{orderItem.itemName}</TableCell>
@@ -134,7 +146,7 @@ function Cart() {
                     <TableCell colSpan={2.5} align="right">
                       <b>Total Sum:</b>
                     </TableCell>
-                    <TableCell align="right">{5000} rsd</TableCell>
+                    <TableCell align="right">{order[0].totalPrice + 400} rsd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   
@@ -149,27 +161,29 @@ function Cart() {
               >
                 <TextField
                   label="Comment"
-                  value={comment}
-                  onChange={handleCommentChange}
+                  value={orderToConfirm.comment}
+                  onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, comment: e.target.value }))}
                   variant="outlined"
                   size="small"
                   multiline
                   rows={3}
                   margin="dense"
+                  inputRef={commentRef}
                 />
                 <TextField
                   label="Delivery Address"
-                  value={deliveryAddress}
-                  onChange={handleDeliveryAddressChange}
+                  value={orderToConfirm.deliveryAddress}
+                  onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, deliveryAddress: e.target.value }))}
                   variant="outlined"
                   size="small"
                   margin="dense"
+                  inputRef={deliveryAddressRef}
                 />
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
                   <Button onClick={() => handleDecline(order[0].orderId)} variant="contained" color="error">
                     Decline Order
                   </Button>
-                  <Button variant="contained" color="primary">
+                  <Button onClick={() => handleSubmit(order[0].orderId)} variant="contained" color="primary">
                     Confirm Order
                   </Button>
                 </Box>
