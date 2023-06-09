@@ -1,7 +1,6 @@
 import Home from "../Users/Home";
-import { GetAllOrders } from "../../services/OrderService";
+import { GetSellerOrders } from "../../services/OrderService";
 import { useEffect, useState } from "react";
-import { OrdersInfo } from "../../models/OrdersInfo";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -10,24 +9,27 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from "@mui/material";
-import OrderDetails from "./OrderDetails";
+import SellerDetails from "./SellerDetails";
+import { OrdersInfo } from "../../models/OrdersInfo";
 
-function AllOrders(){
+function SellerDeliveredOrders(){
     const [orders, setOrders] = useState(new OrdersInfo());
     const [openDialog, setOpenDialog] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [info, setInfo] = useState('');
 
-    const getAllOrders = async () => {
+    const getDeliveredOrders = async () => {
         try {
-          const resp = await GetAllOrders();
+          const resp = await GetSellerOrders(false);
           setOrders(resp);
         } catch (error) {
-          console.log(error.message);
+          setInfo(error.message);
         }
-      };
+      
+    };
     
       useEffect(() => {
-        getAllOrders();
+        getDeliveredOrders();
       }, []);
 
       const formatDate = (date) => {
@@ -44,7 +46,6 @@ function AllOrders(){
       const handleCloseDialog = () => {
         setOpenDialog(false);
       };
-
     return (
         <>
         <Home/>
@@ -56,13 +57,13 @@ function AllOrders(){
             <TableHead>
                 <TableRow>
                     <TableCell colSpan={7} align="center" sx={{ borderBottom: '1px solid #050000' }}>
-                    <h3>All orders</h3>
+                    <h3>Delivered orders</h3>
                     </TableCell>
                 </TableRow>
                 <TableRow>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Purchaser</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Ordering time</b></TableCell>
-                    <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Estimated delivery time</b></TableCell>
+                    <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Delivery time</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Comment</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Delivery address</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Total price (rsd)</b></TableCell>
@@ -96,15 +97,16 @@ function AllOrders(){
             </TableBody>
             </Table>
             </TableContainer>
-            <OrderDetails
+            <SellerDetails
         open={openDialog}
         handleClose={handleCloseDialog}
         orderId={selectedOrderId}
       />
             </>
         )}
+        {info && <h3>{info}</h3>}
         </>
     );
 }
 
-export default AllOrders;
+export default SellerDeliveredOrders;

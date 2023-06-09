@@ -151,21 +151,16 @@ namespace OnlineShop.Services
             }
         }
 
-        public async Task<List<OrderListDto>> CustomersOrders(long customerId)
+        public async Task<List<OrderListCustomerDto>> CustomersOrders(long customerId)
         {
             var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == customerId && x.Status.Equals(OrderStatus.Finished));
             if (orders.Any())
             {
                 foreach (var order in orders)
                 {
-                    if (order.DeliveryTime < DateTime.Now)
-                    {
-                        order.IsDelivered = true;
-                    }
+                    await _ordersRepository.CheckDeliveryStatus(order);
                 }
-
-                await _ordersRepository.SaveChanges();
-                return _mapper.Map<List<OrderListDto>>(orders);
+                return _mapper.Map<List<OrderListCustomerDto>>(orders);
             }
 
             throw new InvalidOperationException("No orders yet.");
@@ -225,23 +220,84 @@ namespace OnlineShop.Services
             await _ordersRepository.SaveChanges();
         }
 
-        public async Task<List<OrderListAdminDto>> AllOrders()
+        public async Task<List<OrderListDto>> AllOrders()
         {
             var orders = await _ordersRepository.GetAllOrders();
             if (orders.Any())
             {
-                List<OrderListAdminDto> orderListAdminDtos = new();
-                foreach(var or in orders)
+                List<OrderListDto> orderListAdminDtos = new();
+                foreach (var or in orders)
                 {
-                    var order = _mapper.Map<OrderListAdminDto>(or);
+                    await _ordersRepository.CheckDeliveryStatus(or);
+                    var order = _mapper.Map<OrderListDto>(or);
                     order.Customer = or.Purchaser.FirstName + " " + or.Purchaser.LastName;
                     orderListAdminDtos.Add(order);
                 }
 
+                await _ordersRepository.SaveChanges();
+               
                 return orderListAdminDtos;
             }
 
             throw new InvalidOperationException("No orders.");
+        }
+
+        public async Task<List<OrderListDto>> GetSellerOrders(long id, bool isNew)
+        {
+            var orders = await _ordersRepository.GetSellerOrders(id);
+
+            if (orders.Any())
+            {
+                foreach (var order in orders)
+                {
+                    await _ordersRepository.CheckDeliveryStatus(order);
+                }
+
+                var filteredOrders = isNew ? orders.Where(o => !o.IsDelivered) : orders.Where(o => o.IsDelivered);
+
+                if (filteredOrders.Any())
+                {
+                    List<OrderListDto> orderListDtos = new();
+                    foreach (var or in filteredOrders)
+                    {
+                        var order = _mapper.Map<OrderListDto>(or);
+                        order.Customer = or.Purchaser.FirstName + " " + or.Purchaser.LastName;
+                        orderListDtos.Add(order);
+                    }
+
+                    return orderListDtos;
+                }
+                else
+                {
+                    throw new InvalidOperationException("No orders.");
+                }
+            }
+
+            throw new InvalidOperationException("No orders.");
+        }
+
+        public async Task<List<OrderDetailsDto>> GetOrderDetails(long orderId, long sellerId)
+        {
+            var order = await _ordersRepository.OrderDetails(orderId);
+            if (order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            List<OrderDetailsDto> orderDetailsDtos = new();
+
+            foreach (var orderItem in order.OrderItems)
+            {
+                if(orderItem.Item.SellerId == sellerId)
+                {
+                    var item = _mapper.Map<OrderDetailsDto>(orderItem.Item);
+                    item.ItemQuantity = orderItem.ItemQuantity;
+                    item.SellerName = orderItem.Item.Seller.FirstName + " " + orderItem.Item.Seller.LastName;
+                    orderDetailsDtos.Add(item);
+                }
+            }
+
+            return orderDetailsDtos;
         }
     }
 }

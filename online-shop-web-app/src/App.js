@@ -14,6 +14,8 @@ import AllArticles from './components/Item/AllArticles';
 import Cart from './components/Orders/Cart';
 import CustomerOrders from './components/Orders/CustomerOrders';
 import AllOrders from './components/Orders/AllOrders';
+import SellerDeliveredOrders from './components/Orders/SellerDeliveredOrders';
+import SellerNewOrders from './components/Orders/SellerNewOrders';
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -28,7 +30,6 @@ function App() {
         role: GetUserRole(token),
         isVerified: GetUserVerification(token) 
       };
-      console.log(user);
       dispatch(setUser(user));
     }
     setLoading(false);
@@ -56,9 +57,17 @@ function App() {
               </>
             )}
             {user.role === "Seller" && user.isVerified === 'True' ? (
+              <>
               <Route path="/seller-articles" element={<SellerArticles />} />
+              <Route path="/seller-orders" element={<SellerDeliveredOrders />} />
+              <Route path="/new-orders" element={<SellerNewOrders />} />
+              </>
             ) : (
+              <>
               <Route path="/seller-articles" element={<Navigate to="/" />} />
+              <Route path="/seller-orders" element={<Navigate to="/" />} />
+              <Route path="/new-orders" element={<Navigate to="/" />} />
+              </>
             )}
              {user.role === "Customer" ? (
                 <>

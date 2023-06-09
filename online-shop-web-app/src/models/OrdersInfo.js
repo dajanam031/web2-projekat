@@ -1,4 +1,4 @@
-export class AdminOrdersView {
+export class OrdersInfo {
     constructor() {
       this.id = 0;
       this.comment = '';

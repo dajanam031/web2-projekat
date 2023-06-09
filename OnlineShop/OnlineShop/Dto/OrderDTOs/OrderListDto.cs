@@ -1,5 +1,4 @@
 ﻿using OnlineShop.Models;
-using System.Collections.Generic;
 using System;
 
 namespace OnlineShop.Dto.OrderDTOs
@@ -13,6 +12,7 @@ namespace OnlineShop.Dto.OrderDTOs
         public DateTime OrderingTime { get; set; }
         public double TotalPrice { get; set; }
         public bool IsDelivered { get; set; }
-
+        public string Customer { get; set; }
+        public OrderStatus Status { get; set; }
     }
 }

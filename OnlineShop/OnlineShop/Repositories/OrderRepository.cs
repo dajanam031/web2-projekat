@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OnlineShop.Infrastructure;
+using OnlineShop.Migrations;
 using OnlineShop.Models;
 using OnlineShop.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -47,6 +49,30 @@ namespace OnlineShop.Repositories
                 FirstOrDefaultAsync(o => o.Id == orderId);
 
             return order;
+        }
+
+        public async Task<List<Order>> GetSellerOrders(long sellerId)
+        {
+            var orders = await _dbContext.Orders
+                .Where(o => o.Status == OrderStatus.Finished)
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Item)
+                .Include(o => o.Purchaser) 
+                .Where(o => o.OrderItems.Any(oi => oi.Item.SellerId == sellerId))
+                .ToListAsync();
+
+            return orders;
+        }
+
+
+        public async Task CheckDeliveryStatus(Order order)
+        {
+            if (order.DeliveryTime < DateTime.Now)
+            {
+                order.IsDelivered = true;
+            }
+
+            await _dbContext.SaveChangesAsync();
         }
     }
 }

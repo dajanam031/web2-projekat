@@ -133,6 +133,22 @@ namespace OnlineShop.Controllers
             }
         }
 
+        [HttpGet("seller-order-details/{orderId}")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetSellerOrderDetails([FromRoute] long orderId)
+        {
+            long userId = long.Parse(User.GetId());
+            try
+            {
+                return Ok(await _orderService.GetOrderDetails(orderId, userId));
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPut("cancel-order/{orderId}")]
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> CancelOrder([FromRoute] long orderId)
@@ -159,6 +175,22 @@ namespace OnlineShop.Controllers
             try
             {
                 return Ok(await _orderService.AllOrders());
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("seller-orders")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetSellerOrders([FromQuery] bool isNew)
+        {
+            long userId = long.Parse(User.GetId());
+            try
+            {
+                return Ok(await _orderService.GetSellerOrders(userId, isNew));
 
             }
             catch (InvalidOperationException ex)

@@ -1,13 +1,8 @@
-import axios from "axios";
+import apiClient from "../utils/ApiClient";
 
 export const GetAllItems = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.get(`${process.env.REACT_APP_API_URL}/items`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiClient.get(`/items`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data);
@@ -16,12 +11,7 @@ export const GetAllItems = async () => {
 
 export const GetSellerItems = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/items/seller-items`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get(`/items/seller-items`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -30,12 +20,7 @@ export const GetSellerItems = async () => {
 
   export const DeleteItem = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/items/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.delete(`${process.env.REACT_APP_API_URL}/items/${id}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -44,12 +29,7 @@ export const GetSellerItems = async () => {
 
   export const ModifyItem = async (data) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/items/update-item`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.put(`/items/update-item`, data);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -58,12 +38,7 @@ export const GetSellerItems = async () => {
 
   export const AddItem = async (data) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post(`${process.env.REACT_APP_API_URL}/items`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.post(`/items`, data);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

@@ -10,5 +10,7 @@ namespace OnlineShop.Repositories.Interfaces
         Task<Order> GetOrderById(long id);
         Task<Order> OrderDetails(long orderId);
         Task<List<Order>> GetAllOrders();
+        Task<List<Order>> GetSellerOrders(long sellerId);
+        Task CheckDeliveryStatus(Order order);
     }
 }

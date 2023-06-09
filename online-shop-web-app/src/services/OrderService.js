@@ -1,16 +1,8 @@
-import axios from "axios";
+import apiClient from "../utils/ApiClient";
 
 export const AddItemToCart = async (itemId, quantity) => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post(
-      `${process.env.REACT_APP_API_URL}/orders/add-to-cart/${itemId}/${quantity}`, null, 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await apiClient.post(`/orders/add-to-cart/${itemId}/${quantity}`, null);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data);
@@ -19,15 +11,7 @@ export const AddItemToCart = async (itemId, quantity) => {
 
 export const GetCurrentOrder = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/orders/order-view`, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.get(`/orders/order-view`)
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -36,12 +20,7 @@ export const GetCurrentOrder = async () => {
 
   export const DeleteOrderItem = async (itemId, orderId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/orders/${itemId}/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.delete(`/orders/${itemId}/${orderId}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -50,12 +29,7 @@ export const GetCurrentOrder = async () => {
 
   export const DeclineOrder = async (orderId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.delete(`${process.env.REACT_APP_API_URL}/orders/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.delete(`/orders/${orderId}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -64,12 +38,7 @@ export const GetCurrentOrder = async () => {
 
   export const ConfirmOrder = async (id, data) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/orders/confirm-order/${id}`, data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.put(`/orders/confirm-order/${id}`, data);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -78,12 +47,7 @@ export const GetCurrentOrder = async () => {
 
   export const CustomersOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/orders/previous-orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get(`/orders/previous-orders`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -92,12 +56,16 @@ export const GetCurrentOrder = async () => {
 
   export const GetOrderDetails = async (orderId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/orders/order-details/${orderId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get(`/orders/order-details/${orderId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const GetSellerOrderDetails = async (orderId) => {
+    try {
+      const response = await apiClient.get(`/orders/seller-order-details/${orderId}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -106,12 +74,7 @@ export const GetCurrentOrder = async () => {
 
   export const CancelOrder = async (orderId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/orders/cancel-order/${orderId}`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.put(`/orders/cancel-order/${orderId}`, null);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -120,12 +83,16 @@ export const GetCurrentOrder = async () => {
 
   export const GetAllOrders = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/orders/all-orders`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get(`/orders/all-orders`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const GetSellerOrders = async (isNew) => {
+    try {
+      const response = await apiClient.get(`/orders/seller-orders?isNew=${isNew}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

@@ -1,16 +1,9 @@
 import axios from "axios";
+import apiClient from "../utils/ApiClient";
 
 export const GetStatus = async () => {
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/users/verification-status`, 
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await apiClient.get(`/users/verification-status`);
     return response.data;
   } catch (error) {
     throw new Error(error.response.data);
@@ -46,15 +39,7 @@ export const LoginUser = async (userData) => {
 
   export const UserProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/users/profile`, 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.get(`/users/profile`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -63,13 +48,7 @@ export const LoginUser = async (userData) => {
 
   export const ChangeUserProfile = async (userData) => {
     try {
-      const token = localStorage.getItem('token');
-      console.log(token);
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/update-profile`, userData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.put(`/users/update-profile`, userData);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -78,12 +57,7 @@ export const LoginUser = async (userData) => {
 
   export const ChangeUserPassword = async (newPass) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/change-password`, newPass, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.put(`/users/change-password`, newPass);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -92,12 +66,7 @@ export const LoginUser = async (userData) => {
 
   export const GetSellers = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${process.env.REACT_APP_API_URL}/users/sellers`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await apiClient.get(`/users/sellers`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -106,13 +75,7 @@ export const LoginUser = async (userData) => {
 
   export const VerifySeller = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/verify`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          userId: id
-        },
-      });
+      const response = await apiClient.put(`/users/verify`, null);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -122,14 +85,7 @@ export const LoginUser = async (userData) => {
 
   export const DeclineSeller = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-
-      const response = await axios.put(`${process.env.REACT_APP_API_URL}/users/decline`, null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          userId: id
-        },
-      });
+      const response = await apiClient.put(`/users/decline`, null);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
