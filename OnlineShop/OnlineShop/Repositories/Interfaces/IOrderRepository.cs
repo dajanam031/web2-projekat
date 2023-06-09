@@ -1,4 +1,5 @@
 ﻿using OnlineShop.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OnlineShop.Repositories.Interfaces
@@ -8,5 +9,6 @@ namespace OnlineShop.Repositories.Interfaces
         Task<Order> GetOrderView(long customerId);
         Task<Order> GetOrderById(long id);
         Task<Order> OrderDetails(long orderId);
+        Task<List<Order>> GetAllOrders();
     }
 }

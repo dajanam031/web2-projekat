@@ -1,5 +1,5 @@
 import Home from "../Users/Home";
-import { CustomersOrders } from "../../services/OrderService";
+import { CustomersOrders, CancelOrder } from "../../services/OrderService";
 import { useEffect, useState } from "react";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,7 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import OrderDetails from "./OrderDetails";
 
 function CustomerOrders() {
@@ -16,7 +16,9 @@ function CustomerOrders() {
     const [errorMessage, setErrorMessage] = useState('');
     const [remainingTimes, setRemainingTimes] = useState({});
     const [openDialog, setOpenDialog] = useState(false);
-  const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [selectedOrderId, setSelectedOrderId] = useState(null);
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
 
     const getAllOrders = async () => {
@@ -89,10 +91,23 @@ function CustomerOrders() {
         setOpenDialog(false);
       };
 
+      const handleCancel = async (orderId) => {
+        try {
+          const resp = await CancelOrder(orderId);
+          const filtered = allOrders.filter((order) => order.id !== +orderId);
+          setAllOrders(filtered);
+          setSnackbarMessage(resp);
+          setSnackbarOpen(true);
+        } catch (error) {
+          setSnackbarMessage(error.message);
+          setSnackbarOpen(true);
+        }
+      };
+
     return (
         <>
         <Home/>
-        {!allOrders && (<h1>No orders yet.</h1>)}
+        {!allOrders && (<h1>Loading...</h1>)}
         {allOrders && (
             <>
             {allOrders.filter((order) => !order.isDelivered).length > 0 && (
@@ -133,7 +148,7 @@ function CustomerOrders() {
                         <Button variant="outlined" color="secondary" size="small" onClick={() => handleOpenDialog(order.id)}>
                         Details
                         </Button>
-                        <Button variant="outlined" color="error" size="small">
+                        <Button variant="outlined" color="error" size="small" onClick={() => handleCancel(order.id)}>
                             Cancel order
                         </Button>
                     </div>
@@ -192,6 +207,13 @@ function CustomerOrders() {
         handleClose={handleCloseDialog}
         orderId={selectedOrderId}
       />
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={7000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      message={snackbarMessage}
+    />
         </>
     );
 }

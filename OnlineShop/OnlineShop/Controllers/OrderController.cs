@@ -74,11 +74,11 @@ namespace OnlineShop.Controllers
 
         [HttpDelete("{orderId}")]
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> DeclineOrder([FromRoute] long orderId)
+        public async Task<IActionResult> DeleteOrder([FromRoute] long orderId)
         {
             try
             {
-                await _orderService.DeclineOrder(orderId);
+                await _orderService.DeleteOrder(orderId);
                 return Ok();
             }
             catch (Exception)
@@ -119,7 +119,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("order-details/{orderId}")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer, Administrator")]
         public async Task<IActionResult> GetOrderDetails([FromRoute] long orderId)
         {
             try
@@ -128,6 +128,40 @@ namespace OnlineShop.Controllers
 
             }
             catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("cancel-order/{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> CancelOrder([FromRoute] long orderId)
+        {
+            try
+            {
+                await _orderService.CancelOrder(orderId);
+                return Ok("Order is successfully canceled.");
+            }
+            catch(InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception)
+            {
+                return BadRequest("Failed to cancel order.");
+            }
+        }
+
+        [HttpGet("all-orders")]
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> GetAllOrders()
+        {
+            try
+            {
+                return Ok(await _orderService.AllOrders());
+
+            }
+            catch (InvalidOperationException ex)
             {
                 return BadRequest(ex.Message);
             }

@@ -13,6 +13,7 @@ import SellerArticles from './components/Item/SellerArticles';
 import AllArticles from './components/Item/AllArticles';
 import Cart from './components/Orders/Cart';
 import CustomerOrders from './components/Orders/CustomerOrders';
+import AllOrders from './components/Orders/AllOrders';
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -44,9 +45,15 @@ function App() {
         <Route element={<PrivateRoutes/>}> 
             <Route path="/profile" element={<Profile />} />
             {user.role === "Administrator" ? (
+              <>
               <Route path="/verification" element={<Verification />} />
+              <Route path="/all-orders" element={<AllOrders />} />
+              </>
             ) : (
+              <>
               <Route path="/verification" element={<Navigate to="/" />} />
+              <Route path="/all-orders" element={<Navigate to="/" />} />
+              </>
             )}
             {user.role === "Seller" && user.isVerified === 'True' ? (
               <Route path="/seller-articles" element={<SellerArticles />} />

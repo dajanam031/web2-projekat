@@ -67,7 +67,7 @@ function Home() {
                     <CheckBoxRoundedIcon/>
                   Verification
                   </Button>
-                  <Button color="inherit" component={Link} to="/orders">
+                  <Button color="inherit" component={Link} to="/all-orders">
                     <DensitySmallRoundedIcon/>
                     All Orders
                   </Button>

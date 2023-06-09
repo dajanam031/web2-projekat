@@ -2,6 +2,8 @@
 using OnlineShop.Infrastructure;
 using OnlineShop.Models;
 using OnlineShop.Repositories.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace OnlineShop.Repositories
@@ -10,6 +12,12 @@ namespace OnlineShop.Repositories
     {
         public OrderRepository(ShopDbContext dbContext) : base(dbContext)
         {
+        }
+
+        public async Task<List<Order>> GetAllOrders()
+        {
+            var orders = await _dbContext.Orders.Where(o => o.Status != OrderStatus.InProgress).Include(o => o.Purchaser).ToListAsync();
+            return orders;
         }
 
         public async Task<Order> GetOrderById(long id)

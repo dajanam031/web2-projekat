@@ -103,3 +103,31 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const CancelOrder = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.put(`${process.env.REACT_APP_API_URL}/orders/cancel-order/${orderId}`, null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const GetAllOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/orders/all-orders`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

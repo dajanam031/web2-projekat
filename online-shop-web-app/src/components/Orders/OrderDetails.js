@@ -39,15 +39,15 @@ function OrderDetails({ open, handleClose, orderId }) {
       {details && details.length > 0 ? (
         <List>
           {details.map((item, index) => (
-            <React.Fragment key={item.itemId}>
+            <React.Fragment key={item.id}>
               <ListItem>
                 <ListItemText
-                  primary={item.itemName}
+                  primary={item.name}
                   secondary={
                     <>
-                      <span>Description: {item.itemDescription}</span>
+                      <span>Description: {item.description}</span>
                       <br />
-                      <span>Price: {item.itemPrice} rsd</span>
+                      <span>Price: {item.price} rsd</span>
                       <br />
                       <span>Quantity: {item.itemQuantity}</span>
                       <br />

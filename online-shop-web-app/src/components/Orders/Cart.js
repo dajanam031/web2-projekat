@@ -63,7 +63,6 @@ function Cart() {
     try {
         await DeclineOrder(orderId);
         setOrder(null);
-        getOrder();
       } catch (error) {
         setErrorMessage(error.message);
       }

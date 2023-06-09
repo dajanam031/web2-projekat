@@ -124,7 +124,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("sellers")]
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetUnverifiedUsers()
         {
             try
@@ -138,7 +138,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("verify")]
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> VerifyUser([FromHeader] string userId)
         {
             try
@@ -154,7 +154,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPut("decline")]
-        [Authorize]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeclineUser([FromHeader] string userId)
         {
             try
@@ -170,7 +170,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpGet("verification-status")]
-        [Authorize]
+        [Authorize(Roles = "Seller")]
         public async Task<IActionResult> SellerVerificationStatus()
         {
             try

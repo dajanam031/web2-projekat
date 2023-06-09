@@ -95,7 +95,7 @@ namespace OnlineShop.Services
 
         }
 
-        public async Task DeclineOrder(long orderId)
+        public async Task DeleteOrder(long orderId)
         {
             var order = await _ordersRepository.GetOrderById(orderId);
             if(order == null)
@@ -105,16 +105,16 @@ namespace OnlineShop.Services
 
             foreach(var orderItem in order.OrderItems)
             {
-                //var item = await _itemsRepository.GetById(orderItem.ItemId);
-                //if(item  == null)
-                //{
-                //    throw new ArgumentNullException(nameof(item));
-                //}
+                var item = await _itemsRepository.GetById(orderItem.ItemId);
+                if (item == null)
+                {
+                    throw new ArgumentNullException(nameof(item));
+                }
 
-                orderItem.Item.Quantity += orderItem.ItemQuantity;
-                await _itemsRepository.SaveChanges();
+                item.Quantity += orderItem.ItemQuantity;
             }
 
+            await _itemsRepository.SaveChanges();
             _ordersRepository.Delete(order);
             await _ordersRepository.SaveChanges();
         }
@@ -133,9 +133,9 @@ namespace OnlineShop.Services
                 throw new ArgumentNullException(nameof(order));
             }
 
-            //var item = await _itemsRepository.GetById(itemId);
-            orderItem.Item.Quantity += orderItem.ItemQuantity;
-            order.TotalPrice -= (orderItem.Item.Price * orderItem.ItemQuantity);
+            var item = await _itemsRepository.GetById(itemId);
+            item.Quantity += orderItem.ItemQuantity;
+            order.TotalPrice -= (item.Price * orderItem.ItemQuantity);
 
             await _ordersRepository.SaveChanges();
             await _itemsRepository.SaveChanges();
@@ -158,7 +158,7 @@ namespace OnlineShop.Services
             {
                 foreach (var order in orders)
                 {
-                    if (order.DeliveryTime < DateTime.UtcNow)
+                    if (order.DeliveryTime < DateTime.Now)
                     {
                         order.IsDelivered = true;
                     }
@@ -197,12 +197,51 @@ namespace OnlineShop.Services
 
             foreach(var orderItem in order.OrderItems)
             {
-                orderDetailsDtos.Add(new OrderDetailsDto { ItemId = orderItem.ItemId, ItemName = orderItem.Item.Name,
-                    ItemDescription =  orderItem.Item.Description, ItemPrice = orderItem.Item.Price, ItemQuantity = orderItem.ItemQuantity,
-                    SellerName = orderItem.Item.Seller.FirstName + " " + orderItem.Item.Seller.LastName});
+                var item = _mapper.Map<OrderDetailsDto>(orderItem.Item);
+                item.ItemQuantity = orderItem.ItemQuantity;
+                item.SellerName = orderItem.Item.Seller.FirstName + " " + orderItem.Item.Seller.LastName;
+                orderDetailsDtos.Add(item);
             }
 
             return orderDetailsDtos;
+        }
+
+        public async Task CancelOrder(long orderId)
+        {
+            var order = await _ordersRepository.GetById(orderId);
+            if(order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            TimeSpan timeDifference = DateTime.Now.Subtract(order.OrderingTime);
+
+            if (timeDifference.TotalMinutes > 60)
+            {
+                throw new InvalidOperationException("You cannot cancel the order. The order can be canceled within the first hour of placing the order.");
+            }
+
+            order.Status = OrderStatus.Canceled;
+            await _ordersRepository.SaveChanges();
+        }
+
+        public async Task<List<OrderListAdminDto>> AllOrders()
+        {
+            var orders = await _ordersRepository.GetAllOrders();
+            if (orders.Any())
+            {
+                List<OrderListAdminDto> orderListAdminDtos = new();
+                foreach(var or in orders)
+                {
+                    var order = _mapper.Map<OrderListAdminDto>(or);
+                    order.Customer = or.Purchaser.FirstName + " " + or.Purchaser.LastName;
+                    orderListAdminDtos.Add(order);
+                }
+
+                return orderListAdminDtos;
+            }
+
+            throw new InvalidOperationException("No orders.");
         }
     }
 }

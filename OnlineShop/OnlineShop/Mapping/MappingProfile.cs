@@ -18,8 +18,10 @@ namespace OnlineShop.Mapping
 
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Item, AddItemDto>().ReverseMap();
+            CreateMap<Item, OrderDetailsDto>().ReverseMap();
 
             CreateMap<Order, OrderListDto>().ReverseMap();
+            CreateMap<Order, OrderListAdminDto>().ReverseMap();
         }
     }
 }
