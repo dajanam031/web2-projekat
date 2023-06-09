@@ -31,5 +31,14 @@ namespace OnlineShop.Repositories
 
             return order;
         }
+
+        public async Task<Order> OrderDetails(long orderId)
+        {
+            var order = await _dbContext.Orders.Include(o => o.OrderItems).
+                ThenInclude(oi => oi.Item).ThenInclude(i => i.Seller).
+                FirstOrDefaultAsync(o => o.Id == orderId);
+
+            return order;
+        }
     }
 }

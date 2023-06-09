@@ -117,5 +117,20 @@ namespace OnlineShop.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("order-details/{orderId}")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetOrderDetails([FromRoute] long orderId)
+        {
+            try
+            {
+                return Ok(await _orderService.GetOrderDetails(orderId));
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

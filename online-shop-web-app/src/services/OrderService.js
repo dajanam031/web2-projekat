@@ -89,3 +89,17 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const GetOrderDetails = async (orderId) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/orders/order-details/${orderId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

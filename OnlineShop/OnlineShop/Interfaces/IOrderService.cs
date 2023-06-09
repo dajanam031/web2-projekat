@@ -12,5 +12,6 @@ namespace OnlineShop.Interfaces
         Task DeclineOrder(long orderId);
         Task<DeliveryTimeDto> ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto);
         Task<List<OrderListDto>> CustomersOrders (long customerId);
+        Task<List<OrderDetailsDto>> GetOrderDetails(long orderId);
     }
 }

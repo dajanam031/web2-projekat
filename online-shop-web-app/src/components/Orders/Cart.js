@@ -16,6 +16,7 @@ import {
   Alert
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Snackbar from '@mui/material/Snackbar';
 import Home from "../Users/Home";
 import { OrderToConfirm } from "../../models/OrderToConfirm";
 
@@ -24,6 +25,9 @@ function Cart() {
   const [errorMessage, setErrorMessage] = useState("");
   const [orderToConfirm, setOrderToConfirm] = useState(new OrderToConfirm());
   const [emptyFieldsMess, setEmptyFieldsMess] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+
   const commentRef = useRef(null);
   const deliveryAddressRef = useRef(null);
 
@@ -32,7 +36,7 @@ function Cart() {
       const resp = await GetCurrentOrder();
       setOrder(resp);
     } catch (error) {
-      setErrorMessage(error.message);
+      console.log(error.message);
     }
   };
 
@@ -44,7 +48,12 @@ function Cart() {
     try {
       const [orderId, itemId] = rowKey.split('-');
       await DeleteOrderItem(itemId, orderId);
-      getOrder();
+      const filtered = order.filter((orderItem) => orderItem.itemId !== +itemId);
+      if(filtered.length > 0){
+        setOrder(filtered);
+      }else{
+        setOrder(null);
+      }
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -83,7 +92,8 @@ function Cart() {
       setOrder(null);
       const dateTime = new Date(resp.deliveryTime);
       const formattedDateTime = dateTime.toLocaleString();
-      setErrorMessage('Order is successfully confirmed. Estimated delivery time: ' + formattedDateTime);
+      setSnackbarMessage('Order is successfully confirmed. Estimated delivery time: ' + formattedDateTime);
+      setSnackbarOpen(true);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -195,7 +205,17 @@ function Cart() {
           </Box>
         </Box>
       )}
+      {!order && (
+        <h3>You don't have active order yet.</h3>
+      )}
       {errorMessage && <p>{errorMessage}</p>}
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={7000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      message={snackbarMessage}
+    />
     </>
   );
 }

@@ -105,13 +105,13 @@ namespace OnlineShop.Services
 
             foreach(var orderItem in order.OrderItems)
             {
-                var item = await _itemsRepository.GetById(orderItem.ItemId);
-                if(item  == null)
-                {
-                    throw new ArgumentNullException(nameof(item));
-                }
+                //var item = await _itemsRepository.GetById(orderItem.ItemId);
+                //if(item  == null)
+                //{
+                //    throw new ArgumentNullException(nameof(item));
+                //}
 
-                item.Quantity += orderItem.ItemQuantity;
+                orderItem.Item.Quantity += orderItem.ItemQuantity;
                 await _itemsRepository.SaveChanges();
             }
 
@@ -133,15 +133,22 @@ namespace OnlineShop.Services
                 throw new ArgumentNullException(nameof(order));
             }
 
-            var item = await _itemsRepository.GetById(itemId);
-            item.Quantity += orderItem.ItemQuantity;
-            order.TotalPrice -= (item.Price * orderItem.ItemQuantity);
+            //var item = await _itemsRepository.GetById(itemId);
+            orderItem.Item.Quantity += orderItem.ItemQuantity;
+            order.TotalPrice -= (orderItem.Item.Price * orderItem.ItemQuantity);
 
             await _ordersRepository.SaveChanges();
             await _itemsRepository.SaveChanges();
 
             _orderItemsRepository.Delete(orderItem);
             await _orderItemsRepository.SaveChanges();
+
+            var remaining = await _orderItemsRepository.FindAllBy(x => x.OrderId == orderId);
+            if(!remaining.Any())
+            {
+                _ordersRepository.Delete(order);
+                await _ordersRepository.SaveChanges();
+            }
         }
 
         public async Task<List<OrderListDto>> CustomersOrders(long customerId)
@@ -178,5 +185,24 @@ namespace OnlineShop.Services
             return randomTime;
         }
 
+        public async Task<List<OrderDetailsDto>> GetOrderDetails(long orderId)
+        {
+            var order = await _ordersRepository.OrderDetails(orderId);
+            if(order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            List<OrderDetailsDto> orderDetailsDtos = new();
+
+            foreach(var orderItem in order.OrderItems)
+            {
+                orderDetailsDtos.Add(new OrderDetailsDto { ItemId = orderItem.ItemId, ItemName = orderItem.Item.Name,
+                    ItemDescription =  orderItem.Item.Description, ItemPrice = orderItem.Item.Price, ItemQuantity = orderItem.ItemQuantity,
+                    SellerName = orderItem.Item.Seller.FirstName + " " + orderItem.Item.Seller.LastName});
+            }
+
+            return orderDetailsDtos;
+        }
     }
 }

@@ -8,12 +8,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, Box } from "@mui/material";
+import { Button } from "@mui/material";
+import OrderDetails from "./OrderDetails";
 
 function CustomerOrders() {
     const [allOrders, setAllOrders] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const [remainingTimes, setRemainingTimes] = useState({});
+    const [openDialog, setOpenDialog] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+
 
     const getAllOrders = async () => {
         try {
@@ -76,6 +80,15 @@ function CustomerOrders() {
         return formattedDateTime;
       }
 
+      const handleOpenDialog = (orderId) => {
+        setSelectedOrderId(orderId);
+        setOpenDialog(true);
+      };
+    
+      const handleCloseDialog = () => {
+        setOpenDialog(false);
+      };
+
     return (
         <>
         <Home/>
@@ -97,7 +110,7 @@ function CustomerOrders() {
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Estimated delivery time</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Comment</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Delivery address</b></TableCell>
-                    <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Total price</b></TableCell>
+                    <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Total price (rsd)</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Remaining delivery time</b></TableCell>
                 </TableRow>
             </TableHead>
@@ -117,7 +130,7 @@ function CustomerOrders() {
                     </TableCell>
                     <TableCell align="right">
                 <div style={{ display: 'flex', gap: '10px' }}>
-                        <Button variant="outlined" color="secondary" size="small">
+                        <Button variant="outlined" color="secondary" size="small" onClick={() => handleOpenDialog(order.id)}>
                         Details
                         </Button>
                         <Button variant="outlined" color="error" size="small">
@@ -130,9 +143,9 @@ function CustomerOrders() {
             </TableBody>
             </Table>
             </TableContainer>
-    )}
+        )}
 
-{allOrders.filter((order) => order.isDelivered).length > 0 && (
+        {allOrders.filter((order) => order.isDelivered).length > 0 && (
                 <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650, backgroundColor: '#ecc0ed'}} size="small" aria-label="a dense table">
                   <TableHead>
@@ -160,7 +173,7 @@ function CustomerOrders() {
                           <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{order.totalPrice}</TableCell>
                           <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>
                           <div style={{ display: 'flex', justifyContent: 'center'}}>
-                              <Button variant="outlined" color="secondary" size="small">
+                              <Button variant="outlined" color="secondary" size="small" onClick={() => handleOpenDialog(order.id)}>
                               Details
                               </Button>
                           </div>
@@ -173,6 +186,12 @@ function CustomerOrders() {
             )}
           </>
         )}
+        {errorMessage && <p>{errorMessage}</p>}
+        <OrderDetails
+        open={openDialog}
+        handleClose={handleCloseDialog}
+        orderId={selectedOrderId}
+      />
         </>
     );
 }
