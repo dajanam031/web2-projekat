@@ -3,13 +3,13 @@ import { Card, CardContent, Typography, CardActions, Button, IconButton,
     Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import '../../styles/ItemList.css';
 import Home from "../Users/Home";
-import appleImage from '../../images/download.jpeg';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded';
 import { GetSellerItems, DeleteItem, ModifyItem } from "../../services/ItemService";
 import { Item } from "../../models/Item";
 import AddArticle from "./AddArticle";
+
 
 
 function SellerArticles() {
@@ -19,6 +19,7 @@ function SellerArticles() {
     const [updatedItem, setUpdatedItem] = useState(new Item());
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEmpty, setIsEmpty] = useState(false);
+    const [selectedImage, setSelectedImage] = useState('');
 
     useEffect(() => {
       setIsEmpty(items && items.length === 0);
@@ -62,12 +63,21 @@ function SellerArticles() {
         if (!validateForm(updatedItem)) {
           return;
         }
+
+        const formData = new FormData();
+        formData.append("id", updatedItem.id);
+        formData.append("name", updatedItem.name);
+        formData.append("description", updatedItem.description);
+        formData.append("quantity", updatedItem.quantity);
+        formData.append("price", updatedItem.price);
+        formData.append("imageUri", selectedImage);
+
         try {
-            await ModifyItem(updatedItem);
+            const resp = await ModifyItem(formData);
             const itemIndex = items.findIndex((item) => item.id === updatedItem.id);
             if (itemIndex !== -1) {
                 const modified = [...items];
-                modified[itemIndex] = updatedItem; 
+                modified[itemIndex] = resp; 
                 setItems(modified); 
               }
               handleClose();
@@ -104,6 +114,11 @@ function SellerArticles() {
         return true;
       }
 
+      const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedImage(file);
+      };
+
     return(
         <>
         <Home/>
@@ -121,7 +136,7 @@ function SellerArticles() {
                 <Typography variant="h5" component="div">
                   {item.name}
                 </Typography>
-              <img className="item-image" alt="" src={appleImage} />
+              <img className="item-image" alt="" src={`https://localhost:5001/${item.imageUri}`} />
                 
                 <Typography variant="body2" color="text.secondary">
                   {item.description}
@@ -166,9 +181,17 @@ function SellerArticles() {
                   min: 0,
                 }}
                 /><br/>
-                 <TextField label="Image" required
-                variant='filled' value={updatedItem.imageUri} onChange={(e) => setUpdatedItem((prevItem) => ({ ...prevItem, imageUri: e.target.value }))}
-                />
+                 <TextField
+              variant="filled"
+                helperText="Change image"
+                sx={{ width: "400px" }}
+                type="file"
+                InputProps={{
+                  inputProps: {
+                    accept: 'image/*',
+                  }}}
+                onChange={handleFileChange}
+              />
               </form>
             </DialogContent>
             <DialogActions>

@@ -9,7 +9,7 @@ namespace OnlineShop.Interfaces
         Task<List<ItemDto>> GetItems();
         Task<ItemDto> AddItem(long id, AddItemDto newItem);
         Task DeleteItem(long id);
-        Task<ItemDto> UpdateItem(ItemDto item);
+        Task<ItemDto> UpdateItem(UpdateItemDto item);
         Task<ItemDto> GetItem(long id);
         Task<List<ItemDto>> GetSellerItems(long sellerId);
     }

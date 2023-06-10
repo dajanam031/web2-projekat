@@ -8,6 +8,8 @@ using OnlineShop.Models;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using OnlineShop.Repositories.Interfaces;
+using OnlineShop.Helpers;
+using System.IO;
 
 namespace OnlineShop.Services
 {
@@ -37,6 +39,18 @@ namespace OnlineShop.Services
                     {
                         Item item = _mapper.Map<Item>(newItem);
                         item.SellerId = id;
+                        if (newItem.ImageUri != null && newItem.ImageUri.Length > 0)
+                        {
+                            string imagePath = await ImageHandler.SaveImageFile(newItem.ImageUri, Path.Combine("Images", "Articles"));
+
+                            item.ImageUri = imagePath;
+                        }
+                        else
+                        {
+                            string defaultImagePath = Path.Combine("Images", "Articles", "default-product-image.png");
+                            item.ImageUri = defaultImagePath;
+                        }
+
                         await _itemsRepository.Create(item);
                         await _itemsRepository.SaveChanges();
                         return _mapper.Map<ItemDto>(item);
@@ -56,9 +70,7 @@ namespace OnlineShop.Services
                 throw new ArgumentNullException(nameof(seller));
             }
 
-
         }
-
 
         public async Task DeleteItem(long id)
         {
@@ -95,7 +107,7 @@ namespace OnlineShop.Services
             throw new ArgumentNullException();
         }
 
-        public async Task<ItemDto> UpdateItem(ItemDto item)
+        public async Task<ItemDto> UpdateItem(UpdateItemDto item)
         {
             var itemToUpdate = await _itemsRepository.GetById(item.Id);
             if(itemToUpdate == null)
@@ -108,10 +120,16 @@ namespace OnlineShop.Services
                 {
                     if (quantity > 0 && price > 0)
                     {
+                        if (item.ImageUri != null && item.ImageUri.Length > 0)
+                        {
+                            string imagePath = await ImageHandler.SaveImageFile(item.ImageUri, Path.Combine("Images", "Articles"));
+
+                            itemToUpdate.ImageUri = imagePath;
+                        }
+
                         itemToUpdate.Name = item.Name;
                         itemToUpdate.Description = item.Description;
                         itemToUpdate.Price = price;
-                        itemToUpdate.ImageUri = item.ImageUri;
                         itemToUpdate.Quantity = quantity;
                     }
                     else

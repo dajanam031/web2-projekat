@@ -2,7 +2,6 @@ import Home from "../Users/Home";
 import { useState, useEffect } from "react";
 import { GetAllItems } from "../../services/ItemService";
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
-import appleImage from '../../images/download.jpeg';
 import { AddItemToCart } from "../../services/OrderService";
 
 function AllArticles(){
@@ -85,7 +84,7 @@ function AllArticles(){
                 <Typography variant="h5" component="div">
                   {item.name}
                 </Typography>
-              <img className="item-image" alt="" src={appleImage} />
+              <img className="item-image" alt="" src={`https://localhost:5001/${item.imageUri}`} />
                 
                 <Typography variant="body2" color="text.secondary">
                   {item.description}

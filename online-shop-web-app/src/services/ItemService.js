@@ -29,7 +29,11 @@ export const GetSellerItems = async () => {
 
   export const ModifyItem = async (data) => {
     try {
-      const response = await apiClient.put(`/items/update-item`, data);
+      const response = await apiClient.post(`/items/update-item`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -38,7 +42,11 @@ export const GetSellerItems = async () => {
 
   export const AddItem = async (data) => {
     try {
-      const response = await apiClient.post(`/items`, data);
+      const response = await apiClient.post(`/items`, data, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

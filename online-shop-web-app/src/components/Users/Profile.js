@@ -2,7 +2,7 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { UserProfile } from '../../services/UserService';
 import { Box, Typography, TextField, Button, Alert, IconButton, 
-  Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+  Dialog, DialogTitle, DialogContent, DialogActions, Avatar } from '@mui/material';
 import { ChangeUserProfile } from '../../services/UserService';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
@@ -12,7 +12,6 @@ import { ChangeUserPassword } from '../../services/UserService';
 import Home from './Home';
 
 const Profile = () => {
- // const user = useSelector((state) => state.user.user);
   const [profileData, setProfileData] = useState(new UpdateUser());
   const [confirmPass, setConfirmPass] = useState('');
   const [newPass, setNewPass] = useState('');
@@ -21,6 +20,7 @@ const Profile = () => {
   const [open, setOpen] = useState(false);
   const [errorPass, setErrorPass] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [selectedImage, setSelectedImage] = useState('');
 
   const profile = async () => {
     try {
@@ -47,8 +47,18 @@ const Profile = () => {
     if (!validateForm(profileData)) {
         return;
       }
+
+      const formData = new FormData();
+      formData.append("email", profileData.email);
+      formData.append("username", profileData.username);
+      formData.append("firstName", profileData.firstName);
+      formData.append("lastName", profileData.lastName);
+      formData.append("address", profileData.address);
+      formData.append("birthDate", profileData.birthDate);
+      formData.append("imageUri", selectedImage);
+      
       try {
-        const resp = await ChangeUserProfile(profileData);
+        const resp = await ChangeUserProfile(formData);
         setProfileData(resp);
         const dateObject = new Date(resp.birthDate);
         const formattedDate = dateObject.toISOString().split('T')[0];
@@ -122,6 +132,11 @@ const Profile = () => {
     handleClose();
   };
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedImage(file);
+  };
+
 return (
   <>
   <Home/>
@@ -134,6 +149,13 @@ return (
         >
         {profileData && (
           <>
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+          <Avatar
+          alt="Profile Picture"
+          src={`https://localhost:5001/${profileData.imageUri}`}
+          sx={{ width: 110, height: 110 }}
+        />
+      </div>
     <Typography variant="h6" component="h6" gutterBottom>
       Profile Information
       <IconButton onClick={handleEdit}>
@@ -149,7 +171,7 @@ return (
       <TextField
         name="email"
         variant="filled"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         label="Email"
         value={profileData.email}
         size='small'
@@ -160,7 +182,7 @@ return (
       <TextField
         name="firstName"
         variant="filled"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         label="First Name"
         value={profileData.firstName}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, firstName: e.target.value }))}
@@ -173,7 +195,7 @@ return (
         name="lastName"
         variant="filled"
         label="Last Name"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         value={profileData.lastName}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, lastName: e.target.value }))}
         size='small'
@@ -185,7 +207,7 @@ return (
         name="username"
         variant="filled"
         label="Username"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         value={profileData.username}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, username: e.target.value }))}
         size='small'
@@ -197,7 +219,7 @@ return (
         name="address"
         variant="filled"
         label="Address"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         value={profileData.address}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, address: e.target.value }))}
         size='small'
@@ -209,7 +231,7 @@ return (
         variant="filled"
         name="birthDate"
         label="Date of birth"
-        sx={{ width: "350px" }}
+        sx={{ width: "400px" }}
         value={profileData.birthDate}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, birthDate: e.target.value }))}
         size='small'
@@ -219,14 +241,16 @@ return (
       </div>
       <div>
       <TextField
-        name="imageUri"
-        variant="filled"
-        sx={{ width: "350px" }}
-        label="Profile picture"
-        value={profileData.imageUri}
-        onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, imageUri: e.target.value }))}
-        size='small'
+      variant="filled"
+        helperText="Change image"
+        sx={{ width: "400px" }}
+        type="file"
         disabled={!isEditing}
+        InputProps={{
+          inputProps: {
+            accept: 'image/*',
+          }}}
+        onChange={handleFileChange}
       />
       </div>
       {isEditing &&

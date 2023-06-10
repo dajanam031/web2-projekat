@@ -41,8 +41,19 @@ function Registration() {
     if (!validateForm(user, confirmPass)) {
       return;
     }
+    const formData = new FormData();
+    formData.append('email', user.email);
+    formData.append('username', user.username);
+    formData.append('firstName', user.firstName);
+    formData.append('lastName', user.lastName);
+    formData.append('address', user.address);
+    formData.append('userType', user.userType);
+    formData.append('birthDate', user.birthDate);
+    formData.append('password', user.password);
+    formData.append('imageUri', selectedFile);
+
     try {
-      const resp = await RegisterUser(user);
+      const resp = await RegisterUser(formData);
       dispatch(setUser({ token: resp.token, role: GetUserRole(resp.token), isVerified: GetUserVerification(resp.token) }));
       navigate('/');
       
@@ -152,7 +163,6 @@ function Registration() {
         <div>
         <TextField
         helperText="Upload Image"
-        required
         type="file"
         InputProps={{
           inputProps: {

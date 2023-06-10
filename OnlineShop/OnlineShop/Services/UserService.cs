@@ -16,6 +16,8 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using OnlineShop.Repositories.Interfaces;
+using OnlineShop.Helpers;
+using System.Net.Http;
 
 namespace OnlineShop.Services
 {
@@ -47,6 +49,18 @@ namespace OnlineShop.Services
                     {
                         user.Verified = true;
                         user.VerificationStatus = true;
+                    }
+
+                    if (newUser.ImageUri != null && newUser.ImageUri.Length > 0)
+                    {
+                        string imagePath = await ImageHandler.SaveImageFile(newUser.ImageUri, Path.Combine("Images", "Users"));
+
+                        user.ImageUri = imagePath;
+                    }
+                    else
+                    {
+                        string defaultImagePath = Path.Combine("Images", "Users", "default-profile-picture.png");
+                        user.ImageUri = defaultImagePath;
                     }
 
                     user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
@@ -87,12 +101,24 @@ namespace OnlineShop.Services
                     LastName = payload.FamilyName,
                     Password = "google pass",
                     Address = "Google address",
-                    ImageUri = payload.Picture,
                     UserType = UserType.Customer,
                     BirthDate = new DateTime(2000, 10, 10),
                     Verified = true,
                     VerificationStatus = true
                 };
+                if (payload.Picture != null)
+                {
+                    string imageUrl = payload.Picture;
+                    string targetFolderPath = Path.Combine("Images", "Users");
+
+                    string res = await ImageHandler.SaveGoogleImage(imageUrl, targetFolderPath);
+                    user.ImageUri = res;
+                }
+                else
+                {
+                    string defaultImagePath = Path.Combine("Images", "Users", "default-profile-picture.png");
+                    user.ImageUri = defaultImagePath;
+                }
 
                 await _repository.Create(user);
                 await _repository.SaveChanges();
@@ -127,7 +153,7 @@ namespace OnlineShop.Services
             
         }
 
-        public async Task<UserProfileDto> UpdateProfile(long id, UserProfileDto newProfile)
+        public async Task<UserProfileDto> UpdateProfile(long id, UpdateUserProfile newProfile)
         {
             User user = await _repository.GetById(id);
             if(user == null)
@@ -136,12 +162,18 @@ namespace OnlineShop.Services
             }
             else
             {
+                if (newProfile.ImageUri != null && newProfile.ImageUri.Length > 0)
+                {
+                    string imagePath = await ImageHandler.SaveImageFile(newProfile.ImageUri, Path.Combine("Images", "Users"));
+
+                    user.ImageUri = imagePath;
+                }
+
                 user.Username = newProfile.Username;
                 user.FirstName = newProfile.FirstName;
                 user.LastName = newProfile.LastName;
                 user.Address = newProfile.Address;
                 user.BirthDate = newProfile.BirthDate;
-                user.ImageUri = newProfile.ImageUri;
 
                 await _repository.SaveChanges();
                 return _mapper.Map<UserProfileDto>(user);

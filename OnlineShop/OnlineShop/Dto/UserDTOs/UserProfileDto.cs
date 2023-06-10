@@ -1,4 +1,4 @@
-﻿using OnlineShop.Models;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 
 namespace OnlineShop.Dto.UserDTOs

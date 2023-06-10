@@ -24,7 +24,7 @@ namespace OnlineShop.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> CreateUser([FromBody] UserDto user)
+        public async Task<IActionResult> CreateUser([FromForm] UserDto user)
         {
             try
             {
@@ -77,9 +77,9 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("update-profile")]
+        [HttpPost("update-profile")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody] UserProfileDto user)
+        public async Task<IActionResult> UpdateUser([FromForm] UpdateUserProfile user)
         {
             long id = long.Parse(User.GetId());
             try

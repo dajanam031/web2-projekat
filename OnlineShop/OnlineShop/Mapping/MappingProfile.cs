@@ -12,13 +12,15 @@ namespace OnlineShop.Mapping
         {
             CreateMap<User, UserDto>().ReverseMap();
             CreateMap<User, UserLoginDto>().ReverseMap();
-            CreateMap<User, UserProfileDto>().ReverseMap();
+            CreateMap<User, UpdateUserProfile>().ReverseMap();
             CreateMap<User, UserInfoDto>().ReverseMap();
             CreateMap<User, VerificationDto>().ReverseMap();
+            CreateMap<User, UserProfileDto>().ReverseMap();
 
             CreateMap<Item, ItemDto>().ReverseMap();
             CreateMap<Item, AddItemDto>().ReverseMap();
             CreateMap<Item, OrderDetailsDto>().ReverseMap();
+            CreateMap<Item, UpdateItemDto>().ReverseMap();
 
             CreateMap<Order, OrderListCustomerDto>().ReverseMap();
             CreateMap<Order, OrderListDto>().ReverseMap();

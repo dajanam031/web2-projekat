@@ -46,9 +46,14 @@ export const LoginUser = async (userData) => {
     }
   };
 
+
   export const ChangeUserProfile = async (userData) => {
     try {
-      const response = await apiClient.put(`/users/update-profile`, userData);
+      const response = await apiClient.post(`/users/update-profile`, userData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

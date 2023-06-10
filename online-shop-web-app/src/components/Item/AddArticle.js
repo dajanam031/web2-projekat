@@ -7,6 +7,7 @@ function AddArticle({ onClose, onAddItem }){
     const [newItem, setNewItem] = useState(new ItemToAdd());
     const [errorMessage, setErrorMessage] = useState(false);
     const [open, setOpen] = useState(true);
+    const [selectedImage, setSelectedImage] = useState('');
 
       const handleClose = () => {
         setOpen(false);
@@ -18,8 +19,16 @@ function AddArticle({ onClose, onAddItem }){
         if(!validateForm(newItem)){
           return;
         }
+
+        const formData = new FormData();
+        formData.append("name", newItem.name);
+        formData.append("description", newItem.description);
+        formData.append("quantity", newItem.quantity);
+        formData.append("price", newItem.price);
+        formData.append("imageUri", selectedImage);
+
         try {
-            const resp = await AddItem(newItem);
+            const resp = await AddItem(formData);
             onAddItem(resp);
             setNewItem(new ItemToAdd());
             handleClose();
@@ -39,6 +48,11 @@ function AddArticle({ onClose, onAddItem }){
         }
         return true;
       }
+
+      const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        setSelectedImage(file);
+      };
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -63,9 +77,17 @@ function AddArticle({ onClose, onAddItem }){
             <TextField label="Price" sx={{ width: "300px" }} type='number'
             variant='filled' value={newItem.price} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, price: e.target.value }))}
             /><br/>
-             <TextField label="Image"
-            variant='filled' value={newItem.imageUri} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, imageUri: e.target.value }))}
-            />
+            <TextField
+              variant="filled"
+                helperText="Change image"
+                sx={{ width: "400px" }}
+                type="file"
+                InputProps={{
+                  inputProps: {
+                    accept: 'image/*',
+                  }}}
+                onChange={handleFileChange}
+              />
           </form>
         </DialogContent>
         <DialogActions>

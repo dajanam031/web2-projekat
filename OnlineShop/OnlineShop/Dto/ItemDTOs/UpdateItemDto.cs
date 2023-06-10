@@ -2,8 +2,9 @@
 
 namespace OnlineShop.Dto.ItemDTOs
 {
-    public class AddItemDto
+    public class UpdateItemDto
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public int Quantity { get; set; }

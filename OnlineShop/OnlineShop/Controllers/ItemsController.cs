@@ -55,7 +55,7 @@ namespace OnlineShop.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> AddItem([FromBody] AddItemDto item)
+        public async Task<IActionResult> AddItem([FromForm] AddItemDto item)
         {
             long id = long.Parse(User.GetId());
             try
@@ -89,9 +89,9 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("update-item")]
+        [HttpPost("update-item")]
         [Authorize(Roles = "Seller")]
-        public async Task<IActionResult> UpdateItem([FromBody] ItemDto item)
+        public async Task<IActionResult> UpdateItem([FromForm] UpdateItemDto item)
         {
             try
             {
