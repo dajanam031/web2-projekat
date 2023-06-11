@@ -35,6 +35,10 @@ namespace OnlineShop.Controllers
                 return Ok("Item successfully added to cart. Go to cart to check your order!");
 
             }
+            catch(InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);

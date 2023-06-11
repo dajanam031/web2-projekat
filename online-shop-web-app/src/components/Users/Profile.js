@@ -275,10 +275,11 @@ return (
       </Button>
       </div>}
       <div>
-
-      <Button variant="contained" onClick={handleOpen} color="primary">
+      {profileData.registrationType === 0 && (
+        <Button variant="contained" onClick={handleOpen} color="primary">
         Change password
-      </Button>
+        </Button>
+      )}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Change your password</DialogTitle>
         <DialogContent>

@@ -17,6 +17,7 @@ namespace OnlineShop.Models
         public UserType UserType { get; set; }
         public bool Verified { get; set; }
         public bool VerificationStatus { get; set; }
+        public RegistrationType RegistrationType { get; set; }
         public List<Order> Orders { get; set; }
         public List<Item> Items { get; set; }
     }

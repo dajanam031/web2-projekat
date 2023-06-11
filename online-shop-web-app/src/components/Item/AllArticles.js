@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { GetAllItems } from "../../services/ItemService";
 import { Card, CardContent, Typography, CardActions, Button } from '@mui/material';
 import { AddItemToCart } from "../../services/OrderService";
+import Snackbar from '@mui/material/Snackbar';
 
 function AllArticles(){
     const [items, setItems] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
     const [itemQuantities, setItemQuantities] = useState({});
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const getAllItems = async () => {
         try {
@@ -61,13 +64,18 @@ function AllArticles(){
 
   const handleAddToCart = async (itemId) => {
     const quantity = itemQuantities[itemId] || 0;
-    console.log(`Item ${itemId} added to cart with quantity: ${quantity}`);
     
     try {
       const resp = await AddItemToCart(itemId, quantity);
-      console.log(resp);
+      setItemQuantities((prevQuantities) => ({
+        ...prevQuantities,
+        [itemId]: 0, 
+      }));
+      setSnackbarMessage(resp);
+      setSnackbarOpen(true);
     } catch (error) {
-      setErrorMessage(error.message);
+      setSnackbarMessage(error.message);
+      setSnackbarOpen(true);
     }
   };
 
@@ -97,7 +105,7 @@ function AllArticles(){
                 </Typography>
               </CardContent>
               <CardActions>
-              <Button variant="outlined" size="small" onClick={() => handleDecreaseQuantity(item.id)}>
+              <Button variant="outlined" disabled={!itemQuantities[item.id] || itemQuantities[item.id] === 0} size="small" onClick={() => handleDecreaseQuantity(item.id)}>
                         -
                     </Button>
                     <Typography variant="body2" color="text.secondary">
@@ -107,13 +115,20 @@ function AllArticles(){
                     variant="outlined" size="small" onClick={() => handleIncreaseQuantity(item.id)}>
                         +
                     </Button>
-                <Button  variant="outlined" size="small" onClick={() => handleAddToCart(item.id)}>Add to cart</Button>
+                <Button  variant="outlined"  size="small" onClick={() => handleAddToCart(item.id)}>Add to cart</Button>
               </CardActions>
             </Card>
           ))}
         </div>
             </>
         )}
+        <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={7000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      message={snackbarMessage}
+    />
     {!items && (
         <><h1>{errorMessage}</h1></>
     )}

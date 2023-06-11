@@ -13,6 +13,7 @@ namespace OnlineShop.Dto.OrderDTOs
         public double TotalPrice { get; set; }
         public bool IsDelivered { get; set; }
         public string Customer { get; set; }
+        public string CustomerImage { get; set; }
         public OrderStatus Status { get; set; }
     }
 }

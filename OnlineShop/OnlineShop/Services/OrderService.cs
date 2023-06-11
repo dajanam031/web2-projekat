@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using OnlineShop.Dto.OrderDTOs;
 using OnlineShop.Dto.UserDTOs;
 using OnlineShop.Interfaces;
@@ -17,25 +18,40 @@ namespace OnlineShop.Services
         private readonly IOrderRepository _ordersRepository;
         private readonly IRepository<Item> _itemsRepository;
         private readonly IMapper _mapper;
+        private readonly IConfigurationSection _fee;
 
-        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository, IRepository<Item> itemsRepository, IMapper mapper)
+        public OrderService(IRepository<OrderItem> orderItemsRepository, IOrderRepository ordersRepository,
+            IRepository<Item> itemsRepository, IMapper mapper, IConfiguration config)
         {
             _orderItemsRepository = orderItemsRepository;
             _ordersRepository = ordersRepository;
             _itemsRepository = itemsRepository;
             _mapper = mapper;
+            _fee = config.GetSection("Fee");
         }
 
         public async Task AddItemToCart(long customerId, long itemId, int itemQuantity)
         {
+            var item = await _itemsRepository.GetById(itemId);
+
+            if(itemQuantity >= 0 && item.Quantity == 0)
+            {
+                throw new InvalidOperationException("Error while trying to add item. No enough quantity left.");
+            }
+            if(item.Quantity > 0 && itemQuantity == 0)
+            {
+                throw new InvalidOperationException("Quantity must be greater then 0.");
+            }
+
+
             Order orderInProgress = await _ordersRepository.FindBy(x => x.Status.Equals(OrderStatus.InProgress) && x.PurchaserId == customerId);
             if (orderInProgress == null)
             {
                 orderInProgress = new Order { PurchaserId = customerId, Status = OrderStatus.InProgress};
                 await _ordersRepository.Create(orderInProgress);
                 await _ordersRepository.SaveChanges();
-                orderInProgress = await _ordersRepository.FindBy(x => x.Status.Equals(OrderStatus.InProgress) && x.PurchaserId == customerId);
             }
+
 
             OrderItem existingOrderItem = await _orderItemsRepository.FindBy(x => x.ItemId == itemId && x.OrderId == orderInProgress.Id);
             if(existingOrderItem == null)
@@ -47,10 +63,8 @@ namespace OnlineShop.Services
                 existingOrderItem.ItemQuantity += itemQuantity;
             }
 
-            var item = await _itemsRepository.GetById(itemId);
             item.Quantity -= itemQuantity;
             orderInProgress.TotalPrice += (item.Price * itemQuantity);
-
             await _itemsRepository.SaveChanges();
             await _orderItemsRepository.SaveChanges();
             await _ordersRepository.SaveChanges();
@@ -69,6 +83,7 @@ namespace OnlineShop.Services
             order.DeliveryTime = GenerateTime();
             order.OrderingTime = DateTime.Now;
             order.Status = OrderStatus.Finished;
+            order.TotalPrice +=  double.Parse(_fee.Value);
 
             await _ordersRepository.SaveChanges();
 
@@ -84,8 +99,9 @@ namespace OnlineShop.Services
                 foreach (var orderItem in currentOrder.OrderItems)
                 {
                     var totalOrderItemPrice = orderItem.Item.Price * orderItem.ItemQuantity;
-                    orderViewDtos.Add(new OrderViewDto { ItemName = orderItem.Item.Name, ItemPrice = totalOrderItemPrice,
-                    ItemQuantity = orderItem.ItemQuantity, OrderId = orderItem.OrderId, ItemId = orderItem.ItemId, TotalPrice = currentOrder.TotalPrice });
+                    orderViewDtos.Add(new OrderViewDto {Fee = double.Parse(_fee.Value), ItemName = orderItem.Item.Name,
+                        ItemPrice = totalOrderItemPrice,ItemQuantity = orderItem.ItemQuantity, OrderId = orderItem.OrderId,
+                        ItemId = orderItem.ItemId, TotalPrice = currentOrder.TotalPrice, ItemImage = orderItem.Item.ImageUri });
                 }
 
                 return orderViewDtos;
@@ -231,6 +247,7 @@ namespace OnlineShop.Services
                     await _ordersRepository.CheckDeliveryStatus(or);
                     var order = _mapper.Map<OrderListDto>(or);
                     order.Customer = or.Purchaser.FirstName + " " + or.Purchaser.LastName;
+                    order.CustomerImage = or.Purchaser.ImageUri;
                     orderListAdminDtos.Add(order);
                 }
 
@@ -262,6 +279,7 @@ namespace OnlineShop.Services
                     {
                         var order = _mapper.Map<OrderListDto>(or);
                         order.Customer = or.Purchaser.FirstName + " " + or.Purchaser.LastName;
+                        order.CustomerImage = or.Purchaser.ImageUri;
                         orderListDtos.Add(order);
                     }
 
@@ -292,7 +310,6 @@ namespace OnlineShop.Services
                 {
                     var item = _mapper.Map<OrderDetailsDto>(orderItem.Item);
                     item.ItemQuantity = orderItem.ItemQuantity;
-                    item.SellerName = orderItem.Item.Seller.FirstName + " " + orderItem.Item.Seller.LastName;
                     orderDetailsDtos.Add(item);
                 }
             }

@@ -147,6 +147,5 @@ namespace OnlineShop.Services
                 return _mapper.Map<ItemDto>(itemToUpdate);
             }
         }
-
     }
 }

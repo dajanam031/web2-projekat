@@ -36,7 +36,7 @@ function Cart() {
       const resp = await GetCurrentOrder();
       setOrder(resp);
     } catch (error) {
-      console.log(error.message);
+      setErrorMessage(error.message);
     }
   };
 
@@ -44,17 +44,13 @@ function Cart() {
     getOrder();
   }, []);
 
-  const handleDelete = async (rowKey) => {
+  const handleDelete = async (rowKey, price) => {
     try {
       const [orderId, itemId] = rowKey.split('-');
       await DeleteOrderItem(itemId, orderId);
-      const filtered = order.filter((orderItem) => orderItem.itemId !== +itemId);
-      if(filtered.length > 0){
-        setOrder(filtered);
-      }else{
-        setOrder(null);
-      }
+      getOrder();
     } catch (error) {
+      setOrder(null);
       setErrorMessage(error.message);
     }
   };
@@ -101,7 +97,7 @@ function Cart() {
   return (
     <>
       <Home />
-      {order && (
+      {order !== null && errorMessage === '' && (
         <Box maxWidth={600} margin="auto">
           <Box
             component={Paper}
@@ -114,9 +110,9 @@ function Cart() {
                 <TableHead>
                   <TableRow>
                     <TableCell><b>Name</b></TableCell>
+                    <TableCell></TableCell>
                     <TableCell align="right"><b>Quantity</b></TableCell>
-                    <TableCell align="right"><b>Price</b></TableCell>
-                    <TableCell align="right"><b>Seller's delivery fee</b></TableCell>
+                    <TableCell align="right"><b>Total item price</b></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -124,6 +120,14 @@ function Cart() {
                     const rowKey = `${orderItem.orderId}-${orderItem.itemId}`;
                     return (
                       <TableRow key={rowKey}>
+                        <TableCell>
+                        <img
+                          className="item-image"
+                          alt=""
+                          src={`https://localhost:5001/${orderItem.itemImage}`}
+                          style={{ width: '50px', height: '50px' }}
+                        />
+                          </TableCell>
                         <TableCell>{orderItem.itemName}</TableCell>
                         <TableCell align="right">
                           {orderItem.itemQuantity}
@@ -132,13 +136,10 @@ function Cart() {
                           {orderItem.itemPrice} rsd
                         </TableCell>
                         <TableCell align="right">
-                          {200} rsd
-                        </TableCell>
-                        <TableCell align="right">
                           <IconButton
                             color="#a6ad93"
                             size="small"
-                            onClick={() => handleDelete(rowKey)}
+                            onClick={() => handleDelete(rowKey, orderItem.itemPrice)}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -148,16 +149,23 @@ function Cart() {
                   })}
                   <TableRow>
                     <TableCell colSpan={2.5} align="right">
-                      <b>Total delivery fee:</b>
+                      <b>Price:</b>
                     </TableCell>
-                    <TableCell align="right">{400} rsd</TableCell>
+                    <TableCell align="right">{order[0].totalPrice} rsd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={2.5} align="right">
-                      <b>Total Sum:</b>
+                      <b>Delivery fee:</b>
                     </TableCell>
-                    <TableCell align="right">{order[0].totalPrice + 400} rsd</TableCell>
+                    <TableCell align="right">{order[0].fee} rsd</TableCell>
+                    <TableCell align="right"></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={2.5} align="right">
+                      <b>Total price:</b>
+                    </TableCell>
+                    <TableCell align="right">{order[0].totalPrice + order[0].fee} rsd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   
@@ -203,9 +211,6 @@ function Cart() {
             </TableContainer>
           </Box>
         </Box>
-      )}
-      {!order && (
-        <h3>You don't have active order yet.</h3>
       )}
       {errorMessage && <p>{errorMessage}</p>}
       <Snackbar

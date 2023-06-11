@@ -63,11 +63,12 @@ namespace OnlineShop.Services
                         user.ImageUri = defaultImagePath;
                     }
 
+                    user.RegistrationType = RegistrationType.Classic;
                     user.Password = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
                     await _repository.Create(user);
                     await _repository.SaveChanges();
 
-                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
+                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
                 }
                 else
                 {
@@ -104,7 +105,8 @@ namespace OnlineShop.Services
                     UserType = UserType.Customer,
                     BirthDate = new DateTime(2000, 10, 10),
                     Verified = true,
-                    VerificationStatus = true
+                    VerificationStatus = true,
+                    RegistrationType = RegistrationType.Google
                 };
                 if (payload.Picture != null)
                 {
@@ -123,11 +125,11 @@ namespace OnlineShop.Services
                 await _repository.Create(user);
                 await _repository.SaveChanges();
 
-                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
+                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
             }
 
             // samo token
-            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
+            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
         }
 
         public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
@@ -144,7 +146,7 @@ namespace OnlineShop.Services
                     throw new InvalidDataException("Incorrect password. Try again.");
                 }
 
-                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified) };
+                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified, existingUser.RegistrationType) };
             }
             else
             {
@@ -193,7 +195,7 @@ namespace OnlineShop.Services
             var users = await _repository.FindAllBy(x => !x.UserType.Equals(UserType.Administrator));
             if (users.Any())
             {
-                var sortedUsers = users.OrderBy(x => x.VerificationStatus ? 1 : 0);
+                var sortedUsers = users.OrderBy(x => x.UserType == UserType.Seller ? 0 : 1).ThenBy(x => x.VerificationStatus ? 1 : 0);
                 return _mapper.Map<List<UserInfoDto>>(sortedUsers);
             }
             

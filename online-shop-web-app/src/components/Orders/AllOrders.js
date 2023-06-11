@@ -73,6 +73,16 @@ function AllOrders(){
             <TableBody>
                 {orders.map((order) => (
                 <TableRow key={order.id} >
+                  <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img
+                          alt=""
+                          src={`https://localhost:5001/${order.customerImage}`}
+                          style={{ width: '50px', height: '50px', marginRight: '10px' }}
+                        />
+                        <span style={{ display: 'inline-block' }}>{order.customer}</span>
+                      </div>
+                    </TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{order.customer}</TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{formatDate(order.orderingTime)}</TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{formatDate(order.deliveryTime)}</TableCell>

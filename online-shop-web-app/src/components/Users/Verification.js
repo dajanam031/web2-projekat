@@ -80,6 +80,7 @@ function Verification() {
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
                 <TableRow>
+                <StyledTableCell></StyledTableCell>
                   <StyledTableCell>Email</StyledTableCell>
                   <StyledTableCell align="right">Firstname</StyledTableCell>
                   <StyledTableCell align="right">Lastname&nbsp;</StyledTableCell>
@@ -91,6 +92,15 @@ function Verification() {
               <TableBody>
                 {sellers.map((seller) => (
                   <StyledTableRow key={seller.email}>
+                    <TableCell align="right">
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <img
+                          alt=""
+                          src={`https://localhost:5001/${seller.imageUri}`}
+                          style={{ width: '50px', height: '50px', marginRight: '10px' }}
+                        />
+                      </div>
+                    </TableCell>
                     <StyledTableCell component="th" scope="row">
                       {seller.email}
                     </StyledTableCell>

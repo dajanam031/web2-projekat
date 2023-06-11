@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using OnlineShop.Models;
 using System;
 
 namespace OnlineShop.Dto.UserDTOs
@@ -12,5 +13,6 @@ namespace OnlineShop.Dto.UserDTOs
         public DateTime BirthDate { get; set; }
         public string Address { get; set; }
         public string ImageUri { get; set; }
+        public RegistrationType RegistrationType { get; set; }
     }
 }

@@ -9,3 +9,4 @@ export const GetUserVerification = (token) => {
   const decodedToken = jwtDecode(token);
   return decodedToken['verified'];
 };
+

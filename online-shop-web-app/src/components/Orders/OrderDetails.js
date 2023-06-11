@@ -42,7 +42,20 @@ function OrderDetails({ open, handleClose, orderId }) {
             <React.Fragment key={item.id}>
               <ListItem>
                 <ListItemText
-                  primary={item.name}
+                  primary={
+                    <>
+                    <span>
+                    <img
+                          className="item-image"
+                          alt=""
+                          src={`https://localhost:5001/${item.imageUri}`}
+                          style={{ width: '50px', height: '50px' }}
+                        />
+                    </span>
+                    <br />
+                    <span>Name: {item.name}</span>
+                    </>
+                  }
                   secondary={
                     <>
                       <span>Description: {item.description}</span>

@@ -25,6 +25,12 @@ namespace OnlineShop.Infrastructure.Configurations
                        x => Enum.Parse<UserType>(x)
                    );
 
+            builder.Property(x => x.RegistrationType)
+                   .HasConversion(
+                       x => x.ToString(),
+                       x => Enum.Parse<RegistrationType>(x)
+                   );
+
             builder.Property(x => x.ImageUri).IsRequired();
             builder.Property(x => x.BirthDate).IsRequired();
             builder.Property(x => x.Verified).IsRequired();

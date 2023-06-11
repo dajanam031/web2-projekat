@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OnlineShop.Models;
+using System;
 
 namespace OnlineShop.Dto.UserDTOs
 {
@@ -12,5 +13,6 @@ namespace OnlineShop.Dto.UserDTOs
         public string ImageUri { get; set; }
         public bool Verified { get; set; }
         public bool VerificationStatus { get; set; }
+        public UserType UserType { get; set; }
     }
 }
