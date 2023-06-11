@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using OnlineShop.Dto.OrderDTOs;
 using OnlineShop.Dto.UserDTOs;
+using OnlineShop.Helpers;
 using OnlineShop.Interfaces;
 using OnlineShop.Models;
 using OnlineShop.Repositories.Interfaces;
@@ -241,6 +242,7 @@ namespace OnlineShop.Services
             var orders = await _ordersRepository.GetAllOrders();
             if (orders.Any())
             {
+                
                 List<OrderListDto> orderListAdminDtos = new();
                 foreach (var or in orders)
                 {
@@ -251,9 +253,7 @@ namespace OnlineShop.Services
                     orderListAdminDtos.Add(order);
                 }
 
-                await _ordersRepository.SaveChanges();
-               
-                return orderListAdminDtos;
+                return _mapper.Map<List<OrderListDto>>(orderListAdminDtos);
             }
 
             throw new InvalidOperationException("No orders.");

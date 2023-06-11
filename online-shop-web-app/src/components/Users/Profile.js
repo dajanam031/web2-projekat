@@ -21,6 +21,7 @@ const Profile = () => {
   const [errorPass, setErrorPass] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedImage, setSelectedImage] = useState('');
+  const currentDate = new Date().toISOString().split('T')[0]; 
 
   const profile = async () => {
     try {
@@ -137,6 +138,7 @@ const Profile = () => {
     setSelectedImage(file);
   };
 
+  
 return (
   <>
   <Home/>
@@ -231,8 +233,9 @@ return (
         variant="filled"
         name="birthDate"
         label="Date of birth"
+        inputProps={{ max: currentDate }}
         sx={{ width: "400px" }}
-        value={profileData.birthDate}
+        value={ profileData.birthDate}
         onChange={(e) => setProfileData((prevUser) => ({ ...prevUser, birthDate: e.target.value }))}
         size='small'
         type='date'

@@ -6,7 +6,7 @@ import Home from './components/Users/Home';
 import Profile from './components/Users/Profile';
 import { useDispatch, useSelector} from 'react-redux';
 import PrivateRoutes from './utils/PrivateRoutes';
-import { setUser } from './redux/userSlice';
+import { setUser, clearUser } from './redux/userSlice';
 import { useEffect, useState } from 'react';
 import { GetUserRole, GetUserVerification } from './utils/CurrentUser';
 import SellerArticles from './components/Item/SellerArticles';
@@ -16,6 +16,7 @@ import CustomerOrders from './components/Orders/CustomerOrders';
 import AllOrders from './components/Orders/AllOrders';
 import SellerDeliveredOrders from './components/Orders/SellerDeliveredOrders';
 import SellerNewOrders from './components/Orders/SellerNewOrders';
+import { isTokenExpired } from './utils/TokenExpiration';
 
 function App() {
   const user = useSelector((state) => state.user.user);
@@ -25,15 +26,22 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const user = {
-        token,
-        role: GetUserRole(token),
-        isVerified: GetUserVerification(token) 
-      };
-      dispatch(setUser(user));
+      const isExpired = isTokenExpired(token);
+      if (!isExpired) {
+        const user = {
+          token,
+          role: GetUserRole(token),
+          isVerified: GetUserVerification(token),
+        };
+        dispatch(setUser(user));
+      } else {
+        dispatch(clearUser());
+      }
     }
     setLoading(false);
   }, [dispatch]);
+
+  
 
   if (loading) {
     return <div>Loading...</div>;

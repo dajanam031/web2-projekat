@@ -64,22 +64,22 @@ function AddArticle({ onClose, onAddItem }){
             </Typography>
           )}
           <form onSubmit={handleAdd}>
-            <TextField label="Name"
+            <TextField label="Name" required
             variant='filled' value={newItem.name} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, name: e.target.value }))}
             />
             <br/>
-            <TextField label="Description"
+            <TextField label="Description" required
             variant='filled' value={newItem.description} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, description: e.target.value }))}
             /><br/>
-            <TextField label="Quantity" type='number'
+            <TextField label="Quantity" type='number' required
             variant='filled' value={newItem.quantity} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, quantity: e.target.value }))}
             /><br/>
-            <TextField label="Price" sx={{ width: "300px" }} type='number'
+            <TextField label="Price" sx={{ width: "300px" }} type='number' required
             variant='filled' value={newItem.price} onChange={(e) => setNewItem((prevItem) => ({ ...prevItem, price: e.target.value }))}
             /><br/>
             <TextField
               variant="filled"
-                helperText="Change image"
+                helperText="Upload image"
                 sx={{ width: "400px" }}
                 type="file"
                 InputProps={{

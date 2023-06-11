@@ -5,6 +5,6 @@ namespace OnlineShop.Interfaces
 {
     public interface ITokenService
     {
-        string GenerateToken(long id, UserType userType, bool verified, RegistrationType registrationType);
+        string GenerateToken(long id, UserType userType, bool verified);
     }
 }

@@ -18,14 +18,13 @@ namespace OnlineShop.Services
         {
             _secretKey = config.GetSection("SecretKey");
         }
-        public string GenerateToken(long id, UserType userType, bool verified, RegistrationType registrationType)
+        public string GenerateToken(long id, UserType userType, bool verified)
         {
             List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.Role, userType.ToString()),
                 new Claim("id", id.ToString()),
-                new Claim("verified", verified.ToString()),
-                new Claim("registrationType", registrationType.ToString())
+                new Claim("verified", verified.ToString())
             };
 
             SymmetricSecurityKey secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey.Value));

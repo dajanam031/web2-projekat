@@ -16,7 +16,6 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { GetStatus } from '../../services/UserService';
-import Badge from '@mui/material/Badge';
 import { useState } from 'react';
 
 
@@ -112,9 +111,7 @@ function Home() {
                 {user.role === 'Customer' && (
                    <Link to="/cart">
                    <IconButton aria-label="cart">
-                     <Badge badgeContent={4} color="secondary">
                        <ShoppingCartIcon />
-                     </Badge>
                    </IconButton>
                  </Link>
                 )}

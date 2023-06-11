@@ -29,7 +29,8 @@ namespace OnlineShop.Services
         private readonly IConfigurationSection _googleCredentials;
         private readonly ITokenService _tokenService;
 
-        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config, IEmailService emailService, ITokenService tokenService)
+        public UserService(IMapper mapper, IRepository<User> repository, IConfiguration config,
+            IEmailService emailService, ITokenService tokenService)
         {
             _mapper = mapper;
             _repository = repository;
@@ -68,7 +69,8 @@ namespace OnlineShop.Services
                     await _repository.Create(user);
                     await _repository.SaveChanges();
 
-                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
+
+                    return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
                 }
                 else
                 {
@@ -125,11 +127,11 @@ namespace OnlineShop.Services
                 await _repository.Create(user);
                 await _repository.SaveChanges();
 
-                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
+                return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
             }
 
             // samo token
-            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified, user.RegistrationType) };
+            return new TokenDto { Token = _tokenService.GenerateToken(user.Id, user.UserType, user.Verified) };
         }
 
         public async Task<TokenDto> LoginUser(UserLoginDto loginUser)
@@ -146,7 +148,7 @@ namespace OnlineShop.Services
                     throw new InvalidDataException("Incorrect password. Try again.");
                 }
 
-                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified, existingUser.RegistrationType) };
+                return new TokenDto { Token = _tokenService.GenerateToken(existingUser.Id, existingUser.UserType, existingUser.Verified) };
             }
             else
             {
@@ -190,13 +192,26 @@ namespace OnlineShop.Services
             return _mapper.Map<UserProfileDto>(user);
         }
 
-        public async Task<List<UserInfoDto>> GetUnverifiedSellers()
+        public async Task<PaginationResult<UserInfoDto>> GetUnverifiedSellers(int page, int rowsPerPage)
         {
             var users = await _repository.FindAllBy(x => !x.UserType.Equals(UserType.Administrator));
             if (users.Any())
             {
                 var sortedUsers = users.OrderBy(x => x.UserType == UserType.Seller ? 0 : 1).ThenBy(x => x.VerificationStatus ? 1 : 0);
-                return _mapper.Map<List<UserInfoDto>>(sortedUsers);
+                var totalRows = sortedUsers.Count();
+
+                var paginatedUsers = sortedUsers
+                    .Skip(page * rowsPerPage)
+                    .Take(rowsPerPage)
+                    .ToList();
+
+                var result = new PaginationResult<UserInfoDto>
+                {
+                    Data = _mapper.Map<List<UserInfoDto>>(paginatedUsers),
+                    TotalRows = totalRows
+                };
+
+                return result;
             }
             
             throw new ArgumentNullException();
@@ -213,8 +228,8 @@ namespace OnlineShop.Services
             user.VerificationStatus = true;
             await _repository.SaveChanges();
 
-            //await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
-            //    $" Administrator has approved your registration request. You can start adding items!");
+            await _emailService.SendEmail(user.Email, "Welcome to web shop", $"Hello {user.FirstName}." +
+                $" Administrator has approved your registration request. You can start adding items!");
         }
 
         public async Task ChangePassword(long id, ChangePasswordDto newPassword)
@@ -236,8 +251,8 @@ namespace OnlineShop.Services
             user.VerificationStatus = true;
             await _repository.SaveChanges();
 
-            //await _emailService.SendEmail(user.Email, "Registration", $"Hello {user.FirstName}." +
-            //    $" Administrator has rejected your registration request.");
+            await _emailService.SendEmail(user.Email, "Registration", $"Hello {user.FirstName}." +
+                $" Administrator has rejected your registration request.");
         }
 
         public static bool IsValidEmail(string email)
@@ -257,5 +272,6 @@ namespace OnlineShop.Services
 
             return _mapper.Map<VerificationDto>(user);
         }
+
     }
 }

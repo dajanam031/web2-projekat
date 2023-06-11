@@ -12,5 +12,6 @@ namespace OnlineShop.Repositories.Interfaces
         Task<List<Order>> GetAllOrders();
         Task<List<Order>> GetSellerOrders(long sellerId);
         Task CheckDeliveryStatus(Order order);
+        Task<int> CountOrderItemsInProgress(long customerId);
     }
 }

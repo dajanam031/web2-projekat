@@ -126,6 +126,10 @@ namespace OnlineShop.Services
 
                             itemToUpdate.ImageUri = imagePath;
                         }
+                        else
+                        {
+                            itemToUpdate.ImageUri = itemToUpdate.ImageUri;
+                        }
 
                         itemToUpdate.Name = item.Name;
                         itemToUpdate.Description = item.Description;

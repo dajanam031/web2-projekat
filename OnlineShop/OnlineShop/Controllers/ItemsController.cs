@@ -85,7 +85,7 @@ namespace OnlineShop.Controllers
             }
             catch (Exception)
             {
-                return BadRequest("Failed to delete item.");
+                return BadRequest("Failed to delete item because there are orders in progress which contains it.");
             }
         }
 

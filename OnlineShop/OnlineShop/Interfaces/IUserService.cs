@@ -1,4 +1,5 @@
 ﻿using OnlineShop.Dto.UserDTOs;
+using OnlineShop.Helpers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace OnlineShop.Interfaces
         Task<TokenDto> LoginUser(UserLoginDto loginUser);
         Task<UserProfileDto> UpdateProfile(long id, UpdateUserProfile newProfile);
         Task<UserProfileDto> UsersProfile(long id);
-        Task<List<UserInfoDto>> GetUnverifiedSellers();
+        Task<PaginationResult<UserInfoDto>> GetUnverifiedSellers(int page, int rowsPerPage);
         Task VerifyUser(long id);
         Task DeclineUser(long id);
         Task ChangePassword(long id, ChangePasswordDto newPassword);

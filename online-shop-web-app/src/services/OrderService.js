@@ -18,6 +18,15 @@ export const GetCurrentOrder = async () => {
     }
   };
 
+  export const GetCount = async () => {
+    try {
+      const response = await apiClient.get(`/orders/items-count`)
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
   export const DeleteOrderItem = async (itemId, orderId) => {
     try {
       const response = await apiClient.delete(`/orders/${itemId}/${orderId}`);

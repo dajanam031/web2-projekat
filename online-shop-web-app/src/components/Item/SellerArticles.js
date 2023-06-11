@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, Typography, CardActions, Button, IconButton,
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar } from '@mui/material';
 import '../../styles/ItemList.css';
 import Home from "../Users/Home";
 import EditIcon from '@mui/icons-material/Edit';
@@ -20,6 +20,8 @@ function SellerArticles() {
     const [isAddOpen, setIsAddOpen] = useState(false);
     const [isEmpty, setIsEmpty] = useState(false);
     const [selectedImage, setSelectedImage] = useState('');
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     useEffect(() => {
       setIsEmpty(items && items.length === 0);
@@ -45,7 +47,8 @@ function SellerArticles() {
             const updatedItems = items.filter((item) => item.id !== id);
             setItems(updatedItems);
           } catch (error) {
-            setErrorMessage(error.message);
+            setSnackbarMessage(error.message);
+            setSnackbarOpen(true);
           }
       }
 
@@ -213,6 +216,13 @@ function SellerArticles() {
     {isEmpty && (
       <h1>You don't have any articles yet.</h1>
     )}
+    <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={7000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      message={snackbarMessage}
+    />
     </>
     );
 } 

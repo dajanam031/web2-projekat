@@ -125,11 +125,12 @@ namespace OnlineShop.Controllers
 
         [HttpGet("sellers")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> GetUnverifiedUsers()
+        public async Task<IActionResult> GetUnverifiedUsers(int page = 1, int rowsPerPage = 3)
         {
             try
             {
-                return Ok(await _userService.GetUnverifiedSellers());
+                return Ok(await _userService.GetUnverifiedSellers(page, rowsPerPage));
+
             }
             catch (Exception)
             {
@@ -137,13 +138,12 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("verify")]
+        [HttpPut("verify/{id}")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> VerifyUser([FromHeader] string userId)
+        public async Task<IActionResult> VerifyUser([FromRoute] long id)
         {
             try
             {
-                long id = long.Parse(userId);
                 await _userService.VerifyUser(id);
                 return Ok();
             }
@@ -153,13 +153,12 @@ namespace OnlineShop.Controllers
             }
         }
 
-        [HttpPut("decline")]
+        [HttpPut("decline/{id}")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> DeclineUser([FromHeader] string userId)
+        public async Task<IActionResult> DeclineUser([FromRoute] long id)
         {
             try
             {
-                long id = long.Parse(userId);
                 await _userService.DeclineUser(id);
                 return Ok();
             }

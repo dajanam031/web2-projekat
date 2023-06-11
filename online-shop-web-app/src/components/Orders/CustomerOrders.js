@@ -107,7 +107,6 @@ function CustomerOrders() {
     return (
         <>
         <Home/>
-        {!allOrders && (<h1>Loading...</h1>)}
         {allOrders && (
             <>
             {allOrders.filter((order) => !order.isDelivered).length > 0 && (
@@ -201,7 +200,7 @@ function CustomerOrders() {
             )}
           </>
         )}
-        {errorMessage && <p>{errorMessage}</p>}
+        {errorMessage && <h3>{errorMessage}</h3>}
         <OrderDetails
         open={openDialog}
         handleClose={handleCloseDialog}

@@ -9,7 +9,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from "@mui/material";
+import { Button, TablePagination } from "@mui/material";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import Home from "./Home";
@@ -17,6 +17,9 @@ import { VerifySeller, DeclineSeller } from "../../services/UserService";
 
 function Verification() {
   const [sellers, setSellers] = useState(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [totalRows, setTotalRows] = useState(0);
 
     const StyledTableCell = styled(TableCell)(({ theme }) => ({
         [`&.${tableCellClasses.head}`]: {
@@ -40,19 +43,23 @@ function Verification() {
 
   const verification = async () => {
       try {
-        const resp = await GetSellers();
-        setSellers(resp);
+        const resp = await GetSellers(page, rowsPerPage);
+        setSellers(resp.data);
+        setTotalRows(resp.totalRows);
       } catch (error) {
         console.log(error.message);
       }
  };
   useEffect(() => {
       verification();
-      }, []);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [page, rowsPerPage]);
 
   const handleAccept = async (id) => {
     try{
+      console.log(id);
         await VerifySeller(id);
+        console.log(id);
         // nije bilo errora pa cu samo izmeniti prikaz podataka, necu fecovati listu svih opet
         const updatedSellers = sellers.map((seller) =>
         seller.id === id ? { ...seller, verified: true, verificationStatus: true } : seller);
@@ -71,6 +78,23 @@ function Verification() {
       console.log(error.message);
     } 
  }
+
+ const getType = (type) => {
+    if( type === 0){
+      return 'Customer';
+    }else{
+      return 'Seller';
+    }
+ }
+
+ const handleChangePage = (event, newPage) => {
+  setPage(newPage);
+};
+
+const handleChangeRowsPerPage = (event) => {
+  setRowsPerPage(parseInt(event.target.value, 3));
+  setPage(0);
+};
     return (
         <>
         <Home/>
@@ -82,6 +106,7 @@ function Verification() {
                 <TableRow>
                 <StyledTableCell></StyledTableCell>
                   <StyledTableCell>Email</StyledTableCell>
+                  <StyledTableCell align="right">Role</StyledTableCell>
                   <StyledTableCell align="right">Firstname</StyledTableCell>
                   <StyledTableCell align="right">Lastname&nbsp;</StyledTableCell>
                   <StyledTableCell align="right">Username&nbsp;</StyledTableCell>
@@ -104,6 +129,7 @@ function Verification() {
                     <StyledTableCell component="th" scope="row">
                       {seller.email}
                     </StyledTableCell>
+                    <StyledTableCell align="right">{getType(seller.userType)}</StyledTableCell>
                     <StyledTableCell align="right">{seller.firstName}</StyledTableCell>
                     <StyledTableCell align="right">{seller.lastName}</StyledTableCell>
                     <StyledTableCell align="right">{seller.username}</StyledTableCell>
@@ -135,6 +161,15 @@ function Verification() {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+            rowsPerPageOptions={[3, 5, 10, 15]}
+            component="div"
+            count={totalRows}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
           </TableContainer>
           
         )}

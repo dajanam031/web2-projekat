@@ -69,9 +69,9 @@ export const LoginUser = async (userData) => {
     }
   };
 
-  export const GetSellers = async () => {
+  export const GetSellers = async (page, rowsPerPage) => {
     try {
-      const response = await apiClient.get(`/users/sellers`);
+      const response = await apiClient.get(`/users/sellers?page=${page}&rowsPerPage=${rowsPerPage}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -80,7 +80,7 @@ export const LoginUser = async (userData) => {
 
   export const VerifySeller = async (id) => {
     try {
-      const response = await apiClient.put(`/users/verify`, null);
+      const response = await apiClient.put(`/users/verify/${id}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);
@@ -90,7 +90,7 @@ export const LoginUser = async (userData) => {
 
   export const DeclineSeller = async (id) => {
     try {
-      const response = await apiClient.put(`/users/decline`, null);
+      const response = await apiClient.put(`/users/decline/${id}`);
       return response.data;
     } catch (error) {
       throw new Error(error.response.data);

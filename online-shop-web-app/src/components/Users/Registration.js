@@ -16,6 +16,7 @@ function Registration() {
   const [confirmPass, setConfirmPass] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const currentDate = new Date().toISOString().split('T')[0]; 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -157,6 +158,7 @@ function Registration() {
           variant="filled"
           size="small"
           value={user.birthDate}
+          inputProps={{ max: currentDate }}
           onChange={(e) => setRegisterUser((prevUser) => ({ ...prevUser, birthDate: e.target.value }))}
         />
         </div>

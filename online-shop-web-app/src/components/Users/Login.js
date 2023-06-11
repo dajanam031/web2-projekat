@@ -17,6 +17,7 @@ import { GetUserRole, GetUserVerification } from "../../utils/CurrentUser";
 function Login() {
   const [user, setLoginUser] = useState(new UserLogin());
   const [errorMessage, setErrorMessage] = useState('');
+  
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -40,7 +41,7 @@ function Login() {
 
     script.onload = () => {
       google.accounts.id.initialize({
-        client_id: '537961435311-thqj5cefqa83istba2gc2bcv9hl3iah8.apps.googleusercontent.com',
+        client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
         callback: handleCallbackResponse,
       });
       google.accounts.id.renderButton(document.getElementById('signInDiv'), {
@@ -174,7 +175,7 @@ function Login() {
       </Box>
     </form>
   );
-
+          
 }
 export default Login;
 
