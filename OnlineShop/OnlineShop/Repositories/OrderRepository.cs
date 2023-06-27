@@ -75,20 +75,5 @@ namespace OnlineShop.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> CountOrderItemsInProgress(long customerId)
-        {
-            var order = await _dbContext.Orders
-                .Include(o => o.OrderItems)
-                .FirstOrDefaultAsync(o => o.PurchaserId == customerId && o.Status == OrderStatus.InProgress);
-
-            if (order != null)
-            {
-                int itemCount = order.OrderItems.Count;
-                return itemCount;
-            }
-
-            return 0;
-        }
-
     }
 }

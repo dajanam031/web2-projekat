@@ -81,10 +81,10 @@ namespace OnlineShop.Services
 
             order.DeliveryAddress = confirmOrderDto.DeliveryAddress;
             order.Comment = confirmOrderDto.Comment;
-            //order.DeliveryTime = GenerateTime();
             order.OrderingTime = DateTime.Now;
             order.Status = OrderStatus.Finished;
             order.IsAccepted = false;
+            order.IsDelivered = false;
             order.PaymentType = (PaymentType)Enum.Parse(typeof(PaymentType), confirmOrderDto.PaymentType);
             order.TotalPrice +=  double.Parse(_fee.Value);
 
@@ -271,7 +271,8 @@ namespace OnlineShop.Services
                     await _ordersRepository.CheckDeliveryStatus(order);
                 }
 
-                var filteredOrders = isNew ? orders.Where(o => !o.IsDelivered) : orders.Where(o => o.IsDelivered);
+                var filteredOrders = isNew ? orders.Where(o => !o.IsDelivered && o.IsAccepted)
+                    : orders.Where(o => o.IsDelivered && o.IsAccepted);
 
                 if (filteredOrders.Any())
                 {
@@ -327,6 +328,31 @@ namespace OnlineShop.Services
             }
 
             throw new InvalidOperationException("No orders yet.");
+        }
+
+        public async Task<List<PendingOrders>> GetOrdersOnMap(long id)
+        {
+            var orders = await _ordersRepository.GetSellerOrders(id);
+            var filteredOrders = orders.Where(o => !o.IsAccepted);
+            if (filteredOrders.Any())
+            {
+                return _mapper.Map<List<PendingOrders>>(filteredOrders);
+            }
+
+            throw new ArgumentNullException(nameof(filteredOrders));
+        }
+
+        public async Task AcceptOrder(long orderId)
+        {
+            var order = await _ordersRepository.GetById(orderId);
+            if(order == null)
+            {
+                throw new ArgumentNullException(nameof(order));
+            }
+
+            order.IsAccepted = true;
+            order.DeliveryTime = GenerateTime();
+            await _ordersRepository.SaveChanges();
         }
     }
 }

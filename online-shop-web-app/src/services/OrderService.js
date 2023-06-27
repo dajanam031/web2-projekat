@@ -116,3 +116,21 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const GetOrdersOnMap = async () => {
+    try {
+      const response = await apiClient.get(`/orders/orders-map`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };
+
+  export const AcceptOrder = async (orderId) => {
+    try {
+      const response = await apiClient.put(`/orders/accept-order/${orderId}`, null);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

@@ -15,6 +15,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { GetStatus } from '../../services/UserService';
 import { useState } from 'react';
 import PendingIcon from '@mui/icons-material/Pending';
@@ -102,6 +103,10 @@ function Home() {
                   <Button disabled={user.isVerified === 'False'} color="inherit" component={Link} to="/new-orders">
                     <FiberNewIcon/>
                     New orders
+                  </Button>
+                  <Button disabled={user.isVerified === 'False'} color="inherit" component={Link} to="/map">
+                    <LocationOnIcon/>
+                    Pending orders
                   </Button>
                     </div>
                 )}

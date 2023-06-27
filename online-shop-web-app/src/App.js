@@ -17,6 +17,7 @@ import AllOrders from './components/Orders/AllOrders';
 import SellerDeliveredOrders from './components/Orders/SellerDeliveredOrders';
 import SellerNewOrders from './components/Orders/SellerNewOrders';
 import PendingOrders from './components/Orders/PendingOrders';
+import OrderMap from './components/Orders/OrderMap';
 import { isTokenExpired } from './utils/TokenExpiration';
 
 function App() {
@@ -70,12 +71,14 @@ function App() {
               <Route path="/seller-articles" element={<SellerArticles />} />
               <Route path="/seller-orders" element={<SellerDeliveredOrders />} />
               <Route path="/new-orders" element={<SellerNewOrders />} />
+              <Route path="/map" element={<OrderMap />} />
               </>
             ) : (
               <>
               <Route path="/seller-articles" element={<Navigate to="/" />} />
               <Route path="/seller-orders" element={<Navigate to="/" />} />
               <Route path="/new-orders" element={<Navigate to="/" />} />
+              <Route path="/map" element={<Navigate to="/" />} />
               </>
             )}
              {user.role === "Customer" ? (

@@ -219,5 +219,37 @@ namespace OnlineShop.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("orders-map")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> GetOrdersOnMap()
+        {
+            long userId = long.Parse(User.GetId());
+            try
+            {
+                return Ok(await _orderService.GetOrdersOnMap(userId));
+
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("accept-order/{orderId}")]
+        [Authorize(Roles = "Seller")]
+        public async Task<IActionResult> AcceptOrder([FromRoute] long orderId)
+        {
+            try
+            {
+                await _orderService.AcceptOrder(orderId);
+                return Ok();
+
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+        }
     }
 }

@@ -20,5 +20,7 @@ namespace OnlineShop.Interfaces
         Task<List<OrderListDto>> AllOrders();
         Task<List<OrderListDto>> GetSellerOrders(long id, bool isNew);
         Task<List<PendingOrders>> GetUsersPendingOrders(long id);
+        Task<List<PendingOrders>> GetOrdersOnMap(long id);
+        Task AcceptOrder(long orderId);
     }
 }
