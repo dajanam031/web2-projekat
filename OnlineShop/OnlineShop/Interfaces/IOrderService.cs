@@ -12,12 +12,13 @@ namespace OnlineShop.Interfaces
         Task<List<OrderViewDto>> CurrentOrderView(long customerId);
         Task DeleteOrderItem(long itemId, long orderId);
         Task DeleteOrder(long orderId);
-        Task<DeliveryTimeDto> ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto);
+        Task ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto);
         Task<List<OrderListCustomerDto>> CustomersOrders (long customerId);
         Task<List<OrderDetailsDto>> GetOrderDetails(long orderId);
         Task<List<OrderDetailsDto>> GetOrderDetails(long orderId, long sellerId);
         Task CancelOrder(long orderId);
         Task<List<OrderListDto>> AllOrders();
         Task<List<OrderListDto>> GetSellerOrders(long id, bool isNew);
+        Task<List<PendingOrders>> GetUsersPendingOrders(long id);
     }
 }

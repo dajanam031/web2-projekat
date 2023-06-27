@@ -13,12 +13,15 @@ import {
   IconButton,
   Box,
   TextField,
-  Alert
+  Alert,
+  Checkbox,
+  Typography
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Snackbar from '@mui/material/Snackbar';
 import Home from "../Users/Home";
 import { OrderToConfirm } from "../../models/OrderToConfirm";
+import PayPalButton from "./PayPalButton";
 
 function Cart() {
   const [order, setOrder] = useState(null);
@@ -27,6 +30,8 @@ function Cart() {
   const [emptyFieldsMess, setEmptyFieldsMess] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isChecked, setIsChecked] = useState(false);
+  const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
 
   const commentRef = useRef(null);
   const deliveryAddressRef = useRef(null);
@@ -80,19 +85,36 @@ function Cart() {
       deliveryAddressRef.current.focus();
       return;
     }
+    if(!isChecked && !isPaymentSuccess){
+      // nije odabrano placanje
+      setEmptyFieldsMess("Please select payment method. You can pay on delivery or using paypal.");
+      return;
+    }
     setEmptyFieldsMess('');
 
     try {
+      if(isChecked){
+        orderToConfirm.paymentType = 'OnDelivery';
+      }
+      else if(isPaymentSuccess){
+        orderToConfirm.paymentType = 'Paypal';
+      }else{
+        orderToConfirm.paymentType = 'None';
+      }
       const resp = await ConfirmOrder(orderId, orderToConfirm);
       setOrder(null);
-      const dateTime = new Date(resp.deliveryTime);
-      const formattedDateTime = dateTime.toLocaleString();
-      setSnackbarMessage('Order is successfully confirmed. Estimated delivery time: ' + formattedDateTime);
+      setSnackbarMessage(resp);
       setSnackbarOpen(true);
     } catch (error) {
       setErrorMessage(error.message);
     }
   }
+
+  const handlePaymentSuccess = () => {
+    setIsPaymentSuccess(true);
+    setEmptyFieldsMess('');
+  };
+  
 
   return (
     <>
@@ -133,7 +155,7 @@ function Cart() {
                           {orderItem.itemQuantity}
                         </TableCell>
                         <TableCell align="right">
-                          {orderItem.itemPrice} rsd
+                          {orderItem.itemPrice} usd
                         </TableCell>
                         <TableCell align="right">
                           <IconButton
@@ -151,55 +173,65 @@ function Cart() {
                     <TableCell colSpan={2.5} align="right">
                       <b>Price:</b>
                     </TableCell>
-                    <TableCell align="right">{order[0].totalPrice} rsd</TableCell>
+                    <TableCell align="right">{order[0].totalPrice} usd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={2.5} align="right">
                       <b>Delivery fee:</b>
                     </TableCell>
-                    <TableCell align="right">{order[0].fee} rsd</TableCell>
+                    <TableCell align="right">{order[0].fee} usd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell colSpan={2.5} align="right">
                       <b>Total price:</b>
                     </TableCell>
-                    <TableCell align="right">{order[0].totalPrice + order[0].fee} rsd</TableCell>
+                    <TableCell align="right">{order[0].totalPrice + order[0].fee} usd</TableCell>
                     <TableCell align="right"></TableCell>
                   </TableRow>
                   
                 </TableBody>
               </Table>
               <form onSubmit={handleSubmit}>
-              <Box
-                display="flex"
-                flexDirection="column"
-                alignItems="flex-end"
-                mt={2}
-              >
-                <TextField
-                  label="Comment"
-                  value={orderToConfirm.comment}
-                  onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, comment: e.target.value }))}
-                  variant="outlined"
-                  size="small"
-                  multiline
-                  rows={3}
-                  margin="dense"
-                  inputRef={commentRef}
-                />
-                <TextField
-                  label="Delivery Address"
-                  value={orderToConfirm.deliveryAddress}
-                  onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, deliveryAddress: e.target.value }))}
-                  variant="outlined"
-                  size="small"
-                  margin="dense"
-                  inputRef={deliveryAddressRef}
-                />
+              <Box display="flex" flexDirection="column" mt={2}>
+                <Box display="flex" justifyContent="space-between" flexDirection="row" alignItems="flex-end">
+                  <TextField
+                    label="Comment"
+                    value={orderToConfirm.comment}
+                    onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, comment: e.target.value }))}
+                    variant="outlined"
+                    size="small"
+                    multiline
+                    margin="dense"
+                    inputRef={commentRef}
+                  />
+                  <TextField
+                    label="Delivery Address"
+                    value={orderToConfirm.deliveryAddress}
+                    onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, deliveryAddress: e.target.value }))}
+                    variant="outlined"
+                    size="small"
+                    margin="dense"
+                    inputRef={deliveryAddressRef}
+                  />
+                </Box>
+
+                <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
+                  <Checkbox checked={isChecked} onChange={() => setIsChecked(!isChecked)} disabled={isPaymentSuccess}/>
+                  <Typography>Pay on delivery</Typography>
+                  <Box display="flex" alignItems="center" marginLeft={4}>
+                    <Typography variant="body2">or</Typography>
+                    <Box marginLeft={7}>
+                      <PayPalButton totalPrice={order[0].totalPrice + order[0].fee}
+                       disabled={isChecked}
+                       onPaymentSuccess={handlePaymentSuccess} />
+                    </Box>
+                  </Box>
+                </Box>
+
                 <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
-                  <Button onClick={() => handleDecline(order[0].orderId)} variant="contained" color="error">
+                  <Button onClick={() => handleDecline(order[0].orderId)} disabled={isPaymentSuccess} variant="contained" color="error">
                     Decline Order
                   </Button>
                   <Button onClick={() => handleSubmit(order[0].orderId)} variant="contained" color="primary">
@@ -207,6 +239,7 @@ function Cart() {
                   </Button>
                 </Box>
               </Box>
+
               </form>
             </TableContainer>
           </Box>
@@ -217,7 +250,7 @@ function Cart() {
       open={snackbarOpen}
       autoHideDuration={7000}
       onClose={() => setSnackbarOpen(false)}
-      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
       message={snackbarMessage}
     />
     </>

@@ -97,7 +97,8 @@ namespace OnlineShop.Controllers
         {
             try
             {
-                return Ok(await _orderService.ConfirmOrder(orderId, confirmOrderDto));
+                await _orderService.ConfirmOrder(orderId, confirmOrderDto);
+                return Ok("Order is successfully confirmed, wait for seller to start delivering.");
 
             }
             catch (Exception ex)
@@ -195,6 +196,22 @@ namespace OnlineShop.Controllers
             try
             {
                 return Ok(await _orderService.GetSellerOrders(userId, isNew));
+
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("pending-orders")]
+        [Authorize(Roles = "Customer")]
+        public async Task<IActionResult> GetPendingOrders()
+        {
+            long userId = long.Parse(User.GetId());
+            try
+            {
+                return Ok(await _orderService.GetUsersPendingOrders(userId));
 
             }
             catch (InvalidOperationException ex)

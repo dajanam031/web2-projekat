@@ -16,6 +16,7 @@ import CustomerOrders from './components/Orders/CustomerOrders';
 import AllOrders from './components/Orders/AllOrders';
 import SellerDeliveredOrders from './components/Orders/SellerDeliveredOrders';
 import SellerNewOrders from './components/Orders/SellerNewOrders';
+import PendingOrders from './components/Orders/PendingOrders';
 import { isTokenExpired } from './utils/TokenExpiration';
 
 function App() {
@@ -82,10 +83,12 @@ function App() {
                   <Route path="/all-articles" element={<AllArticles />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="customer-orders" element={<CustomerOrders/>}/>
+                  <Route path="/pending-orders" element={<PendingOrders />} />
                 </>) : (<>
                 <Route path="/all-articles" element={<Navigate to="/" />} />
                 <Route path="/cart" element={<Navigate to="/" />} />
                 <Route path="customer-orders" element={<Navigate to="/" />}/>
+                <Route path="/pending-orders" element={<Navigate to="/" />} />
                 </>
               )}
         </Route>

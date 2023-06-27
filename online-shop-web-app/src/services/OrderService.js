@@ -107,3 +107,12 @@ export const GetCurrentOrder = async () => {
       throw new Error(error.response.data);
     }
   };
+
+  export const GetPendingOrders = async () => {
+    try {
+      const response = await apiClient.get(`/orders/pending-orders`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response.data);
+    }
+  };

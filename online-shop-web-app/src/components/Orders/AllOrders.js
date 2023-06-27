@@ -60,6 +60,7 @@ function AllOrders(){
                     </TableCell>
                 </TableRow>
                 <TableRow>
+                <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Purchaser</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Ordering time</b></TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000', fontSize: '13px' }}><b>Estimated delivery time</b></TableCell>

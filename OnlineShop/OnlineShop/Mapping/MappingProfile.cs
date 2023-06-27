@@ -24,6 +24,7 @@ namespace OnlineShop.Mapping
 
             CreateMap<Order, OrderListCustomerDto>().ReverseMap();
             CreateMap<Order, OrderListDto>().ReverseMap();
+            CreateMap<Order, PendingOrders>().ReverseMap();
         }
     }
 }

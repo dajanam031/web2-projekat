@@ -48,7 +48,7 @@ namespace OnlineShop.Services
             Order orderInProgress = await _ordersRepository.FindBy(x => x.Status.Equals(OrderStatus.InProgress) && x.PurchaserId == customerId);
             if (orderInProgress == null)
             {
-                orderInProgress = new Order { PurchaserId = customerId, Status = OrderStatus.InProgress};
+                orderInProgress = new Order { PurchaserId = customerId, Status = OrderStatus.InProgress, PaymentType = PaymentType.None};
                 await _ordersRepository.Create(orderInProgress);
                 await _ordersRepository.SaveChanges();
             }
@@ -71,7 +71,7 @@ namespace OnlineShop.Services
             await _ordersRepository.SaveChanges();
         }
 
-        public async Task<DeliveryTimeDto> ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto)
+        public async Task ConfirmOrder(long orderId, ConfirmOrderDto confirmOrderDto)
         {
             var order = await _ordersRepository.GetById(orderId);
             if(order == null)
@@ -81,14 +81,14 @@ namespace OnlineShop.Services
 
             order.DeliveryAddress = confirmOrderDto.DeliveryAddress;
             order.Comment = confirmOrderDto.Comment;
-            order.DeliveryTime = GenerateTime();
+            //order.DeliveryTime = GenerateTime();
             order.OrderingTime = DateTime.Now;
             order.Status = OrderStatus.Finished;
+            order.IsAccepted = false;
+            order.PaymentType = (PaymentType)Enum.Parse(typeof(PaymentType), confirmOrderDto.PaymentType);
             order.TotalPrice +=  double.Parse(_fee.Value);
 
             await _ordersRepository.SaveChanges();
-
-            return new DeliveryTimeDto { DeliveryTime = order.DeliveryTime };
         }
 
         public async Task<List<OrderViewDto>> CurrentOrderView(long customerId)
@@ -170,7 +170,8 @@ namespace OnlineShop.Services
 
         public async Task<List<OrderListCustomerDto>> CustomersOrders(long customerId)
         {
-            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == customerId && x.Status.Equals(OrderStatus.Finished));
+            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == customerId &&
+            x.Status.Equals(OrderStatus.Finished) && x.IsAccepted);
             if (orders.Any())
             {
                 foreach (var order in orders)
@@ -315,6 +316,17 @@ namespace OnlineShop.Services
             }
 
             return orderDetailsDtos;
+        }
+
+        public async Task<List<PendingOrders>> GetUsersPendingOrders(long id)
+        {
+            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == id && !x.IsAccepted);
+            if (orders.Any())
+            {
+                return _mapper.Map<List<PendingOrders>>(orders);
+            }
+
+            throw new InvalidOperationException("No orders yet.");
         }
     }
 }

@@ -98,7 +98,7 @@ function AllArticles(){
                   {item.description}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Price: {item.price} rsd
+                  Price: {item.price} usd
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Available quantity: {item.quantity}

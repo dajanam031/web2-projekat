@@ -17,6 +17,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { GetStatus } from '../../services/UserService';
 import { useState } from 'react';
+import PendingIcon from '@mui/icons-material/Pending';
 
 
 function Home() {
@@ -81,6 +82,10 @@ function Home() {
                   <Button color="inherit" component={Link} to="/customer-orders">
                     <HistoryIcon/>
                     Previous orders
+                  </Button>
+                  <Button color="inherit" component={Link} to="/pending-orders">
+                    <PendingIcon/>
+                    Pending orders
                   </Button>
                     </div>
                 )}

@@ -16,5 +16,7 @@ namespace OnlineShop.Models
         public DateTime OrderingTime { get; set; }
         public double TotalPrice { get; set; }
         public bool IsDelivered { get; set; }
+        public bool IsAccepted { get; set; }
+        public PaymentType PaymentType { get; set; }
     }
 }

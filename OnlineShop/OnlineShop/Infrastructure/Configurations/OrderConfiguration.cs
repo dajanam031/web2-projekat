@@ -25,6 +25,12 @@ namespace OnlineShop.Infrastructure.Configurations
                       x => Enum.Parse<OrderStatus>(x)
                   );
 
+            builder.Property(x => x.PaymentType)
+                  .HasConversion(
+                      x => x.ToString(),
+                      x => Enum.Parse<PaymentType>(x)
+                  );
+
             builder.HasOne(x => x.Purchaser) // jedna porudzbina ima jednog korisnika (kupca)
                    .WithMany(x => x.Orders) // A jedan kupac vise porudzbina
                    .HasForeignKey(x => x.PurchaserId) // Strani kljuc  je userId
