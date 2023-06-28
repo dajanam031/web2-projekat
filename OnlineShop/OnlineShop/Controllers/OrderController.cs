@@ -243,7 +243,7 @@ namespace OnlineShop.Controllers
             try
             {
                 await _orderService.AcceptOrder(orderId);
-                return Ok();
+                return Ok("Order successfully accepted, you can see it in new orders.");
 
             }
             catch (Exception)

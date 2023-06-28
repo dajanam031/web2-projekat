@@ -56,7 +56,7 @@ function SellerDeliveredOrders(){
             <Table sx={{ minWidth: 650, backgroundColor: '#b6c2b9' }} size="small" aria-label="a dense table">
             <TableHead>
                 <TableRow>
-                    <TableCell colSpan={7} align="center" sx={{ borderBottom: '1px solid #050000' }}>
+                    <TableCell colSpan={8} align="center" sx={{ borderBottom: '1px solid #050000' }}>
                     <h3>Delivered orders</h3>
                     </TableCell>
                 </TableRow>
@@ -84,7 +84,6 @@ function SellerDeliveredOrders(){
                         <span style={{ display: 'inline-block' }}>{order.customer}</span>
                       </div>
                     </TableCell>
-                    <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{order.customer}</TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{formatDate(order.orderingTime)}</TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{formatDate(order.deliveryTime)}</TableCell>
                     <TableCell align="right" sx={{ borderBottom: '1px solid #050000' }}>{order.comment}</TableCell>

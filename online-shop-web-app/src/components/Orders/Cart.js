@@ -15,7 +15,8 @@ import {
   TextField,
   Alert,
   Checkbox,
-  Typography
+  Typography,
+  Grid
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Snackbar from '@mui/material/Snackbar';
@@ -32,9 +33,16 @@ function Cart() {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isPaymentSuccess, setIsPaymentSuccess] = useState(false);
+  const [country, setCountry] = useState('');
+  const [city, setCity] = useState('');
+  const [street, setStreet] = useState('');
+  const [postalCode, setPostalCode] = useState('');
 
   const commentRef = useRef(null);
-  const deliveryAddressRef = useRef(null);
+  const countryRef = useRef(null);
+  const cityRef = useRef(null);
+  const streetRef = useRef(null);
+  const postalCodeRef = useRef(null);
 
   const getOrder = async () => {
     try {
@@ -70,21 +78,33 @@ function Cart() {
   };
 
   const handleSubmit = async (orderId) => {
-    if(orderToConfirm.comment.trim() === '' && orderToConfirm.deliveryAddress.trim() === ''){
-        setEmptyFieldsMess("Please fill out comment and delivery address before confirming order.");
-        commentRef.current.focus();
-        return;
-    }
+    
     if(orderToConfirm.comment.trim() === ''){
       setEmptyFieldsMess("Please fill out comment before confirming order.");
       commentRef.current.focus();
       return;
     }
-    if(orderToConfirm.deliveryAddress.trim() === ''){
-      setEmptyFieldsMess("Please fill out delivery address before confirming order.");
-      deliveryAddressRef.current.focus();
+    if(country.trim() === ''){
+      setEmptyFieldsMess("Please fill out country before confirming order.");
+      countryRef.current.focus();
       return;
     }
+    if(city.trim() === ''){
+      setEmptyFieldsMess("Please fill out city before confirming order.");
+      cityRef.current.focus();
+      return;
+    }
+    if(street.trim() === ''){
+      setEmptyFieldsMess("Please fill out street before confirming order.");
+      streetRef.current.focus();
+      return;
+    }
+    if(postalCode.trim() === ''){
+      setEmptyFieldsMess("Please fill out postal code before confirming order.");
+      postalCodeRef.current.focus();
+      return;
+    }
+
     if(!isChecked && !isPaymentSuccess){
       // nije odabrano placanje
       setEmptyFieldsMess("Please select payment method. You can pay on delivery or using paypal.");
@@ -101,6 +121,8 @@ function Cart() {
       }else{
         orderToConfirm.paymentType = 'None';
       }
+      
+      console.log(orderToConfirm);
       const resp = await ConfirmOrder(orderId, orderToConfirm);
       setOrder(null);
       setSnackbarMessage(resp);
@@ -195,8 +217,8 @@ function Cart() {
               </Table>
               <form onSubmit={handleSubmit}>
               <Box display="flex" flexDirection="column" mt={2}>
-                <Box display="flex" justifyContent="space-between" flexDirection="row" alignItems="flex-end">
-                  <TextField
+              <Box display="flex" flexDirection="column">
+              <TextField
                     label="Comment"
                     value={orderToConfirm.comment}
                     onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, comment: e.target.value }))}
@@ -206,16 +228,78 @@ function Cart() {
                     margin="dense"
                     inputRef={commentRef}
                   />
-                  <TextField
-                    label="Delivery Address"
-                    value={orderToConfirm.deliveryAddress}
-                    onChange={(e) => setOrderToConfirm((prevData) => ({ ...prevData, deliveryAddress: e.target.value }))}
-                    variant="outlined"
-                    size="small"
-                    margin="dense"
-                    inputRef={deliveryAddressRef}
-                  />
-                </Box>
+                  <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Country"
+                      value={country}
+                      onChange={(e) => {
+                        setCountry(e.target.value);
+                        setOrderToConfirm((prevData) => ({
+                          ...prevData,
+                          deliveryAddress: `${street}, ${city}, ${postalCode}, ${e.target.value}`
+                        }));
+                      }}
+                      variant="outlined"
+                      size="small"
+                      margin="dense"
+                      inputRef={countryRef}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="City"
+                      value={city}
+                      onChange={(e) => {
+                        setCity(e.target.value);
+                        setOrderToConfirm((prevData) => ({
+                          ...prevData,
+                          deliveryAddress: `${street}, ${e.target.value}, ${postalCode}, ${country}`
+                        }));
+                      }}
+                      variant="outlined"
+                      size="small"
+                      margin="dense"
+                      inputRef={cityRef}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Street"
+                      value={street}
+                      onChange={(e) => {
+                        setStreet(e.target.value);
+                        setOrderToConfirm((prevData) => ({
+                          ...prevData,
+                          deliveryAddress: `${e.target.value}, ${city}, ${postalCode}, ${country}`
+                        }));
+                      }}
+                      variant="outlined"
+                      size="small"
+                      margin="dense"
+                      inputRef={streetRef}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      label="Postal Code"
+                      value={postalCode}
+                      onChange={(e) => {
+                        setPostalCode(e.target.value);
+                        setOrderToConfirm((prevData) => ({
+                          ...prevData,
+                          deliveryAddress: `${street}, ${city}, ${e.target.value}, ${country}`
+                        }));
+                      }}
+                      variant="outlined"
+                      size="small"
+                      margin="dense"
+                      inputRef={postalCodeRef}
+                    />
+                  </Grid>
+                  </Grid>
+
+                  </Box>
 
                 <Box display="flex" justifyContent="center" alignItems="center" mt={2}>
                   <Checkbox checked={isChecked} onChange={() => setIsChecked(!isChecked)} disabled={isPaymentSuccess}/>

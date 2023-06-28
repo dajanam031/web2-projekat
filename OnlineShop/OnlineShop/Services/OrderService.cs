@@ -321,7 +321,7 @@ namespace OnlineShop.Services
 
         public async Task<List<PendingOrders>> GetUsersPendingOrders(long id)
         {
-            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == id && !x.IsAccepted);
+            var orders = await _ordersRepository.FindAllBy(x => x.PurchaserId == id && !x.IsAccepted && x.Status.Equals(OrderStatus.Finished));
             if (orders.Any())
             {
                 return _mapper.Map<List<PendingOrders>>(orders);
@@ -351,6 +351,7 @@ namespace OnlineShop.Services
             }
 
             order.IsAccepted = true;
+            order.IsDelivered = false;
             order.DeliveryTime = GenerateTime();
             await _ordersRepository.SaveChanges();
         }

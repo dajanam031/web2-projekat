@@ -5,12 +5,13 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Icon } from "leaflet";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 
 function OrderMap() {
   const [markers, setMarkers] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const geocodeAddresses = async () => {
@@ -51,24 +52,32 @@ function OrderMap() {
 
   const handleMarkerClick = (orderDetails) => {
     setSelectedOrder(orderDetails);
-    setDialogOpen(true);
-  };
-
-  const closeDialog = () => {
-    setDialogOpen(false);
   };
 
   const acceptOrder = async (orderId) => {
     try{
-        await AcceptOrder(orderId);
+        const resp = await AcceptOrder(orderId);
+        setSnackbarMessage(resp);
+        setSnackbarOpen(true);
         setMarkers((prevMarkers) =>
         prevMarkers.filter((marker) => marker.orderDetails.id !== orderId)
       );
-        setDialogOpen(false);
     }catch(error){
         console.log('Error occured while trying to accept order.');
     }
   };
+
+  const getType = (type) => {
+    if(type === 0){
+        return 'None';
+    }
+    if(type === 1){
+        return 'PayPal';
+    }
+    if(type === 2){
+        return 'On Delivery';
+    }
+  }
 
   return (
     <>
@@ -89,26 +98,23 @@ function OrderMap() {
             }}
           >
             <Popup>
-              <p>{marker.orderDetails.deliveryAddress}</p>
+              <p><b>{marker.orderDetails.deliveryAddress}</b></p>
+              <p>Comment: {marker.orderDetails.comment}</p>
+            <p>Total price: {marker.orderDetails.totalPrice} usd</p>
+            <p>Payment type: {getType(marker.orderDetails.paymentType)}</p>
+            <Button onClick={() => acceptOrder(selectedOrder.id)} variant="outlined" color='secondary'>Accept order</Button>
             </Popup>
           </Marker>
         ))}
       </MapContainer>
 
-      {selectedOrder && (
-        <Dialog open={dialogOpen} onClose={closeDialog}>
-          <DialogTitle>Selected Order Details</DialogTitle>
-          <DialogContent>
-            <p>Comment: {selectedOrder.comment}</p>
-            <p>Total price: {selectedOrder.totalPrice}</p>
-            <p>Payment type: {selectedOrder.paymentType}</p>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => acceptOrder(selectedOrder.id)} color='secondary'>Accept order</Button>
-            <Button onClick={closeDialog}>Close</Button>
-          </DialogActions>
-        </Dialog>
-      )}
+      <Snackbar
+      open={snackbarOpen}
+      autoHideDuration={4000}
+      onClose={() => setSnackbarOpen(false)}
+      anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+      message={snackbarMessage}
+    />
     </>
   );
 }
